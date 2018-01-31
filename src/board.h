@@ -1,3 +1,4 @@
+//def of the struct board
 struct board
 {
   int cells[10][10];
@@ -9,3 +10,5 @@ void boardInit(struct board *b);
 
 //Display the board
 void printBoard(int cells[10][10]);
+
+
