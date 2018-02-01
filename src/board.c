@@ -52,7 +52,7 @@ void printBoard(int cells[10][10])
     for(int j = 0; j < 10; j++)
     {
       int  piece = cells[i][j];
-      printf("%c|",rep[piece+2]);
+      printf("  %c  |",rep[piece+2]);
       //printf("%d|",piece);
     }
     printf("\n");
