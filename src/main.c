@@ -1,5 +1,7 @@
-# include "board.c"
-
+# include <stdio.h>
+# include <stdlib.h>
+# include "board.h"
+# include "piece.h"
 int main()
 {
   struct board *board = malloc(sizeof(struct board));
@@ -20,4 +22,4 @@ int main()
   }
   free(board);
   return 0;
-}  
+}

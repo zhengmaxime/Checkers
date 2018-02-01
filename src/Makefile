@@ -1,24 +1,24 @@
 # Makefile
- 
+
 CC=gcc -fsanitize=address
-CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 
+CPPFLAGS= -MMD -D_XOPEN_SOURCE=500
 CFLAGS= -Wall -Wextra -std=c99 -O0 -g
 LDFLAGS=
-LDLIBS= -lprocps
+LDLIBS=
 
-SRC= board.c  main.c
+SRC= board.c piece.c main.c
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
- 
+
 all: main
- 
-dotpstree: ${OBJ}
- 
+
+main: ${OBJ}
+
 clean:
 	${RM} ${OBJ}
 	${RM} ${DEP}
 	${RM} main
- 
+
 -include ${DEP}
- 
+
 # END

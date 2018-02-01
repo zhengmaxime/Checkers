@@ -1,11 +1,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include "board.h"
+# include "piece.h"
 
-# define BP 1
-# define BR 2
-# define WP -1
-# define WR -2
 
 /*struct cell
 {
@@ -63,9 +60,9 @@ void printBoard(int cells[10][10])
 
 int errManage(struct board *b, int curLine, int curCol, int destLine, int destCol)
 {
-  int curPos = b->cells[curLine][curCol];
-  int destPos = b->cells[destLine][destCol];
-  printf("curPos = %d ; destPos = %d \n", curPos, destPos);
+  int curCell = b->cells[curLine][curCol];
+  int destCell = b->cells[destLine][destCol];
+  printf("curCell = %d ; destCell = %d \n", curCell, destCell);
   //out of the board
   if(curLine < 0 || curLine > 9 || curCol < 0 || curCol > 9 || destLine < 0 \
      || destLine > 9 || destCol < 0 || destCol > 9)
@@ -74,8 +71,10 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
   if(abs(curLine - destLine) != abs(curCol - destCol))
     return -2;
   //if dest position is a ally
-  if(destPos == curPos /*|| abs(destPos) == (abs(curPos) + 1)*/)
+  if( (destCell * curCell) > 0)
     return -3;
+  if (destCell)
+    return -4;
   return 0;
 }
 
@@ -94,25 +93,30 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
   if(errno == -1)
   {
     printf("Deplacement out of the board\n");
-    return -1;//error, to figure in the main loop
   }
   if(errno == -2)
   {
     printf("You don't respect rules\n");
-    return -1;//error, to figure in the main loop
   }
   if(errno == -3)
   {
     printf("ally at the position\n");
+  }
+  if(errno == -4)
+  {
+    printf("enemy at the position\n");
+  }
+  if (errno < 0)
+  {
     return -1;//error, to figure in the main loop
   }
-  int curPos = b->cells[curLine][curCol];
-  int destPos = b->cells[destLine][destCol];
+  int curCell = b->cells[curLine][curCol];
+  int destCell = b->cells[destLine][destCol];
   //PIONS
-  if(curPos == BP || curPos == WP)
+  if(is_pawn(curCell))
   {
-    //if destPos is empty
-    if(destPos == 0)
+    //if destCell is empty
+    if(destCell == 0)
     {
       errManage(b, curLine, curCol, destLine, destCol);
       move(b, curLine, curCol, destLine, destCol);
@@ -120,7 +124,7 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
 
   }
   //DAMES
-  if(curPos == WR || curPos == BR)
+  if(is_king(curCell))
   {
     //FIX ME
   }
