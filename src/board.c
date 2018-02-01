@@ -57,7 +57,8 @@ void printBoard(int cells[10][10])
     }
     printf("\n");
   }
-  printf("\n      0 1 2 3 4 5 6 7 8 9\n\n");
+  printf("\n        0     1     2     3     4     5     6     7     8     9");
+  printf("\n\n");
 }
 
 int errManage(struct board *b, int curLine, int curCol, int destLine, int destCol)
