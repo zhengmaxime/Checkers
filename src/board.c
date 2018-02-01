@@ -18,7 +18,7 @@ void boardInit(struct board *b)
 {
   int line;
   int col;
-  
+
   for(; line < 10; line++)
   {
     if(line % 2 == 0)
@@ -88,19 +88,20 @@ void move(struct board *b, int curLine, int curCol, int destLine, int destCol)
 int deplacement(struct board *b, int curLine, int curCol, int destLine, int destCol)
 {
   //error magagement
-  if(errManage(b, curLine, curCol, destLine, destCol) == -1)
+  int errno = errManage(b, curLine, curCol, destLine, destCol);
+  if(errno == -1)
   {
-    printf("Deplacement out of the board\n"); 
+    printf("Deplacement out of the board\n");
     return -1;//error, to figure in the main loop
   }
-  if(errManage(b, curLine, curCol, destLine, destCol) == -2)
+  if(errno == -2)
   {
-    printf("You don't respect rules\n"); 
+    printf("You don't respect rules\n");
     return -1;//error, to figure in the main loop
   }
-  if(errManage(b, curLine, curCol, destLine, destCol) == -3)
+  if(errno == -3)
   {
-    printf("ally at the position\n"); 
+    printf("ally at the position\n");
     return -1;//error, to figure in the main loop
   }
   int curPos = b->cells[curLine][curCol];
@@ -114,7 +115,7 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
       errManage(b, curLine, curCol, destLine, destCol);
       move(b, curLine, curCol, destLine, destCol);
     }
-      
+
   }
   //DAMES
   if(curPos == WR || curPos == BR)
@@ -123,10 +124,3 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
   }
   return 0;
 }
-
-
-
-
-
-
-
