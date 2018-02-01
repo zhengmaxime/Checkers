@@ -63,8 +63,9 @@ void printBoard(int cells[10][10])
 
 int errManage(struct board *b, int curLine, int curCol, int destLine, int destCol)
 {
-  int curPos = b->cells[curCol][curLine];
-  int destPos = b->cells[destCol][destLine];
+  int curPos = b->cells[curLine][curCol];
+  int destPos = b->cells[destLine][destCol];
+  printf("curPos = %d ; destPos = %d \n", curPos, destPos);
   //out of the board
   if(curLine < 0 || curLine > 9 || curCol < 0 || curCol > 9 || destLine < 0 \
      || destLine > 9 || destCol < 0 || destCol > 9)
@@ -73,8 +74,8 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
   if(abs(curLine - destLine) != abs(curCol - destCol))
     return -2;
   //if dest position is a ally
-  /*if(destPos == curPos || abs(destPos) == (abs(curPos) + 1))
-    return -3;*/
+  if(destPos == curPos /*|| abs(destPos) == (abs(curPos) + 1)*/)
+    return -3;
   return 0;
 }
 
