@@ -75,6 +75,9 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
     return -3;
   if (destCell)
     return -4;
+  if ( (curCell == -1 && curLine <= destLine) ||
+       (curCell == 1 && curLine >= destLine))
+    return -5;
   return 0;
 }
 
@@ -106,6 +109,8 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
   {
     printf("enemy at the position\n");
   }
+  if (errno == -5)
+      printf("Ne peut pas reculer\n");
   if (errno < 0)
   {
     return -1;//error, to figure in the main loop
