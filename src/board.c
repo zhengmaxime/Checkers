@@ -140,3 +140,8 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
   }
   return 0;
 }
+
+void build_list_possible_moves(int x, int y, )
+{
+  
+}

@@ -9,7 +9,10 @@ struct board
   int cells[10][10];
 };
 
-
+struct cell
+{
+  int *possibleMoves[];
+};
 //Init the board with basic pawns
 void boardInit(struct board *b);
 
