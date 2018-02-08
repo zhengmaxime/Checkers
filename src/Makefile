@@ -6,7 +6,7 @@ CFLAGS= -Wall -Wextra -std=c99 -O0 -g
 LDFLAGS=
 LDLIBS=
 
-SRC= board.c piece.c main.c
+SRC= board.c piece.c main.c list.c
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
 
