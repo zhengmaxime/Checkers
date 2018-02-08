@@ -2,6 +2,8 @@
 # include <stdlib.h>
 # include "board.h"
 # include "piece.h"
+
+
 int main()
 {
   struct board *board = malloc(sizeof(struct board));
@@ -14,6 +16,7 @@ int main()
   int curCol = 0;
   int destLine = 0;
   int destCol = 0;
+  //main loop
   for(;;)
   {
     scanf("%d %d %d %d", &curLine, &curCol, &destLine, &destCol);

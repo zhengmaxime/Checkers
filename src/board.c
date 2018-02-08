@@ -73,8 +73,10 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
   //if dest position is a ally
   if( (destCell * curCell) > 0)
     return -3;
+  //cell is not empty
   if (destCell)
     return -4;
+  //if you try to go back with a pion
   if ( (curCell == -1 && curLine <= destLine) ||
        (curCell == 1 && curLine >= destLine))
     return -5;
@@ -88,6 +90,7 @@ void move(struct board *b, int curLine, int curCol, int destLine, int destCol)
   b->cells[destLine][destCol] = curPos;
   b->cells[curLine][curCol] = 0;
 }
+
 
 int deplacement(struct board *b, int curLine, int curCol, int destLine, int destCol)
 {
@@ -115,9 +118,11 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
   {
     return -1;//error, to figure in the main loop
   }
+  
   int curCell = b->cells[curLine][curCol];
   int destCell = b->cells[destLine][destCol];
-  //PIONS
+  
+  //PIONS cases
   if(is_pawn(curCell))
   {
     //if destCell is empty
@@ -128,7 +133,7 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
     }
 
   }
-  //DAMES
+  //DAMES cases
   if(is_king(curCell))
   {
     //FIX ME
