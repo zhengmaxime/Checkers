@@ -25,7 +25,8 @@
 void list_init(struct list *list)
 {
 	list->next = NULL;
-	list->data = 0;
+	list->x = 0;
+  list->y = 0;
 }
 
 /*
@@ -43,7 +44,11 @@ int list_is_empty(struct list *list)
  * list_len(list)
  * returns the length of the list (don't count the sentinel)
  */
-size_t list_len(struct list *list)
+
+
+//fixmeeeee
+
+/*size_t list_len(struct list *list)
 {
 	size_t i = 0;
 	if (list_is_empty(list))
@@ -52,7 +57,7 @@ size_t list_len(struct list *list)
 	for (; list; list = list->next)
 		++i;
 	return i;
-}
+}*/
 
 /*
  * list_push_front(list, elm)
@@ -88,7 +93,7 @@ struct list* list_pop_front(struct list *list)
  * the corresponding list node. The function returns NULL if the value is not
  * present in the list.
  */
-struct list* list_find(struct list *list, int value)
+/*struct list* list_find(struct list *list, int value)
 {
 	if (list_is_empty(list))
 		return NULL;
@@ -96,13 +101,13 @@ struct list* list_find(struct list *list, int value)
 	list = list->next;
 	for (; list && list->data != value; list = list->next);
 	return list;
-}
+}*/
 
 /*
  * list_is_sorted(list)
  * check whether the list is sorted in increasing order
  */
-int list_is_sorted(struct list *list)
+/*int list_is_sorted(struct list *list)
 {
 	list = list->next;
 	if (list != NULL)
@@ -116,14 +121,14 @@ int list_is_sorted(struct list *list)
 		}
 	}
 	return 1;
-}
+}*/
 
 /*
  * list_insert(list, elm)
  * insert elm in the sorted list (keeping the list sorted)
  * Like list_push_front, elm is already a list node.
  */
-void list_insert(struct list *list, struct list *elm){
+/*void list_insert(struct list *list, struct list *elm){
 
 	if (elm != NULL)
 	{
@@ -143,7 +148,7 @@ void list_insert(struct list *list, struct list *elm){
 		list->next = elm;
 		elm->next = NULL;
 	}
-}
+}*/
 
 static void freeMemoryList(struct list *l)
 {
@@ -155,15 +160,12 @@ static void freeMemoryList(struct list *l)
 		l = tmp;
 	}
 }
-
 /*
  * More algorithms
- */
+ 
 
-/*
  * list_rev(list)
  * reverse the list using the same nodes (just move them) and the same sentinel.
- */
 void list_rev(struct list *list)
 {
 	struct list *rev = malloc(sizeof (struct list));
@@ -183,11 +185,10 @@ void list_rev(struct list *list)
 	freeMemoryList(sv_rev);
 }
 
-/*
  * list_half_split(list, second)
  * split the list in half and put the second half in second
  * second is an empty list (just a sentinel)
- */
+
 void list_half_split(struct list *list, struct list *second)
 {
 	size_t n = list_len(list) / 2;
@@ -208,4 +209,4 @@ void list_half_split(struct list *list, struct list *second)
 			list_push_front(second, tmp);
 	}
 	freeMemoryList(sv_sentinel);
-}
+}*/

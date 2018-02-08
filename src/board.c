@@ -2,13 +2,7 @@
 # include <stdlib.h>
 # include "board.h"
 # include "piece.h"
-
-
-/*struct cell
-{
-  int piece;
-  char print;
-}*/
+# include "list.h"
 
 
 void boardInit(struct board *b)
@@ -25,22 +19,33 @@ void boardInit(struct board *b)
     for(; col < 10; col+=2)
     {
       if(line < 4)//black pieces
-        b->cells[line][col] = BP;
+        b->cells[line][col].data = BP;
       if(line >= 4 && line <= 5)//middle of the board
-        b->cells[line][col] = 0;
+        b->cells[line][col].data = 0;
       if(line > 5)//white pieces
-        b->cells[line][col] = WP;
+        b->cells[line][col].data = WP;
       // 1/2 case colored
       if(col % 2 == 0)
-        b->cells[line][col+1] = 0;
+        b->cells[line][col+1].data = 0;
       if(col % 2 == 1)
-        b->cells[line][col-1] = 0;
+        b->cells[line][col-1].data = 0;
 
     }
   }
 }
 
-void printBoard(int cells[10][10])
+void initCells(struct board *b)
+{
+  for(int i = 0; i < 10; i++)
+  {
+    for(int j = 0; j < 10; j++)
+    {
+      list_init(b->cells[i][j].l);
+    }
+  }
+}
+
+void printBoard(struct cell cells[10][10])
 {
   char rep[] = {'X','x',' ','o','O'};
   for(int i = 0; i < 10; i++)
@@ -48,7 +53,7 @@ void printBoard(int cells[10][10])
     printf("%d    |",i);
     for(int j = 0; j < 10; j++)
     {
-      int  piece = cells[i][j];
+      int  piece = cells[i][j].data;
       printf("  %c  |",rep[piece+2]);
       //printf("%d|",piece);
     }
@@ -60,8 +65,8 @@ void printBoard(int cells[10][10])
 
 int errManage(struct board *b, int curLine, int curCol, int destLine, int destCol)
 {
-  int curCell = b->cells[curLine][curCol];
-  int destCell = b->cells[destLine][destCol];
+  int curCell = b->cells[curLine][curCol].data;
+  int destCell = b->cells[destLine][destCol].data;
   printf("curCell = %d ; destCell = %d \n", curCell, destCell);
   //out of the board
   if(curLine < 0 || curLine > 9 || curCol < 0 || curCol > 9 || destLine < 0 \
@@ -86,9 +91,9 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
 //move the piece once we're sure the deplacement is valid
 void move(struct board *b, int curLine, int curCol, int destLine, int destCol)
 {
-  int curPos = b->cells[curLine][curCol];
-  b->cells[destLine][destCol] = curPos;
-  b->cells[curLine][curCol] = 0;
+  int curPos = b->cells[curLine][curCol].data;
+  b->cells[destLine][destCol].data = curPos;
+  b->cells[curLine][curCol].data = 0;
 }
 
 
@@ -119,8 +124,8 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
     return -1;//error, to figure in the main loop
   }
   
-  int curCell = b->cells[curLine][curCol];
-  int destCell = b->cells[destLine][destCol];
+  int curCell = b->cells[curLine][curCol].data;
+  int destCell = b->cells[destLine][destCol].data;
   
   //PIONS cases
   if(is_pawn(curCell))
@@ -141,7 +146,7 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
   return 0;
 }
 
-void build_list_possible_moves(int x, int y, )
+void build_list_possible_moves(int x, int y )
 {
   
 }

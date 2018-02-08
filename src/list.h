@@ -7,7 +7,8 @@
 
 struct list {
   struct list *next;
-  int          data;
+  int data;
+  int x,y;
 };
 
 /*
@@ -35,7 +36,7 @@ int list_is_empty(struct list *list);
  * list_len(list)
  * returns the length of the list (don't count the sentinel)
  */
-size_t list_len(struct list *list);
+//size_t list_len(struct list *list);
 
 /*
  * list_push_front(list, elm)
@@ -59,20 +60,20 @@ struct list* list_pop_front(struct list *list);
  * the corresponding list node. The function returns NULL if the value is not
  * present in the list.
  */
-struct list* list_find(struct list *list, int value);
+//struct list* list_find(struct list *list, int value);
 
 /*
  * list_is_sorted(list)
  * check whether the list is sorted in increasing order
  */
-int list_is_sorted(struct list *list);
+//int list_is_sorted(struct list *list);
 
 /*
  * list_insert(list, elm)
  * insert elm in the sorted list (keeping the list sorted)
  * Like list_push_front, elm is already a list node.
  */
-void list_insert(struct list *list, struct list *elm);
+//void list_insert(struct list *list, struct list *elm);
 
 /*
  * More algorithms
@@ -82,13 +83,13 @@ void list_insert(struct list *list, struct list *elm);
  * list_rev(list)
  * reverse the list using the same nodes (just move them) and the same sentinel.
  */
-void list_rev(struct list *list);
+//void list_rev(struct list *list);
 
 /*
  * list_half_split(list, second)
  * split the list in half and put the second half in second
  * second is an empty list (just a sentinel)
  */
-void list_half_split(struct list *list, struct list *second);
+//void list_half_split(struct list *list, struct list *second);
 
 # endif /* EPITA_IP_LIST_H_ */
