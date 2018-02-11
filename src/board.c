@@ -78,7 +78,7 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
   if (is_pawn(curCell))
   {
     // pawn move one square diagonally
-    if ((abs(curLine - destLine) != 1) && (-1 != abs(curCol - destCol)))
+    if ((abs(curLine - destLine) != 1) || (1 != abs(curCol - destCol)))
       return -2;
   }
   else // if (is_king(curCell))
