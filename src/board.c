@@ -68,36 +68,41 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
   int curCell = b->cells[curLine][curCol].data;
   int destCell = b->cells[destLine][destCol].data;
 
-  // printf("curCell = %d ; destCell = %d \n", curCell, destCell);
-
-  //out of the board
   if (is_out_of_board(curLine, curCol) || is_out_of_board(destLine, destCol))
+  {
+    puts("Out of the board");
     return -1;
+  }
 
-  //doesn't respect rules (pieces move diagonally)
   if (is_pawn(curCell))
   {
-    // pawn move one square diagonally
     if ((abs(curLine - destLine) != 1) || (1 != abs(curCol - destCol)))
+    {
+      puts("Pawn move one square diagonally");
       return -2;
+    }
   }
-  else // if (is_king(curCell))
+  else
   {
-    // king can move several squares
     if (abs(curLine - destLine) != abs(curCol - destCol))
+    {
+      puts("King move diagonally");
       return -3;
+    }
   }
 
-  //if dest position is a ally : if( (destCell * curCell) > 0)
-
-  //if dest position is occupied
   if (destCell)
+  {
+    puts("Destination cell is occupied");
     return -4;
+  }
 
-  //if you try to go back with a pawn
   if ( (curCell == WP && curLine <= destLine) ||
        (curCell == BP && curLine >= destLine))
+  {
+    puts("Pawn can not move backward");
     return -5;
+  }
 
   return 0;
 }
@@ -113,61 +118,13 @@ void move(struct board *b, int curLine, int curCol, int destLine, int destCol)
 
 int deplacement(struct board *b, int curLine, int curCol, int destLine, int destCol)
 {
-  //error magagement
-  int errno = errManage(b, curLine, curCol, destLine, destCol);
-
-  if (errno == -1)
-  {
-    printf("Out of the board");
-  }
-  if (errno == -2)
-  {
-    printf("Pawn move one square diagonally");
-  }
-  if (errno == -3)
-  {
-    printf("King move diagonally");
-  }
-  if (errno == -4)
-  {
-    printf("Destination cell is occupied");
-  }
-  if (errno == -5)
-  {
-    printf("Pawn can not move backward");
-  }
-  if (errno < 0)
-  {
-    printf("\n");
-    return -1; //error, to figure in the main loop
-  }
-
-/*  int curCell = b->cells[curLine][curCol].data;
-  int destCell = b->cells[destLine][destCol].data;
-
-  //PIONS cases
-  if(is_pawn(curCell))
-  {
-    //if destCell is empty
-    if(destCell == 0)
-    {
-      errManage(b, curLine, curCol, destLine, destCol);
-      move(b, curLine, curCol, destLine, destCol);
-    }
-
-  }
-  //DAMES cases
-  if(is_king(curCell))
-  {
-    //FIX ME
-  }
-*/
-  errManage(b, curLine, curCol, destLine, destCol);
-  move(b, curLine, curCol, destLine, destCol);
-  return 0;
+  int err = errManage(b, curLine, curCol, destLine, destCol);
+  if (err == 0)
+    move(b, curLine, curCol, destLine, destCol);
+  return err;
 }
 
-void build_list_possible_moves(int x, int y )
+void build_list_possible_moves(int x, int y)
 {
 
 }
