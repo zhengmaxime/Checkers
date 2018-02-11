@@ -9,6 +9,7 @@ int main()
   struct board *board = malloc(sizeof(struct board));
   //init the board
   boardInit(board);
+  boardInitColor(board);
   //print it
   printf("This is the start of the game\n");
   printBoard(board);

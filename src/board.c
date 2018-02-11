@@ -35,6 +35,29 @@ void boardInit(struct board *b)
   b->player = PLAYER_WHITE;
 }
 
+void boardInitColor(struct board *b)
+{
+  int line, col;
+
+  for (line = 0; line < 10; line += 2)
+  {
+    for (col = 0; col < 10; col += 2)
+    {
+      b->cells[line][col].background = LIGHT;
+      b->cells[line][col + 1].background = DARK;
+    }
+  }
+
+  for (line = 1; line < 10; line += 2)
+  {
+    for (col = 0; col < 10; col += 2)
+    {
+      b->cells[line][col].background = DARK;
+      b->cells[line][col + 1].background = LIGHT;
+    }
+  }
+}
+
 void initCells(struct board *b)
 {
   for(int i = 0; i < 10; i++)
