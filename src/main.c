@@ -11,7 +11,7 @@ int main()
   boardInit(board);
   //print it
   printf("This is the start of the game\n");
-  printBoard(board->cells);
+  printBoard(board);
   int curLine = 0;
   int curCol = 0;
   int destLine = 0;
@@ -20,8 +20,9 @@ int main()
   for(;;)
   {
     scanf("%d %d %d %d", &curLine, &curCol, &destLine, &destCol);
-    deplacement(board, curLine, curCol, destLine, destCol);
-    printBoard(board->cells);
+    if (0 == deplacement(board, curLine, curCol, destLine, destCol))
+      board->player *= -1;
+    printBoard(board);
   }
   free(board);
   return 0;

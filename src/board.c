@@ -32,6 +32,7 @@ void boardInit(struct board *b)
 
     }
   }
+  b->player = PLAYER_WHITE;
 }
 
 void initCells(struct board *b)
@@ -45,22 +46,32 @@ void initCells(struct board *b)
   }
 }
 
-void printBoard(struct cell cells[10][10])
+void printBoard(struct board *b)
 {
+  if (b->player == PLAYER_WHITE)
+    printf("\nWhite (x) play\n\n");
+  else
+    printf("\nBlack (o) play\n\n");
+
   char rep[] = {'X','x',' ','o','O'};
-  for(int i = 0; i < 10; i++)
+
+  for (int i = 0; i < 10; i++)
   {
-    printf("%d    |",i);
-    for(int j = 0; j < 10; j++)
+    printf("%d    |", i);
+    for (int j = 0; j < 10; j++)
     {
-      int  piece = cells[i][j].data;
-      printf("  %c  |",rep[piece+2]);
-      //printf("%d|",piece);
+      int piece = b->cells[i][j].data;
+      printf("  %c  |",rep[piece + 2]);
     }
     printf("\n");
   }
-  printf("\n        0     1     2     3     4     5     6     7     8     9");
-  printf("\n\n");
+  printf("\n        0     1     2     3     4     5     6     7     8     9\n");
+}
+
+void print_error(const char *str)
+{
+  printf("Error: ");
+  puts(str);
 }
 
 int errManage(struct board *b, int curLine, int curCol, int destLine, int destCol)
@@ -70,19 +81,27 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
 
   if (is_out_of_board(curLine, curCol) || is_out_of_board(destLine, destCol))
   {
-    puts("Out of the board");
+    print_error("Out of the board");
     return -1;
   }
+
   if (curCell == 0)
   {
-    puts("Empty case");
+    print_error("Empty case");
     return -2;
   }
+
+  if (curCell * b->player <= 0)
+  {
+    print_error("Not your piece");
+    return -2;
+  }
+
   if (is_pawn(curCell))
   {
     if ((abs(curLine - destLine) != 1) || (1 != abs(curCol - destCol)))
     {
-      puts("Pawn move one square diagonally");
+      print_error("Pawn move one square diagonally");
       return -3;
     }
   }
@@ -90,21 +109,21 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
   {
     if (abs(curLine - destLine) != abs(curCol - destCol))
     {
-      puts("King move diagonally");
+      print_error("King move diagonally");
       return -3;
     }
   }
 
   if (destCell)
   {
-    puts("Destination cell is occupied");
+    print_error("Destination cell is occupied");
     return -4;
   }
 
   if ( (curCell == WP && curLine <= destLine) ||
        (curCell == BP && curLine >= destLine))
   {
-    puts("Pawn can not move backward");
+    print_error("Pawn can not move backward");
     return -5;
   }
 
@@ -124,7 +143,9 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
 {
   int err = errManage(b, curLine, curCol, destLine, destCol);
   if (err == 0)
+  {
     move(b, curLine, curCol, destLine, destCol);
+  }
   return err;
 }
 
