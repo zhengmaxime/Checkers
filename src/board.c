@@ -110,14 +110,14 @@ void print_error(const char *str)
 
 int errManage(struct board *b, int curLine, int curCol, int destLine, int destCol)
 {
-  int curCell = b->cells[curLine][curCol].data;
-  int destCell = b->cells[destLine][destCol].data;
-
   if (is_out_of_board(curLine, curCol) || is_out_of_board(destLine, destCol))
   {
     print_error("Out of the board");
     return -1;
   }
+
+  int curCell = b->cells[curLine][curCol].data;
+  int destCell = b->cells[destLine][destCol].data;
 
   if (curCell == 0)
   {

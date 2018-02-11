@@ -21,6 +21,10 @@ int main()
   for(;;)
   {
     scanf("%d %d %d %d", &curLine, &curCol, &destLine, &destCol);
+    /* consume all the char remaining in stdin buffer
+       prevent overflow and infinite loop */
+    while (getchar() != '\n');
+
     if (0 == deplacement(board, curLine, curCol, destLine, destCol))
       board->player *= -1;
     printBoard(board);
