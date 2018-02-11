@@ -73,13 +73,17 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
     puts("Out of the board");
     return -1;
   }
-
+  if (curCell == 0)
+  {
+    puts("Empty case");
+    return -2;
+  }
   if (is_pawn(curCell))
   {
     if ((abs(curLine - destLine) != 1) || (1 != abs(curCol - destCol)))
     {
       puts("Pawn move one square diagonally");
-      return -2;
+      return -3;
     }
   }
   else
