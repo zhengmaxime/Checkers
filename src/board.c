@@ -48,24 +48,35 @@ void initCells(struct board *b)
 
 void printBoard(struct board *b)
 {
+  b->nb_black = 0;
+  b->nb_white = 0;
+
   if (b->player == PLAYER_WHITE)
     printf("\nWhite (x) play\n\n");
   else
     printf("\nBlack (o) play\n\n");
 
   char rep[] = {'X','x',' ','o','O'};
+  int i, j, piece;
 
-  for (int i = 0; i < 10; i++)
+  for (i = 0; i < 10; i++)
   {
     printf("%d    |", i);
-    for (int j = 0; j < 10; j++)
+    for (j = 0; j < 10; j++)
     {
-      int piece = b->cells[i][j].data;
+      piece = b->cells[i][j].data;
+
+      if (is_white(piece))
+        b->nb_white++;
+      if (is_black(piece))
+        b->nb_black++;
+
       printf("  %c  |",rep[piece + 2]);
     }
     printf("\n");
   }
   printf("\n        0     1     2     3     4     5     6     7     8     9\n");
+  printf("\nWhite: %d   Black: %d\n", b->nb_white, b->nb_black);
 }
 
 void print_error(const char *str)
