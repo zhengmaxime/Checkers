@@ -67,24 +67,38 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
 {
   int curCell = b->cells[curLine][curCol].data;
   int destCell = b->cells[destLine][destCol].data;
-  printf("curCell = %d ; destCell = %d \n", curCell, destCell);
+
+  // printf("curCell = %d ; destCell = %d \n", curCell, destCell);
+
   //out of the board
-  if(curLine < 0 || curLine > 9 || curCol < 0 || curCol > 9 || destLine < 0 \
-     || destLine > 9 || destCol < 0 || destCol > 9)
+  if (is_out_of_board(curLine, curCol) || is_out_of_board(destLine, destCol))
     return -1;
-  //doesn't respect rules
-  if(abs(curLine - destLine) != abs(curCol - destCol))
-    return -2;
-  //if dest position is a ally
-  if( (destCell * curCell) > 0)
-    return -3;
-  //cell is not empty
+
+  //doesn't respect rules (pieces move diagonally)
+  if (is_pawn(curCell))
+  {
+    // pawn move one square diagonally
+    if ((abs(curLine - destLine) != 1) && (-1 != abs(curCol - destCol)))
+      return -2;
+  }
+  else // if (is_king(curCell))
+  {
+    // king can move several squares
+    if (abs(curLine - destLine) != abs(curCol - destCol))
+      return -3;
+  }
+
+  //if dest position is a ally : if( (destCell * curCell) > 0)
+
+  //if dest position is occupied
   if (destCell)
     return -4;
-  //if you try to go back with a pion
-  if ( (curCell == -1 && curLine <= destLine) ||
-       (curCell == 1 && curLine >= destLine))
+
+  //if you try to go back with a pawn
+  if ( (curCell == WP && curLine <= destLine) ||
+       (curCell == BP && curLine >= destLine))
     return -5;
+
   return 0;
 }
 
@@ -101,32 +115,36 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
 {
   //error magagement
   int errno = errManage(b, curLine, curCol, destLine, destCol);
-  if(errno == -1)
+
+  if (errno == -1)
   {
-    printf("Deplacement out of the board\n");
+    printf("Out of the board");
   }
-  if(errno == -2)
+  if (errno == -2)
   {
-    printf("You don't respect rules\n");
+    printf("Pawn move one square diagonally");
   }
-  if(errno == -3)
+  if (errno == -3)
   {
-    printf("ally at the position\n");
+    printf("King move diagonally");
   }
-  if(errno == -4)
+  if (errno == -4)
   {
-    printf("enemy at the position\n");
+    printf("Destination cell is occupied");
   }
   if (errno == -5)
-      printf("Ne peut pas reculer\n");
+  {
+    printf("Pawn can not move backward");
+  }
   if (errno < 0)
   {
-    return -1;//error, to figure in the main loop
+    printf("\n");
+    return -1; //error, to figure in the main loop
   }
-  
-  int curCell = b->cells[curLine][curCol].data;
+
+/*  int curCell = b->cells[curLine][curCol].data;
   int destCell = b->cells[destLine][destCol].data;
-  
+
   //PIONS cases
   if(is_pawn(curCell))
   {
@@ -143,10 +161,13 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
   {
     //FIX ME
   }
+*/
+  errManage(b, curLine, curCol, destLine, destCol);
+  move(b, curLine, curCol, destLine, destCol);
   return 0;
 }
 
 void build_list_possible_moves(int x, int y )
 {
-  
+
 }
