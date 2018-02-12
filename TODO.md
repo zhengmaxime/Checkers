@@ -9,7 +9,7 @@
 - [ ] Trouver les coups obligatoires (avec prise)
     - [ ] Prise simple
     - [ ] Rafle
-- [ ] Transformation en dame
+- [x] Transformation en dame
 - [ ] Fin de partie (victoire/défaite)
 
 - [ ] Site Web
