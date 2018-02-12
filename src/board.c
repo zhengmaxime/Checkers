@@ -183,6 +183,36 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
   return err;
 }
 
+int pawn_to_king(struct board *b)
+{
+  int line, col, res;
+  res = 0;
+
+  if (b->player == PLAYER_WHITE)
+  {
+    line = 0;
+    col = 1;
+  }
+
+  else
+  {
+    line = 9;
+    col = 0;
+  }
+
+  for (; col < 10; col += 2)
+  {
+    if (is_pawn(b->cells[line][col].data))
+    {
+      b->cells[line][col].data *= 2;
+      res++;
+      break;
+    }
+  }
+
+  return res;
+}
+
 void build_list_possible_moves(int x, int y)
 {
 
