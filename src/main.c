@@ -70,7 +70,11 @@ int main()
     if (res == 0) //normal
     {
       if (0 == deplacement(board, *curLine, *curCol, *destLine, *destCol))
+      {
+        if (1 == pawn_to_king(board))
+          printf("King!\n");
         board->player *= -1;
+      }
       printBoard(board);
     }
 

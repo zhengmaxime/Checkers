@@ -184,6 +184,7 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
 }
 
 int pawn_to_king(struct board *b)
+// called after a successful move
 {
   int line, col, res;
   res = 0;
