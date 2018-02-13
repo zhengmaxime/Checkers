@@ -26,6 +26,9 @@ int parse_input(int *curLine, int *curCol, int *destLine, int *destCol)
     if (strncmp(input, "help", 4) == 0)
       return 2;
 
+    if (strncmp(input, "save", 4) == 0)
+      return 3;
+
     if (input[0] >= 48 && input[0] <= 57)
     {
       sscanf(input, "%d %d %d %d", curLine, curCol, destLine, destCol);
@@ -63,7 +66,7 @@ int main()
 
     if (res == -1) //error
     {
-      puts("Problem when reading your input");
+      print_error("Problem when reading your input");
       continue;
     }
 
@@ -86,6 +89,12 @@ int main()
       puts("Type 4 digits separated by space character:"
         " current line and column, destination line and column");
       continue;
+    }
+
+    if (res == 3)
+    {
+      if (0 != write_board_to_file(board, "save"))
+        print_error("Can not write board to file");
     }
   }
 

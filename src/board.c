@@ -102,6 +102,33 @@ void printBoard(struct board *b)
   printf("\nWhite: %d   Black: %d\n", b->nb_white, b->nb_black);
 }
 
+int write_board_to_file(struct board *b, char filename[])
+{
+  FILE *f = fopen(filename, "w");
+  int i, j, piece;
+  char rep[] = {'X','x',' ','o','O'};
+
+  if (b->player == PLAYER_WHITE)
+    fputc('w', f);
+  if (b->player == PLAYER_BLACK)
+    fputc('b', f);
+
+  fputc('\n', f);
+
+  for (i = 0; i < 10; i++)
+  {
+    for (j = 0; j < 10; j++)
+    {
+      piece = b->cells[i][j].data;
+      fputc(rep[piece + 2], f);
+    }
+    fputc('\n', f);
+  }
+
+  fclose(f);
+  return 0;
+}
+
 void print_error(const char *str)
 {
   printf("Error: ");

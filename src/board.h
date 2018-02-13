@@ -43,6 +43,8 @@ void boardInitColor(struct board *b);
 //Display the board
 void printBoard(struct board *b);
 
+int write_board_to_file(struct board *b, char filename[]);
+
 //Print error
 void print_error(const char *str);
 
