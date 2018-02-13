@@ -1,5 +1,8 @@
 #include "list.h"
 
+# ifndef BOARD_H_
+# define BOARD_H_
+
 # define BP  1
 # define BK  2
 # define WP -1
@@ -54,3 +57,5 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int
 destCol);
 
 int pawn_to_king(struct board *b);
+
+# endif /* BOARD_H_ */

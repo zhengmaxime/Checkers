@@ -186,7 +186,7 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int dest
 int pawn_to_king(struct board *b)
 // called after a successful move
 {
-  int line, col, res;
+  int line, col, res, piece;
   res = 0;
 
   if (b->player == PLAYER_WHITE)
@@ -203,7 +203,8 @@ int pawn_to_king(struct board *b)
 
   for (; col < 10; col += 2)
   {
-    if (is_pawn(b->cells[line][col].data))
+    piece = b->cells[line][col].data;
+    if (is_pawn(piece) && b->player == get_color(piece))
     {
       b->cells[line][col].data *= 2;
       res++;

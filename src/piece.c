@@ -20,3 +20,9 @@ int is_black(int piece){
 int is_out_of_board(int x, int y){
   return (x < 0 || y < 0 || x > 9 || y > 9);
 }
+
+int get_color(int piece){
+  if (is_black(piece)) return PLAYER_BLACK;
+  if (is_white(piece)) return PLAYER_WHITE;
+  return 0;
+}
