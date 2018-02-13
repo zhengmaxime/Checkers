@@ -129,6 +129,39 @@ int write_board_to_file(struct board *b, char filename[])
   return 0;
 }
 
+int open_board_from_file(struct board *b, char filename[])
+{
+  FILE *f = fopen(filename, "r");
+  int i, j, k, c;
+  char rep[] = {'X','x',' ','o','O'};
+
+  c = fgetc(f);
+
+  if (c == 'w')
+    b->player = PLAYER_WHITE;
+  if (c == 'b')
+    b->player = PLAYER_BLACK;
+
+  fgetc(f); // \n
+
+  for (i = 0; i < 10; i++)
+  {
+    for (j = 0; j < 10; j++)
+    {
+      c = fgetc(f);
+      for (k = 0; k < 5; ++k)
+      {
+        if (rep[k] == c)
+          break;
+      }
+      b->cells[i][j].data = k - 2;
+    }
+    fgetc(f);
+  }
+
+  fclose(f);
+  return 0;
+}
 void print_error(const char *str)
 {
   printf("Error: ");
@@ -242,7 +275,7 @@ int pawn_to_king(struct board *b)
   return res;
 }
 
-void build_list_possible_moves(int x, int y)
+void build_list_possible_moves()
 {
 
 }

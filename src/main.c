@@ -41,12 +41,19 @@ int parse_input(int *curLine, int *curCol, int *destLine, int *destCol)
     return -1; // error
 }
 
-int main()
+int main(int argc, char **argv)
 {
   struct board *board = malloc(sizeof(struct board));
-  //init the board
-  boardInit(board);
+
+  // Init the board.
+  // 1st argument is the name of the file that contains the board.
+  // If no argument, the default config is used.
+  if (argc >= 2)
+    open_board_from_file(board, argv[1]);
+  else
+    boardInit(board);
   boardInitColor(board);
+
   //print it
   printf("This is the start of the game\n");
   printBoard(board);
@@ -91,7 +98,7 @@ int main()
       continue;
     }
 
-    if (res == 3)
+    if (res == 3) //save
     {
       if (0 != write_board_to_file(board, "save"))
         print_error("Can not write board to file");
