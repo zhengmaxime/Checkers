@@ -11,7 +11,7 @@ void fflush_stdin()
     c = getchar();
 }
 
-int parse_input(int *curLine, int *curCol, int *destLine, int *destCol)
+int parse_input(int *curLine, int *curCol, int *destLine, int *destCol, char *filename)
 {
   char input[20] = {0};
 
@@ -27,7 +27,14 @@ int parse_input(int *curLine, int *curCol, int *destLine, int *destCol)
       return 2;
 
     if (strncmp(input, "save", 4) == 0)
+    {
+      char *tmp; // type "save filename"
+      tmp = strtok(input, " "); // parse save
+      tmp = strtok(NULL, " "); // parse filename
+      if (tmp) // if user has typed a filename
+        strncpy(filename, tmp, strlen(tmp) - 1);
       return 3;
+    }
 
     if (input[0] >= 48 && input[0] <= 57)
     {
@@ -71,12 +78,13 @@ int main(int argc, char **argv)
   destLine = malloc(sizeof (int));
   destCol  = malloc(sizeof (int));
 
+  char *filename = calloc(1024, 1);
   int res;
 
   //main loop
   for (;;)
   {
-    res = parse_input(curLine, curCol, destLine, destCol);
+    res = parse_input(curLine, curCol, destLine, destCol, filename);
 
     if (res == -1) //error
     {
@@ -107,7 +115,15 @@ int main(int argc, char **argv)
 
     if (res == 3) //save
     {
-      if (0 != write_board_to_file(board, "save"))
+      if (strlen(filename) == 0)
+      {
+        // name by default, free crash if static
+        filename[0] = 's';
+        filename[1] = 'a';
+        filename[2] = 'v';
+        filename[3] = 'e';
+      }
+      if (0 != write_board_to_file(board, filename))
         print_error("Can not write board to file");
     }
   }
@@ -117,6 +133,7 @@ int main(int argc, char **argv)
   free(curCol);
   free(destLine);
   free(destCol);
+  free(filename);
   return 0;
 }
 
