@@ -49,7 +49,14 @@ int main(int argc, char **argv)
   // 1st argument is the name of the file that contains the board.
   // If no argument, the default config is used.
   if (argc >= 2)
-    open_board_from_file(board, argv[1]);
+  {
+    if (-1 == open_board_from_file(board, argv[1]))
+    {
+      print_error("Can not read file");
+      free(board);
+      return -1;
+    }
+  }
   else
     boardInit(board);
   boardInitColor(board);

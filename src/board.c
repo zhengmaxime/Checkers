@@ -3,7 +3,9 @@
 # include "board.h"
 # include "piece.h"
 # include "list.h"
-
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <unistd.h>
 
 void boardInit(struct board *b)
 {
@@ -132,6 +134,13 @@ int write_board_to_file(struct board *b, char filename[])
 int open_board_from_file(struct board *b, char filename[])
 {
   FILE *f = fopen(filename, "r");
+  struct stat statbuf;
+  stat(filename, &statbuf);
+  if ((statbuf.st_size) != 112)
+  {
+    fclose(f);
+    return -1;
+  }
   int i, j, k, c;
   char rep[] = {'X','x',' ','o','O'};
 
