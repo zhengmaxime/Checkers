@@ -284,6 +284,36 @@ int pawn_to_king(struct board *b)
   return res;
 }
 
+int prise_simple_move(struct board *b, int x, int y, int dx, int dy)
+{
+  int cur_piece = b->cells[x][y].data;
+  int jumped_piece = b->cells[x + dx][y + dy].data;
+  int dest_piece = b->cells[x + 2*dx][y + 2*dy].data;
+
+  if (is_out_of_board(x + dx, y + dy)
+   || is_out_of_board(x + dx + dx, y + dy + dy)
+   || (jumped_piece * cur_piece >= 0)
+   || (dest_piece != 0))
+    return -1;
+
+  b->cells[x + 2*dx][y + 2*dy].data = cur_piece;
+  b->cells[x][y].data = 0;
+
+  return 0;
+}
+
+/*
+int prise_around(struct board *b, int x, int y)
+{
+  int res;
+
+  prise_simple_move(b, x);
+  prise_simple_move();
+  prise_simple_move();
+  prise_simple_move();
+}
+*/
+
 void build_list_possible_moves()
 {
 

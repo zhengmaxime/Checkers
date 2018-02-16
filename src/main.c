@@ -86,6 +86,10 @@ int main(int argc, char **argv)
   {
     res = parse_input(curLine, curCol, destLine, destCol, filename);
 
+    if (*curLine == 42)
+    {
+      prise_simple_move(board, 5, 2, -1, -1);
+    }
     if (res == -1) //error
     {
       print_error("Problem when reading your input");

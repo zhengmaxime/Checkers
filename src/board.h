@@ -32,6 +32,22 @@ struct board
   int player;
 };
 
+struct coords
+{
+  int x;
+  int y;
+}
+
+struct simple_move
+{
+  struct coords orig;
+  struct coords[20] captures;
+  struct coords dest;
+  int nb_captures;
+}
+
+
+
 void cellInit(struct cell c);
 
 //Init the board with basic pawns
@@ -64,4 +80,5 @@ destCol);
 
 int pawn_to_king(struct board *b);
 
+int prise_simple_move(struct board *b, int x, int y, int dx, int dy);
 # endif /* BOARD_H_ */
