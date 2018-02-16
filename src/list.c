@@ -109,6 +109,11 @@ struct move_seq *copy(struct move_seq *move_seq)
   struct move_seq *res = malloc(sizeof (struct move_seq));
   seq_init(res);
 
+  for (int i = 0; i < 20; ++i)
+  {
+    res->captures[i] = move_seq->captures[i];
+  }
+  res->nb_captures = move_seq->nb_captures;
   move_seq = move_seq->next;
   struct move_seq *seq2 = res;
   while (move_seq)

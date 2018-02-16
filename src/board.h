@@ -87,12 +87,13 @@ destCol);
 
 int pawn_to_king(struct board *b);
 
-int prise_simple_move(struct board *b, int x, int y, int dx, int dy,
+int prise_simple_move(struct board *b, int cur_piece,
+                      int x, int y, int dx, int dy,
                       struct move_list *move_list,
                       struct move_seq *move_seq);
 
 
-int build_move_seq(struct board *b, int x, int y,
+int build_move_seq(struct board *b, int cur_piece, int x, int y,
                    struct move_list *move_list,
                    struct move_seq *move_seq);
 
