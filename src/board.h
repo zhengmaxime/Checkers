@@ -36,17 +36,24 @@ struct coords
 {
   int x;
   int y;
-}
+};
 
-struct simple_move
+struct move_seq
 {
+  struct move_seq *next;
   struct coords orig;
-  struct coords[20] captures;
+  struct coords capt;
   struct coords dest;
+  struct coords captures[20];
   int nb_captures;
-}
 
+};
 
+struct move_list
+{
+  struct move_list *next;
+  struct move_seq *seq;
+};
 
 void cellInit(struct cell c);
 
@@ -80,5 +87,7 @@ destCol);
 
 int pawn_to_king(struct board *b);
 
-int prise_simple_move(struct board *b, int x, int y, int dx, int dy);
+int prise_simple_move(struct board *b, int x, int y, int dx, int dy,
+                      struct move_list *move_list,
+                      struct move_seq *move_seq);
 # endif /* BOARD_H_ */

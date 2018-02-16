@@ -284,20 +284,59 @@ int pawn_to_king(struct board *b)
   return res;
 }
 
-int prise_simple_move(struct board *b, int x, int y, int dx, int dy)
+int is_in_array(struct coords captures[], int nb_captures, int x, int y)
+{
+  for (int i = 0; i < nb_captures; ++i)
+  {
+    if (captures[i].x == x && captures[i].y == y)
+      return 1;
+  }
+  return 0;
+}
+
+int prise_simple_move(struct board *b, int x, int y, int dx, int dy,
+                      struct move_list *move_list,
+                      struct move_seq *move_seq)
 {
   int cur_piece = b->cells[x][y].data;
   int jumped_piece = b->cells[x + dx][y + dy].data;
   int dest_piece = b->cells[x + 2*dx][y + 2*dy].data;
 
+  if (move_seq == NULL)
+  {
+    seq_init(move_seq);
+    move_push_front(move_list, move_seq);
+  }
   if (is_out_of_board(x + dx, y + dy)
    || is_out_of_board(x + dx + dx, y + dy + dy)
    || (jumped_piece * cur_piece >= 0)
-   || (dest_piece != 0))
+   || (dest_piece != 0)
+   || 1 == (is_in_array(move_seq->captures, move_seq->nb_captures, x+dx, y+dy)))
     return -1;
 
-  b->cells[x + 2*dx][y + 2*dy].data = cur_piece;
-  b->cells[x][y].data = 0;
+
+
+  struct move_seq *elm = malloc(sizeof (struct move_seq));
+  elm->orig.x = x;
+  elm->orig.y = y;
+  elm->capt.x = x + dx;
+  elm->capt.y = y + dy;
+  elm->dest.x = x + 2*dx;
+  elm->dest.y = y + 2*dy;
+
+  elm->captures[nb_captures].x = x + dx;
+  elm->captures[nb_captures].y = y + dy;
+  nb_captures++;
+
+  seq_push_front(move_seq, elm);
+
+  build_move_seq(b, x + 2*dx, y + 2*dy, move_list, move_seq);
+
+
+
+
+//  b->cells[x + 2*dx][y + 2*dy].data = cur_piece;
+//  b->cells[x][y].data = 0;
 
   return 0;
 }
@@ -314,7 +353,32 @@ int prise_around(struct board *b, int x, int y)
 }
 */
 
-void build_list_possible_moves()
-{
+int build_move_seq(struct board *b, int x, int y,
+                   struct move_list *move_list,
+                   struct move_seq *move_seq)
 
+{
+  prise_simple_move(b, x, y, -1, -1, move_list, move_seq);
+  prise_simple_move(b, x, y, -1, 1, move_list, move_seq);
+  prise_simple_move(b, x, y, 1, -1, move_list, move_seq);
+  prise_simple_move(b, x, y, 1, 1, move_list, move_seq);
+}
+
+int build_move_list(struct board *b)
+{
+  struct move_list *move_list = malloc(sizeof (struct move_list));
+  move_init(move_list);
+
+  for (int x = 0; x < 10; ++x)
+  {
+    for (int y = 0; y < 10; ++y)
+    {
+      if (get_color(b->cells[x][y].data) == b->player)
+      {
+        build_move_seq(b, x, y, move_list, NULL);
+      }
+    }
+  }
+
+  return 0;
 }

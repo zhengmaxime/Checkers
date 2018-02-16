@@ -3,6 +3,7 @@
 # include <string.h>
 # include "board.h"
 # include "piece.h"
+# include "list.h"
 
 void fflush_stdin()
 {
@@ -85,11 +86,11 @@ int main(int argc, char **argv)
   for (;;)
   {
     res = parse_input(curLine, curCol, destLine, destCol, filename);
-
+/*
     if (*curLine == 42)
     {
       prise_simple_move(board, 5, 2, -1, -1);
-    }
+    }*/
     if (res == -1) //error
     {
       print_error("Problem when reading your input");

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "list.h"
+# include "board.h"
 
 /* Linked lists */
 
@@ -26,9 +27,20 @@ void list_init(struct list *list)
 {
 	list->next = NULL;
 	list->x = 0;
-  list->y = 0;
+    list->y = 0;
 }
 
+void seq_init(struct move_seq *list)
+{
+	list->next = NULL;
+    list->captures = {0};
+    list->nb_captures = 0;
+}
+
+void move_init(struct move_list *list)
+{
+	list->next = NULL;
+}
 /*
  * list_is_empty(list)
  * returns true if the list is empty
@@ -70,6 +82,17 @@ void list_push_front(struct list *list, struct list *elm)
 	list->next = elm;
 }
 
+void seq_push_front(struct move_seq *list, struct move_seq *elm)
+{
+	elm->next = move_seq->next;
+	move_seq->next = elm;
+}
+
+void move_push_front(struct move_list *list, struct move_list *elm)
+{
+	elm->next = move_list->next;
+	move_list->next = elm;
+}
 /*
  * list_pop_front(list)
  * Extract the first element (not the sentinel) of list.
@@ -162,7 +185,7 @@ static void freeMemoryList(struct list *l)
 }
 /*
  * More algorithms
- 
+
 
  * list_rev(list)
  * reverse the list using the same nodes (just move them) and the same sentinel.

@@ -1,8 +1,8 @@
 /* Linked lists */
-
 # ifndef EPITA_IP_LIST_H_
 # define EPITA_IP_LIST_H_
 
+# include "board.h"
 /* Simply linked list of integers */
 
 struct list {
@@ -23,6 +23,8 @@ struct list {
  * initialise the sentinel node list
  */
 void list_init(struct list *list);
+void seq_init(struct move_seq *list);
+void move_init(struct move_list *list);
 
 /*
  * list_is_empty(list)
@@ -44,6 +46,8 @@ int list_is_empty(struct list *list);
  * Note that elm is already a node, you just have to attach it.
  */
 void list_push_front(struct list *list, struct list *elm);
+void seq_push_front(struct move_seq *list, struct move_seq *elm);
+void move_push_front(struct move_list *list, struct move_list *elm);
 
 /*
  * list_pop_front(list)
