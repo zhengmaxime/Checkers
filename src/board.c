@@ -314,11 +314,9 @@ int prise_simple_move(struct board *b, int x, int y, int dx, int dy,
     move_init(elm_list, move_seq);
     move_push_front(move_list, elm_list);
   }
-  if (is_out_of_board(x + dx, y + dy)
-   || is_out_of_board(x + dx + dx, y + dy + dy)
-   || (jumped_piece * cur_piece >= 0)
+   if ((jumped_piece * cur_piece >= 0)
    || (dest_piece != 0)
-   || 1 == (is_in_array(move_seq->captures, move_seq->nb_captures, x+dx, y+dy)))
+   || (is_in_array(move_seq->captures, move_seq->nb_captures, x + dx, y + dy)))
     return -1;
 
 
