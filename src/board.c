@@ -319,7 +319,7 @@ int prise_simple_move(struct board *b, int x, int y, int dx, int dy,
    || (is_in_array(move_seq->captures, move_seq->nb_captures, x + dx, y + dy)))
     return -1;
 
-
+  printf("Capture at %d %d possible\n", x + dx, y + dy);
 
   struct move_seq *elm = malloc(sizeof (struct move_seq));
   elm->orig.x = x;
