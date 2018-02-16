@@ -110,13 +110,6 @@ int write_board_to_file(struct board *b, char filename[])
   int i, j, piece;
   char rep[] = {'X','x','.','o','O'};
 
-  if (b->player == PLAYER_WHITE)
-    fputc('w', f);
-  if (b->player == PLAYER_BLACK)
-    fputc('b', f);
-
-  fputc('\n', f);
-
   for (i = 0; i < 10; i++)
   {
     for (j = 0; j < 10; j++)
@@ -126,6 +119,13 @@ int write_board_to_file(struct board *b, char filename[])
     }
     fputc('\n', f);
   }
+
+  if (b->player == PLAYER_WHITE)
+    fputc('w', f);
+  if (b->player == PLAYER_BLACK)
+    fputc('b', f);
+
+  fputc('\n', f);
 
   fclose(f);
   return 0;
@@ -144,15 +144,6 @@ int open_board_from_file(struct board *b, char filename[])
   int i, j, k, c;
   char rep[] = {'X','x','.','o','O'};
 
-  c = fgetc(f);
-
-  if (c == 'w')
-    b->player = PLAYER_WHITE;
-  if (c == 'b')
-    b->player = PLAYER_BLACK;
-
-  fgetc(f); // \n
-
   for (i = 0; i < 10; i++)
   {
     for (j = 0; j < 10; j++)
@@ -165,8 +156,17 @@ int open_board_from_file(struct board *b, char filename[])
       }
       b->cells[i][j].data = k - 2;
     }
-    fgetc(f);
+    fgetc(f); // \n
   }
+
+  c = fgetc(f);
+
+  if (c == 'w')
+    b->player = PLAYER_WHITE;
+  if (c == 'b')
+    b->player = PLAYER_BLACK;
+
+  fgetc(f); // \n
 
   fclose(f);
   return 0;

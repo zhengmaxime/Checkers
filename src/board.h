@@ -36,15 +36,15 @@ struct coords
 {
   int x;
   int y;
-}
+};
 
 struct simple_move
 {
   struct coords orig;
-  struct coords[20] captures;
+  struct coords captures[20];
   struct coords dest;
   int nb_captures;
-}
+};
 
 
 
