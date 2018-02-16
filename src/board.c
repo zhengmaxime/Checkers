@@ -108,7 +108,7 @@ int write_board_to_file(struct board *b, char filename[])
 {
   FILE *f = fopen(filename, "w");
   int i, j, piece;
-  char rep[] = {'X','x',' ','o','O'};
+  char rep[] = {'X','x','.','o','O'};
 
   if (b->player == PLAYER_WHITE)
     fputc('w', f);
@@ -142,7 +142,7 @@ int open_board_from_file(struct board *b, char filename[])
     return -1;
   }
   int i, j, k, c;
-  char rep[] = {'X','x',' ','o','O'};
+  char rep[] = {'X','x','.','o','O'};
 
   c = fgetc(f);
 
