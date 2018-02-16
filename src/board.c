@@ -326,6 +326,12 @@ int prise_simple_move(struct board *b, int x, int y, int dx, int dy,
   elm->dest.x = x + 2*dx;
   elm->dest.y = y + 2*dy;
 
+  for (int i = 0; i < 20; ++i)
+  {
+    elm->captures[i] = move_seq->captures[i];
+  }
+
+  elm->nb_captures = move_seq->nb_captures;
   elm->captures[elm->nb_captures].x = x + dx;
   elm->captures[elm->nb_captures].y = y + dy;
   elm->nb_captures++;
