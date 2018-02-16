@@ -298,16 +298,21 @@ int prise_simple_move(struct board *b, int x, int y, int dx, int dy,
                       struct move_list *move_list,
                       struct move_seq *move_seq)
 {
+  if (is_out_of_board(x + dx, y + dy)
+      || is_out_of_board(x + dx + dx, y + dy + dy))
+    return -1;
+
   int cur_piece = b->cells[x][y].data;
   int jumped_piece = b->cells[x + dx][y + dy].data;
   int dest_piece = b->cells[x + 2*dx][y + 2*dy].data;
 
   if (move_seq == NULL)
   {
+    move_seq = malloc(sizeof (struct move_seq));
     seq_init(move_seq);
-    struct move_list *elm = malloc(sizeof (struct move_list));
-    move_init(elm, move_seq);
-    move_push_front(move_list, elm);
+    struct move_list *elm_list = malloc(sizeof (struct move_list));
+    move_init(elm_list, move_seq);
+    move_push_front(move_list, elm_list);
   }
   if (is_out_of_board(x + dx, y + dy)
    || is_out_of_board(x + dx + dx, y + dy + dy)

@@ -86,6 +86,7 @@ int main(int argc, char **argv)
   for (;;)
   {
     res = parse_input(curLine, curCol, destLine, destCol, filename);
+    build_move_list(board);
 /*
     if (*curLine == 42)
     {
