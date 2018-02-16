@@ -100,6 +100,38 @@ void move_push_front(struct move_list *list, struct move_list *elm)
 	elm->next = list->next;
 	list->next = elm;
 }
+
+struct move_seq *copy(struct move_seq *move_seq)
+{
+  if (move_seq == NULL)
+    return NULL;
+
+  struct move_seq *res = malloc(sizeof (struct move_seq));
+  seq_init(res);
+
+  move_seq = move_seq->next;
+  struct move_seq *seq2 = res;
+  while (move_seq)
+  {
+    struct move_seq *node2 = malloc(sizeof (struct move_seq));
+
+    node2->orig = move_seq->orig;
+    node2->capt = move_seq->capt;
+    node2->dest = move_seq->dest;
+    node2->nb_captures = move_seq->nb_captures;
+    for (int i = 0; i < 20; ++i)
+    {
+      node2->captures[i] = move_seq->captures[i];
+    }
+
+    seq2->next = node2;
+    seq2 = seq2->next;
+    move_seq = move_seq->next;
+  }
+
+  seq2->next = NULL;
+  return res;
+}
 /*
  * list_pop_front(list)
  * Extract the first element (not the sentinel) of list.

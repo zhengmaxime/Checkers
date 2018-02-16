@@ -369,10 +369,19 @@ int build_move_seq(struct board *b, int x, int y,
                    struct move_seq *move_seq)
 
 {
-  prise_simple_move(b, x, y, -1, -1, move_list, move_seq);
-  prise_simple_move(b, x, y, -1, 1, move_list, move_seq);
-  prise_simple_move(b, x, y, 1, -1, move_list, move_seq);
-  prise_simple_move(b, x, y, 1, 1, move_list, move_seq);
+  struct move_seq *seq_copy = copy(move_seq);
+  int res;
+  res = prise_simple_move(b, x, y, -1, -1, move_list, seq_copy);
+
+  if (res == 0)
+    seq_copy = copy(move_seq);
+  prise_simple_move(b, x, y, -1, 1, move_list, seq_copy);
+  if (res == 0)
+    seq_copy = copy(move_seq);
+  prise_simple_move(b, x, y, 1, -1, move_list, seq_copy);
+  if (res == 0)
+    seq_copy = copy(move_seq);
+  prise_simple_move(b, x, y, 1, 1, move_list, seq_copy);
   return 0;
 }
 

@@ -48,6 +48,7 @@ int list_is_empty(struct list *list);
 void list_push_front(struct list *list, struct list *elm);
 void seq_push_front(struct move_seq *list, struct move_seq *elm);
 void move_push_front(struct move_list *list, struct move_list *elm);
+struct move_seq *copy(struct move_seq *move_seq);
 
 /*
  * list_pop_front(list)
