@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "list.h"
 # include "board.h"
-
+# include <string.h>
 /* Linked lists */
 
 /* Simply linked list of integers */
@@ -33,13 +33,20 @@ void list_init(struct list *list)
 void seq_init(struct move_seq *list)
 {
 	list->next = NULL;
-    list->captures = {0};
+  for (int i = 0; i < 20; ++i)
+  {
+    struct coords c;
+    c.x = -1;
+    c.y = -1;
+    list->captures[i] = c;
+  }
     list->nb_captures = 0;
 }
 
-void move_init(struct move_list *list)
+void move_init(struct move_list *list, struct move_seq *seq)
 {
 	list->next = NULL;
+  list->seq = seq;
 }
 /*
  * list_is_empty(list)
@@ -84,14 +91,14 @@ void list_push_front(struct list *list, struct list *elm)
 
 void seq_push_front(struct move_seq *list, struct move_seq *elm)
 {
-	elm->next = move_seq->next;
-	move_seq->next = elm;
+	elm->next = list->next;
+	list->next = elm;
 }
 
 void move_push_front(struct move_list *list, struct move_list *elm)
 {
-	elm->next = move_list->next;
-	move_list->next = elm;
+	elm->next = list->next;
+	list->next = elm;
 }
 /*
  * list_pop_front(list)

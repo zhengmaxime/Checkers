@@ -24,7 +24,7 @@ struct list {
  */
 void list_init(struct list *list);
 void seq_init(struct move_seq *list);
-void move_init(struct move_list *list);
+void move_init(struct move_list *list, struct move_seq *seq);
 
 /*
  * list_is_empty(list)

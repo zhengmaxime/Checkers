@@ -305,7 +305,9 @@ int prise_simple_move(struct board *b, int x, int y, int dx, int dy,
   if (move_seq == NULL)
   {
     seq_init(move_seq);
-    move_push_front(move_list, move_seq);
+    struct move_list *elm = malloc(sizeof (struct move_list));
+    move_init(elm, move_seq);
+    move_push_front(move_list, elm);
   }
   if (is_out_of_board(x + dx, y + dy)
    || is_out_of_board(x + dx + dx, y + dy + dy)
@@ -324,9 +326,9 @@ int prise_simple_move(struct board *b, int x, int y, int dx, int dy,
   elm->dest.x = x + 2*dx;
   elm->dest.y = y + 2*dy;
 
-  elm->captures[nb_captures].x = x + dx;
-  elm->captures[nb_captures].y = y + dy;
-  nb_captures++;
+  elm->captures[elm->nb_captures].x = x + dx;
+  elm->captures[elm->nb_captures].y = y + dy;
+  elm->nb_captures++;
 
   seq_push_front(move_seq, elm);
 
@@ -362,12 +364,13 @@ int build_move_seq(struct board *b, int x, int y,
   prise_simple_move(b, x, y, -1, 1, move_list, move_seq);
   prise_simple_move(b, x, y, 1, -1, move_list, move_seq);
   prise_simple_move(b, x, y, 1, 1, move_list, move_seq);
+  return 0;
 }
 
 int build_move_list(struct board *b)
 {
   struct move_list *move_list = malloc(sizeof (struct move_list));
-  move_init(move_list);
+  move_init(move_list, NULL);
 
   for (int x = 0; x < 10; ++x)
   {
