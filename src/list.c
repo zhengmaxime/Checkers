@@ -123,7 +123,7 @@ int moves_insert(struct moves *moves, struct move_seq *move_seq)
       struct moves *elm1 = malloc(sizeof (struct moves));
       moves_init(elm1, move_seq);
 
-      elm1->next = (moves->next)->next;
+      elm1->next = moves->next;
       moves->next = elm1;
       return 1;
     }
