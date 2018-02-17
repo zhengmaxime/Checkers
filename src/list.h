@@ -12,6 +12,9 @@ struct list {
   int x,y;
 };
 
+/*
+ * One sequence
+ */
 struct move_seq
 {
   struct move_seq *next;
@@ -23,6 +26,9 @@ struct move_seq
 
 };
 
+/*
+ * List of sequences
+ */
 struct moves
 {
   struct moves *next;

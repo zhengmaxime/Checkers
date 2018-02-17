@@ -94,6 +94,9 @@ void moves_push_front(struct moves *list, struct moves *elm)
 void moves_insert(struct moves *moves, struct move_seq *move_seq)
 {
   puts("  End of sequence, moves_insert");
+  int ll = list_len(moves);
+  printf("  length of moves list before insert = %d\n", ll);
+
   if (moves->next == NULL) // empty list
   {
     puts("  Moves list is currently empty, push front");
@@ -112,11 +115,13 @@ void moves_insert(struct moves *moves, struct move_seq *move_seq)
            "  if %d >= %d it should insert\n",
            move_seq->nb_captures, (moves->next)->seq->nb_captures,
            move_seq->nb_captures, (moves->next)->seq->nb_captures);
+
     if (move_seq->nb_captures >= (moves->next)->seq->nb_captures)
     {
       list_rev(move_seq); // because push_front was used
       struct moves *elm1 = malloc(sizeof (struct moves));
       moves_init(elm1, move_seq);
+
       elm1->next = (moves->next)->next;
       moves->next = elm1;
     }
@@ -163,7 +168,11 @@ struct move_seq *copy(struct move_seq *move_seq)
   return res;
 }
 
-void list_rev(struct move_seq *list)
+/*
+ * list_rev(list)
+ * reverse the list using the same nodes (just move them) and the same sentinel.
+*/
+ void list_rev(struct move_seq *list)
 {
   struct move_seq *cur = list->next; // sentinel
   struct move_seq *prev = NULL; // reverse

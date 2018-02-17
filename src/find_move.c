@@ -18,7 +18,14 @@ int is_in_array(struct coords captures[], int nb_captures, int x, int y)
   return 0;
 }
 
-int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int dy,
+/*
+ * Return 0 if no jump possible, else return 1
+ * dx dy: relative moves (-1 or 1)
+ */
+int prise_simple_move(struct board *b,
+                      int cur_piece,
+                      int x, int y,
+                      int dx, int dy,
                       struct moves *moves,
                       struct move_seq *move_seq)
 {
@@ -55,13 +62,22 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
   move_seq->nb_captures++;
 
   if (0 == build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, moves, move_seq)
-      && (move_seq->nb_captures > 0))
-    moves_insert(moves, move_seq); // end of sequence
+      && (move_seq->nb_captures > 0)) // end of sequence
+  {
+    moves_insert(moves, move_seq);
+    int ll = list_len(moves);
+    printf("  length of moves list after insert =  %d\n", ll);
+  }
 
   return 1;
 }
 
-int build_move_seq(struct board *b, int cur_piece, int x, int y,
+/*
+ * return 1 if a sequence is found, else 0
+ */
+int build_move_seq(struct board *b,
+                   int cur_piece,
+                   int x, int y,
                    struct moves *moves,
                    struct move_seq *move_seq)
 
@@ -75,27 +91,32 @@ int build_move_seq(struct board *b, int cur_piece, int x, int y,
   struct move_seq *seq_copy = copy(move_seq); // save move_seq
   int res1, res2, res3, res4;
 
-  // if True seq_copy has been modified, so a copy is created
-  if ( res1 = prise_simple_move(b, cur_piece, x, y, -1, -1, moves, seq_copy))
+  // if True seq_copy has been modified, a copy is created
+  if ( (res1 = prise_simple_move(b, cur_piece, x, y, -1, -1, moves, seq_copy)))
     seq_copy = copy(move_seq);
 
-  if ( res2 = prise_simple_move(b, cur_piece, x, y, -1, 1, moves, seq_copy))
+  if ( (res2 = prise_simple_move(b, cur_piece, x, y, -1, 1, moves, seq_copy)))
     seq_copy = copy(move_seq);
 
-  if ( res3 = prise_simple_move(b, cur_piece, x, y, 1, -1, moves, seq_copy))
+  if ( (res3 = prise_simple_move(b, cur_piece, x, y, 1, -1, moves, seq_copy)))
     seq_copy = copy(move_seq);
 
   res4 = prise_simple_move(b, cur_piece, x, y, 1, 1, moves, seq_copy);
 
   if (res1 == 0 && res2 == 0 && res3 == 0 && res4 == 0)
     return 0;
+
   return 1;
 }
 
+/*
+ * return a list of moves
+ */
 struct moves *build_moves(struct board *b)
 {
   struct moves *moves = malloc(sizeof (struct moves));
   moves_init(moves, NULL);
+  int nb_mandatory_jumps = 0;
 
   for (int x = 0; x < 10; ++x)
   {
@@ -103,7 +124,11 @@ struct moves *build_moves(struct board *b)
     {
       if (get_color(b->cells[x][y].data) == b->player)
       {
-        build_move_seq(b, b->cells[x][y].data, x, y, moves, NULL);
+        if (1 == build_move_seq(b, b->cells[x][y].data, x, y, moves, NULL))
+        {
+          nb_mandatory_jumps++;
+          printf("\n(%d) Mandatory jump!\n\n", nb_mandatory_jumps);
+        }
       }
     }
   }
