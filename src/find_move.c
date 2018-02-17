@@ -25,9 +25,7 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
   if (is_out_of_board(x + dx, y + dy)
       || is_out_of_board(x + dx + dx, y + dy + dy))
   {
-    struct moves *move = malloc(sizeof (struct moves));
-    moves_init(move, move_seq);
-    moves_push_front(moves, move); // end of sequence
+    moves_insert(moves, move_seq); // end of sequence
     return 0;
   }
 
@@ -38,9 +36,7 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
    || (dest_piece != 0)
    || (is_in_array(move_seq->captures, move_seq->nb_captures, x + dx, y + dy)))
   {
-     struct moves *move = malloc(sizeof (struct moves));
-     moves_init(move, move_seq);
-     moves_push_front(moves, move); // end of sequence
+     moves_insert(moves, move_seq); // end of sequence
      return 0;
   }
 

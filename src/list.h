@@ -18,8 +18,8 @@ struct move_seq
   struct coords orig;
   struct coords capt;
   struct coords dest;
-  struct coords captures[20];
-  int nb_captures;
+  struct coords captures[20]; // only in sentinel
+  int nb_captures; // only in sentinel
 
 };
 
@@ -69,6 +69,12 @@ void moves_push_front(struct moves *list, struct moves *elm);
  * deep copy a list
  */
 struct move_seq *copy(struct move_seq *move_seq);
+
+/*
+ * insert move_seq in moves list
+ * moves list is sorted in descending order of captures number
+ */
+void moves_insert(struct moves *moves, struct move_seq *move_seq);
 
 /*
  * list_pop_front(list)

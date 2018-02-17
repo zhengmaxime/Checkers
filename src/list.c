@@ -88,6 +88,34 @@ void moves_push_front(struct moves *list, struct moves *elm)
 }
 
 /*
+ * insert move_seq in moves list
+ * moves list is sorted in descending order of captures number
+ */
+void moves_insert(struct moves *moves, struct move_seq *move_seq)
+{
+  if (moves->next == NULL) // empty list
+  {
+    struct moves *elm = malloc(sizeof (struct moves));
+    moves_init(elm, move_seq);
+    moves_push_front(moves, elm);
+  }
+
+  moves = moves->next; // skip the sentinel
+
+  for (; moves->next; moves = moves->next)
+  {
+    if (move_seq->nb_captures > (moves->next)->seq->nb_captures)
+    {
+      struct moves *elm = malloc(sizeof (struct moves));
+      moves_init(elm, move_seq);
+      // free(move->next);
+      moves->next = elm;
+      elm->next = NULL; // ignore the nodes after
+    }
+  }
+}
+
+/*
  * deep copy a list
  */
 struct move_seq *copy(struct move_seq *move_seq)
