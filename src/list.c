@@ -95,6 +95,7 @@ void moves_insert(struct moves *moves, struct move_seq *move_seq)
 {
   if (moves->next == NULL) // empty list
   {
+    list_rev(move_seq); // because push_front was used
     struct moves *elm = malloc(sizeof (struct moves));
     moves_init(elm, move_seq);
     moves_push_front(moves, elm);
@@ -106,6 +107,7 @@ void moves_insert(struct moves *moves, struct move_seq *move_seq)
   {
     if (move_seq->nb_captures > (moves->next)->seq->nb_captures)
     {
+      list_rev(move_seq); // because push_front was used
       struct moves *elm = malloc(sizeof (struct moves));
       moves_init(elm, move_seq);
       // free(move->next);
