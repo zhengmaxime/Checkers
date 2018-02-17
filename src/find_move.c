@@ -37,7 +37,7 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
     move_seq = malloc(sizeof (struct move_seq));
     seq_init(move_seq);
     struct moves *elm_list = malloc(sizeof (struct moves));
-    move_init(elm_list, move_seq);
+    moves_init(elm_list, move_seq);
     move_push_front(moves, elm_list);
   }
    if ((jumped_piece * cur_piece >= 0)
@@ -76,26 +76,8 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
 
   build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, moves, move_seq);
 
-
-
-
-//  b->cells[x + 2*dx][y + 2*dy].data = cur_piece;
-//  b->cells[x][y].data = 0;
-
   return 0;
 }
-
-/*
-int prise_around(struct board *b, int x, int y)
-{
-  int res;
-
-  prise_simple_move(b, x);
-  prise_simple_move();
-  prise_simple_move();
-  prise_simple_move();
-}
-*/
 
 int build_move_seq(struct board *b, int cur_piece, int x, int y,
                    struct moves *moves,
@@ -126,7 +108,7 @@ int build_move_seq(struct board *b, int cur_piece, int x, int y,
 int build_moves(struct board *b)
 {
   struct moves *moves = malloc(sizeof (struct moves));
-  move_init(moves, NULL);
+  moves_init(moves, NULL);
 
   for (int x = 0; x < 10; ++x)
   {

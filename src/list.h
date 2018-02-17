@@ -37,12 +37,10 @@ struct moves
  */
 
 /*
- * list_init(list)
  * initialise the sentinel node list
  */
-void list_init(struct list *list);
 void seq_init(struct move_seq *list);
-void move_init(struct moves *list, struct move_seq *seq);
+void moves_init(struct moves *list, struct move_seq *seq);
 
 /*
  * list_is_empty(list)
@@ -56,7 +54,7 @@ int list_is_empty(struct list *list);
  * list_len(list)
  * returns the length of the list (don't count the sentinel)
  */
-//size_t list_len(struct list *list);
+// size_t list_len(struct list *list);
 
 /*
  * list_push_front(list, elm)
@@ -66,6 +64,10 @@ int list_is_empty(struct list *list);
 void list_push_front(struct list *list, struct list *elm);
 void seq_push_front(struct move_seq *list, struct move_seq *elm);
 void move_push_front(struct moves *list, struct moves *elm);
+
+/*
+ * deep copy a list
+ */
 struct move_seq *copy(struct move_seq *move_seq);
 
 /*
