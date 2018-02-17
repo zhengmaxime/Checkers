@@ -79,8 +79,9 @@ struct move_seq *copy(struct move_seq *move_seq);
 /*
  * insert move_seq in moves list
  * moves list is sorted in descending order of captures number
+ * return 1 if success, else 0
  */
-void moves_insert(struct moves *moves, struct move_seq *move_seq);
+int moves_insert(struct moves *moves, struct move_seq *move_seq);
 
 /*
  * list_rev(list)

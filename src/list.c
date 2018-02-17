@@ -90,29 +90,30 @@ void moves_push_front(struct moves *list, struct moves *elm)
 /*
  * insert move_seq in moves list
  * moves list is sorted in descending order of captures number
+ * return 1 if success, else 0
  */
-void moves_insert(struct moves *moves, struct move_seq *move_seq)
+int moves_insert(struct moves *moves, struct move_seq *move_seq)
 {
-  puts("  End of sequence, moves_insert");
+  puts("  End of sequence, call moves_insert");
   int ll = list_len(moves);
   printf("  length of moves list before insert = %d\n", ll);
 
   if (moves->next == NULL) // empty list
   {
-    puts("  Moves list is currently empty, push front");
+    puts("  Moves list is currently empty, INSERT (push front)");
     printf("  len move just found = %d\n", move_seq->nb_captures);
     list_rev(move_seq); // because push_front was used
     struct moves *elm = malloc(sizeof (struct moves));
     moves_init(elm, move_seq);
     moves_push_front(moves, elm);
-    return;
+    return 1;
   }
 
   for (; moves->next; moves = moves->next)
   {
     printf("  len move just found = %d\n"
            "  len move already in list = %d\n"
-           "  if %d >= %d it should insert\n",
+           "  if %d >= %d it should INSERT (bug there?)\n",
            move_seq->nb_captures, (moves->next)->seq->nb_captures,
            move_seq->nb_captures, (moves->next)->seq->nb_captures);
 
@@ -124,8 +125,11 @@ void moves_insert(struct moves *moves, struct move_seq *move_seq)
 
       elm1->next = (moves->next)->next;
       moves->next = elm1;
+      return 1;
     }
   }
+
+  return 0;
 }
 
 /*

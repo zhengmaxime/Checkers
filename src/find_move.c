@@ -64,9 +64,17 @@ int prise_simple_move(struct board *b,
   if (0 == build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, moves, move_seq)
       && (move_seq->nb_captures > 0)) // end of sequence
   {
-    moves_insert(moves, move_seq);
-    int ll = list_len(moves);
-    printf("  length of moves list after insert =  %d\n", ll);
+    if (moves_insert(moves, move_seq))
+    {
+      int ll = list_len(moves);
+      printf("  length of moves list after insert =  %d\n", ll);
+    }
+
+    else
+    {
+      puts("  Fail to insert, not the best move\n");
+      return 0; // fail to insert, not the best move
+    }
   }
 
   return 1;
@@ -116,7 +124,6 @@ struct moves *build_moves(struct board *b)
 {
   struct moves *moves = malloc(sizeof (struct moves));
   moves_init(moves, NULL);
-  int nb_mandatory_jumps = 0;
 
   for (int x = 0; x < 10; ++x)
   {
@@ -126,8 +133,7 @@ struct moves *build_moves(struct board *b)
       {
         if (1 == build_move_seq(b, b->cells[x][y].data, x, y, moves, NULL))
         {
-          nb_mandatory_jumps++;
-          printf("\n(%d) Mandatory jump!\n\n", nb_mandatory_jumps);
+          printf("\nMandatory jump!\n\n");
         }
       }
     }
