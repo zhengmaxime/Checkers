@@ -124,6 +124,17 @@ int moves_insert(struct moves *moves, struct move_seq *move_seq)
 
       elm1->next = moves->next;
       moves->next = elm1;
+
+      // keep the best sequences and destroy the rest
+      moves = moves->next;
+      for (; moves->next; moves = moves->next)
+      {
+        if (moves->next->seq->nb_captures < elm1->seq->nb_captures)
+        {
+          moves->next = NULL;
+          break;
+        }
+      }
       return 1;
     }
   }
