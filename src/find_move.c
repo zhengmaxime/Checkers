@@ -73,7 +73,6 @@ int prise_simple_move(struct board *b,
     else
     {
       puts("  Fail to insert, not the best move\n");
-      return 0; // fail to insert, not the best move
     }
   }
 
