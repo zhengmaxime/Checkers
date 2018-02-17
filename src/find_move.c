@@ -66,8 +66,7 @@ int prise_simple_move(struct board *b,
   {
     if (moves_insert(moves, move_seq))
     {
-      int ll = list_len(moves);
-      printf("  length of moves list after insert =  %d\n", ll);
+
     }
 
     else
@@ -132,7 +131,7 @@ struct moves *build_moves(struct board *b)
       {
         if (1 == build_move_seq(b, b->cells[x][y].data, x, y, moves, NULL))
         {
-          printf("\nMandatory jump!\n\n");
+
         }
       }
     }

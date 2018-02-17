@@ -61,7 +61,7 @@ int list_is_empty(struct moves *list);
  * returns the length of the list (don't count the sentinel)
  */
 size_t list_len(struct moves *list);
-
+void list_print(struct moves *list);
 /*
  * list_push_front(list, elm)
  * attach elm in front of list, that is after the sentinel.

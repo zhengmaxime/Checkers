@@ -59,11 +59,22 @@ size_t list_len(struct moves *list)
 		return i;
 	list = list->next;
 	for (; list; list = list->next)
-		++i;
-	return i;
+    ++i;
+  return i;
 }
 
-
+void list_print(struct moves *list)
+{
+	list = list->next;
+	for (; list; list = list->next)
+  {
+    struct move_seq *seq = list->seq->next;
+    for (; seq; seq = seq->next)
+	    printf("%d %d %d %d\n", seq->orig.x, seq->orig.y,
+                            seq->dest.x, seq->dest.y);
+    puts("");
+  }
+}
 /*
  * list_push_front(list, elm)
  * attach elm in front of list, that is after the sentinel.
@@ -94,14 +105,8 @@ void moves_push_front(struct moves *list, struct moves *elm)
  */
 int moves_insert(struct moves *moves, struct move_seq *move_seq)
 {
-  puts("  End of sequence, call moves_insert");
-  int ll = list_len(moves);
-  printf("  length of moves list before insert = %d\n", ll);
-
   if (moves->next == NULL) // empty list
   {
-    puts("  Moves list is currently empty, INSERT (push front)");
-    printf("  len move just found = %d\n", move_seq->nb_captures);
     list_rev(move_seq); // because push_front was used
     struct moves *elm = malloc(sizeof (struct moves));
     moves_init(elm, move_seq);
@@ -111,12 +116,6 @@ int moves_insert(struct moves *moves, struct move_seq *move_seq)
 
   for (; moves->next; moves = moves->next)
   {
-    printf("  len move just found = %d\n"
-           "  len move already in list = %d\n"
-           "  if %d >= %d it should INSERT (bug there?)\n",
-           move_seq->nb_captures, (moves->next)->seq->nb_captures,
-           move_seq->nb_captures, (moves->next)->seq->nb_captures);
-
     if (move_seq->nb_captures >= (moves->next)->seq->nb_captures)
     {
       list_rev(move_seq); // because push_front was used

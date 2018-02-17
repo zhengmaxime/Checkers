@@ -86,9 +86,10 @@ int main(int argc, char **argv)
   //main loop
   for (;;)
   {
-    struct moves *list = build_moves(board);
-    int ll = list_len(list);
+    struct moves *moves_list = build_moves(board);
+    int ll = list_len(moves_list);
     printf("length of moves list = %d\n", ll);
+    list_print(moves_list);
 
     res = parse_input(curLine, curCol, destLine, destCol, filename);
 /*
