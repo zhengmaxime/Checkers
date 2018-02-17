@@ -10,7 +10,7 @@ int prise_simple_move(struct board *b, int cur_piece,
                       struct move_seq *move_seq);
 
 
-void build_move_seq(struct board *b, int cur_piece, int x, int y,
+int build_move_seq(struct board *b, int cur_piece, int x, int y,
                    struct moves *moves,
                    struct move_seq *move_seq);
 

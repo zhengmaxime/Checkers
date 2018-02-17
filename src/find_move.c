@@ -25,7 +25,6 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
   if (is_out_of_board(x + dx, y + dy)
       || is_out_of_board(x + dx + dx, y + dy + dy))
   {
-    moves_insert(moves, move_seq); // end of sequence
     return 0;
   }
 
@@ -36,8 +35,7 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
    || (dest_piece != 0)
    || (is_in_array(move_seq->captures, move_seq->nb_captures, x + dx, y + dy)))
   {
-     moves_insert(moves, move_seq); // end of sequence
-     return 0;
+    return 0;
   }
 
   printf("Capture at %d %d from %d %d possible\n", x + dx, y + dy, x, y);
@@ -56,12 +54,14 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
   move_seq->captures[move_seq->nb_captures].y = y + dy;
   move_seq->nb_captures++;
 
-  build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, moves, move_seq);
+  if (0 == build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, moves, move_seq)
+      && (move_seq->nb_captures > 0))
+    moves_insert(moves, move_seq); // end of sequence
 
   return 1;
 }
 
-void build_move_seq(struct board *b, int cur_piece, int x, int y,
+int build_move_seq(struct board *b, int cur_piece, int x, int y,
                    struct moves *moves,
                    struct move_seq *move_seq)
 
@@ -73,18 +73,23 @@ void build_move_seq(struct board *b, int cur_piece, int x, int y,
   }
 
   struct move_seq *seq_copy = copy(move_seq); // save move_seq
+  int res1, res2, res3, res4;
 
   // if True seq_copy has been modified, so a copy is created
-  if (prise_simple_move(b, cur_piece, x, y, -1, -1, moves, seq_copy))
+  if ( res1 = prise_simple_move(b, cur_piece, x, y, -1, -1, moves, seq_copy))
     seq_copy = copy(move_seq);
 
-  if (prise_simple_move(b, cur_piece, x, y, -1, 1, moves, seq_copy))
+  if ( res2 = prise_simple_move(b, cur_piece, x, y, -1, 1, moves, seq_copy))
     seq_copy = copy(move_seq);
 
-  if (prise_simple_move(b, cur_piece, x, y, 1, -1, moves, seq_copy))
+  if ( res3 = prise_simple_move(b, cur_piece, x, y, 1, -1, moves, seq_copy))
     seq_copy = copy(move_seq);
 
-  prise_simple_move(b, cur_piece, x, y, 1, 1, moves, seq_copy);
+  res4 = prise_simple_move(b, cur_piece, x, y, 1, 1, moves, seq_copy);
+
+  if (res1 == 0 && res2 == 0 && res3 == 0 && res4 == 0)
+    return 0;
+  return 1;
 }
 
 struct moves *build_moves(struct board *b)

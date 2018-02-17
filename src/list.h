@@ -3,7 +3,7 @@
 # define EPITA_IP_LIST_H_
 
 # include "board.h"
-
+# include <unistd.h>
 /* Linked lists */
 
 struct list {
@@ -48,13 +48,13 @@ void moves_init(struct moves *list, struct move_seq *seq);
  * remember, we have a sentinel thus a list always has at least one node,
  * the list is empty if this node doesn't have a next.
  */
-int list_is_empty(struct list *list);
+int list_is_empty(struct moves *list);
 
 /*
  * list_len(list)
  * returns the length of the list (don't count the sentinel)
  */
-// size_t list_len(struct list *list);
+size_t list_len(struct moves *list);
 
 /*
  * list_push_front(list, elm)
@@ -89,7 +89,7 @@ void list_rev(struct move_seq *list);
  * responsible for freeing it.)
  * If the list is empty, the function returns NULL.
  */
-struct list* list_pop_front(struct list *list);
+// struct list* list_pop_front(struct list *list);
 
 /*
  * list_find(list, value)

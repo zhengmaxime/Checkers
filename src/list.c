@@ -42,7 +42,7 @@ void moves_init(struct moves *list, struct move_seq *seq)
  * remember, we have a sentinel thus a list always has at least one node,-
  * the list is empty if this node doesn't have a next.
  */
-int list_is_empty(struct list *list)
+int list_is_empty(struct moves *list)
 {
 	return (list->next == NULL) ? 1 : 0;
 }
@@ -51,8 +51,8 @@ int list_is_empty(struct list *list)
  * list_len(list)
  * returns the length of the list (don't count the sentinel)
  */
-/*
-size_t list_len(struct list *list)
+
+size_t list_len(struct moves *list)
 {
 	size_t i = 0;
 	if (list_is_empty(list))
@@ -62,7 +62,7 @@ size_t list_len(struct list *list)
 		++i;
 	return i;
 }
-*/
+
 
 /*
  * list_push_front(list, elm)
@@ -93,26 +93,32 @@ void moves_push_front(struct moves *list, struct moves *elm)
  */
 void moves_insert(struct moves *moves, struct move_seq *move_seq)
 {
+  puts("  End of sequence, moves_insert");
   if (moves->next == NULL) // empty list
   {
+    puts("  Moves list is currently empty, push front");
+    printf("  len move just found = %d\n", move_seq->nb_captures);
     list_rev(move_seq); // because push_front was used
     struct moves *elm = malloc(sizeof (struct moves));
     moves_init(elm, move_seq);
     moves_push_front(moves, elm);
+    return;
   }
-
-  moves = moves->next; // skip the sentinel
 
   for (; moves->next; moves = moves->next)
   {
-    if (move_seq->nb_captures > (moves->next)->seq->nb_captures)
+    printf("  len move just found = %d\n"
+           "  len move already in list = %d\n"
+           "  if %d >= %d it should insert\n",
+           move_seq->nb_captures, (moves->next)->seq->nb_captures,
+           move_seq->nb_captures, (moves->next)->seq->nb_captures);
+    if (move_seq->nb_captures >= (moves->next)->seq->nb_captures)
     {
       list_rev(move_seq); // because push_front was used
-      struct moves *elm = malloc(sizeof (struct moves));
-      moves_init(elm, move_seq);
-      // free(move->next);
-      moves->next = elm;
-      elm->next = NULL; // ignore the nodes after
+      struct moves *elm1 = malloc(sizeof (struct moves));
+      moves_init(elm1, move_seq);
+      elm1->next = (moves->next)->next;
+      moves->next = elm1;
     }
   }
 }
@@ -182,6 +188,7 @@ void list_rev(struct move_seq *list)
  * responsible for freeing it.)
  * If the list is empty, the function returns NULL.
  */
+/*
 struct list* list_pop_front(struct list *list)
 {
 	if (list_is_empty(list) == 1)
@@ -191,7 +198,7 @@ struct list* list_pop_front(struct list *list)
 	list->next = (list->next)->next;
 	return n;
 }
-
+*/
 /*
  * list_find(list, value)
  * search for the first node containing value and returns (without detaching it)
