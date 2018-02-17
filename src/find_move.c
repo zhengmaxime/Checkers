@@ -45,7 +45,7 @@ int prise_simple_move(struct board *b,
     return 0;
   }
 
-  printf("Capture at %d %d from %d %d possible\n", x + dx, y + dy, x, y);
+  // printf("Capture at %d %d from %d %d possible\n", x + dx, y + dy, x, y);
 
   struct move_seq *elm = malloc(sizeof (struct move_seq));
   elm->orig.x = x;
@@ -71,7 +71,7 @@ int prise_simple_move(struct board *b,
 
     else
     {
-      puts("  Fail to insert, not the best move\n");
+      // puts("  Fail to insert, not the best move\n");
     }
   }
 

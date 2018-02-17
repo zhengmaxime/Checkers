@@ -70,7 +70,7 @@ void list_print(struct moves *list)
   {
     struct move_seq *seq = list->seq->next;
     for (; seq; seq = seq->next)
-	    printf("%d %d %d %d\n", seq->orig.x, seq->orig.y,
+	    printf(" -> (%d, %d) to (%d, %d)", seq->orig.x, seq->orig.y,
                             seq->dest.x, seq->dest.y);
     puts("");
   }

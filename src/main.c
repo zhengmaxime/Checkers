@@ -88,7 +88,7 @@ int main(int argc, char **argv)
   {
     struct moves *moves_list = build_moves(board);
     int ll = list_len(moves_list);
-    printf("length of moves list = %d\n", ll);
+    printf("You have %d mandatory moves\n", ll);
     list_print(moves_list);
 
     res = parse_input(curLine, curCol, destLine, destCol, filename);
