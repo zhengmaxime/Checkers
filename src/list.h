@@ -63,7 +63,7 @@ int list_is_empty(struct list *list);
  */
 void list_push_front(struct list *list, struct list *elm);
 void seq_push_front(struct move_seq *list, struct move_seq *elm);
-void move_push_front(struct moves *list, struct moves *elm);
+void moves_push_front(struct moves *list, struct moves *elm);
 
 /*
  * deep copy a list

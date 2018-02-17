@@ -10,10 +10,8 @@
 
 int is_in_array(struct coords captures[], int nb_captures, int x, int y)
 {
-  //printf("nb_captures in array %d\n", nb_captures);
   for (int i = 0; i < nb_captures; ++i)
   {
-    //printf("x %d y %d\n", captures[i].x, captures[i].y);
     if (captures[i].x == x && captures[i].y == y)
       return 1;
   }
@@ -26,24 +24,25 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
 {
   if (is_out_of_board(x + dx, y + dy)
       || is_out_of_board(x + dx + dx, y + dy + dy))
-    return -1;
+  {
+    struct moves *move = malloc(sizeof (struct moves));
+    moves_init(move, move_seq);
+    moves_push_front(moves, move); // end of sequence
+    return 0;
+  }
 
-   // int cur_piece = b->cells[x][y].data; it could be 0
   int jumped_piece = b->cells[x + dx][y + dy].data;
   int dest_piece = b->cells[x + 2*dx][y + 2*dy].data;
 
-  if (move_seq == NULL)
-  {
-    move_seq = malloc(sizeof (struct move_seq));
-    seq_init(move_seq);
-    struct moves *elm_list = malloc(sizeof (struct moves));
-    moves_init(elm_list, move_seq);
-    move_push_front(moves, elm_list);
-  }
-   if ((jumped_piece * cur_piece >= 0)
+  if ((jumped_piece * cur_piece >= 0)
    || (dest_piece != 0)
    || (is_in_array(move_seq->captures, move_seq->nb_captures, x + dx, y + dy)))
-    return -1;
+  {
+     struct moves *move = malloc(sizeof (struct moves));
+     moves_init(move, move_seq);
+     moves_push_front(moves, move); // end of sequence
+     return 0;
+  }
 
   printf("Capture at %d %d from %d %d possible\n", x + dx, y + dy, x, y);
 
@@ -55,48 +54,44 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
   elm->dest.x = x + 2*dx;
   elm->dest.y = y + 2*dy;
 
+  seq_push_front(move_seq, elm);
+
   move_seq->captures[move_seq->nb_captures].x = x + dx;
   move_seq->captures[move_seq->nb_captures].y = y + dy;
   move_seq->nb_captures++;
 
-  seq_push_front(move_seq, elm);
-
   build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, moves, move_seq);
 
-  return 0;
+  return 1;
 }
 
-int build_move_seq(struct board *b, int cur_piece, int x, int y,
+void build_move_seq(struct board *b, int cur_piece, int x, int y,
                    struct moves *moves,
                    struct move_seq *move_seq)
 
 {
-  //printf("build_move_seq %d %d\n", x, y);
-  //if (move_seq != NULL)
-  //  printf("build_move_seq nb_captures %d\n", move_seq->nb_captures);
+  if (move_seq == NULL) // create a new sequence
+  {
+    move_seq = malloc(sizeof (struct move_seq));
+    seq_init(move_seq);
+  }
 
-  struct move_seq *seq_copy = copy(move_seq);
+  struct move_seq *seq_copy = copy(move_seq); // save move_seq
 
-  //if (seq_copy != NULL)
-  //  printf("build_move_seq nb_captures copy %d\n", seq_copy->nb_captures);
-
-  int res;
-
-  res = prise_simple_move(b, cur_piece, x, y, -1, -1, moves, seq_copy);
-
-  if (res == 0)
+  // if True seq_copy has been modified, so a copy is created
+  if (prise_simple_move(b, cur_piece, x, y, -1, -1, moves, seq_copy))
     seq_copy = copy(move_seq);
-  prise_simple_move(b, cur_piece, x, y, -1, 1, moves, seq_copy);
-  if (res == 0)
+
+  if (prise_simple_move(b, cur_piece, x, y, -1, 1, moves, seq_copy))
     seq_copy = copy(move_seq);
-  prise_simple_move(b, cur_piece, x, y, 1, -1, moves, seq_copy);
-  if (res == 0)
+
+  if (prise_simple_move(b, cur_piece, x, y, 1, -1, moves, seq_copy))
     seq_copy = copy(move_seq);
+
   prise_simple_move(b, cur_piece, x, y, 1, 1, moves, seq_copy);
-  return 0;
 }
 
-int build_moves(struct board *b)
+struct moves *build_moves(struct board *b)
 {
   struct moves *moves = malloc(sizeof (struct moves));
   moves_init(moves, NULL);
@@ -107,11 +102,10 @@ int build_moves(struct board *b)
     {
       if (get_color(b->cells[x][y].data) == b->player)
       {
-        int cur_piece = b->cells[x][y].data;
-        build_move_seq(b, cur_piece, x, y, moves, NULL);
+        build_move_seq(b, b->cells[x][y].data, x, y, moves, NULL);
       }
     }
   }
 
-  return 0;
+  return moves;
 }

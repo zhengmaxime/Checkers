@@ -10,9 +10,13 @@ int prise_simple_move(struct board *b, int cur_piece,
                       struct move_seq *move_seq);
 
 
-int build_move_seq(struct board *b, int cur_piece, int x, int y,
+void build_move_seq(struct board *b, int cur_piece, int x, int y,
                    struct moves *moves,
                    struct move_seq *move_seq);
 
-int build_moves(struct board *b);
+/*
+ * return a list of moves
+ */
+struct moves *build_moves(struct board *b);
+
 # endif /* FIND_MOVE_H */

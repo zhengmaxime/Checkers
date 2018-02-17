@@ -81,7 +81,7 @@ void seq_push_front(struct move_seq *list, struct move_seq *elm)
 	list->next = elm;
 }
 
-void move_push_front(struct moves *list, struct moves *elm)
+void moves_push_front(struct moves *list, struct moves *elm)
 {
 	elm->next = list->next;
 	list->next = elm;
