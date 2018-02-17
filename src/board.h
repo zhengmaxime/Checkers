@@ -19,7 +19,6 @@ enum Color
 
 struct cell
 {
-  struct list *l;
   int data;
   Color background;
 };
@@ -38,26 +37,7 @@ struct coords
   int y;
 };
 
-struct move_seq
-{
-  struct move_seq *next;
-  struct coords orig;
-  struct coords capt;
-  struct coords dest;
-  struct coords captures[20];
-  int nb_captures;
-
-};
-
-struct move_list
-{
-  struct move_list *next;
-  struct move_seq *seq;
-};
-
-void cellInit(struct cell c);
-
-//Init the board with basic pawns
+// Init the board with basic pawns
 void boardInit(struct board *b);
 
 // Init the board with specific pieces
@@ -66,13 +46,13 @@ int open_board_from_file(struct board *b, char filename[]);
 // Init the background color of cells
 void boardInitColor(struct board *b);
 
-//Display the board
+// Display the board
 void printBoard(struct board *b);
 
 // Save the pieces to a text file
 int write_board_to_file(struct board *b, char filename[]);
 
-//Print error
+// Print error
 void print_error(const char *str);
 
 int errManage(struct board *b, int curLine, int curCol, int destLine, int
@@ -86,17 +66,5 @@ int deplacement(struct board *b, int curLine, int curCol, int destLine, int
 destCol);
 
 int pawn_to_king(struct board *b);
-
-int prise_simple_move(struct board *b, int cur_piece,
-                      int x, int y, int dx, int dy,
-                      struct move_list *move_list,
-                      struct move_seq *move_seq);
-
-
-int build_move_seq(struct board *b, int cur_piece, int x, int y,
-                   struct move_list *move_list,
-                   struct move_seq *move_seq);
-
-int build_move_list(struct board *b);
 
 # endif /* BOARD_H_ */

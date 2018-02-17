@@ -3,12 +3,30 @@
 # define EPITA_IP_LIST_H_
 
 # include "board.h"
-/* Simply linked list of integers */
+
+/* Linked lists */
 
 struct list {
   struct list *next;
   int data;
   int x,y;
+};
+
+struct move_seq
+{
+  struct move_seq *next;
+  struct coords orig;
+  struct coords capt;
+  struct coords dest;
+  struct coords captures[20];
+  int nb_captures;
+
+};
+
+struct moves
+{
+  struct moves *next;
+  struct move_seq *seq;
 };
 
 /*
@@ -24,7 +42,7 @@ struct list {
  */
 void list_init(struct list *list);
 void seq_init(struct move_seq *list);
-void move_init(struct move_list *list, struct move_seq *seq);
+void move_init(struct moves *list, struct move_seq *seq);
 
 /*
  * list_is_empty(list)
@@ -47,7 +65,7 @@ int list_is_empty(struct list *list);
  */
 void list_push_front(struct list *list, struct list *elm);
 void seq_push_front(struct move_seq *list, struct move_seq *elm);
-void move_push_front(struct move_list *list, struct move_list *elm);
+void move_push_front(struct moves *list, struct moves *elm);
 struct move_seq *copy(struct move_seq *move_seq);
 
 /*
@@ -89,12 +107,5 @@ struct list* list_pop_front(struct list *list);
  * reverse the list using the same nodes (just move them) and the same sentinel.
  */
 //void list_rev(struct list *list);
-
-/*
- * list_half_split(list, second)
- * split the list in half and put the second half in second
- * second is an empty list (just a sentinel)
- */
-//void list_half_split(struct list *list, struct list *second);
 
 # endif /* EPITA_IP_LIST_H_ */

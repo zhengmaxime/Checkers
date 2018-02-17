@@ -1,16 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "list.h"
-# include "board.h"
-# include <string.h>
+#include "board.h"
+
 /* Linked lists */
-
-/* Simply linked list of integers */
-
-/* struct list {
-  struct list *next;
-  int          data;
-};*/
 
 /*
  * Standard operations
@@ -20,15 +14,9 @@
  */
 
 /*
- * list_init(list)
+ * init(list)
  * initialise the sentinel node list
  */
-void list_init(struct list *list)
-{
-	list->next = NULL;
-	list->x = 0;
-    list->y = 0;
-}
 
 void seq_init(struct move_seq *list)
 {
@@ -43,7 +31,7 @@ void seq_init(struct move_seq *list)
     list->nb_captures = 0;
 }
 
-void move_init(struct move_list *list, struct move_seq *seq)
+void move_init(struct moves *list, struct move_seq *seq)
 {
 	list->next = NULL;
   list->seq = seq;
@@ -95,7 +83,7 @@ void seq_push_front(struct move_seq *list, struct move_seq *elm)
 	list->next = elm;
 }
 
-void move_push_front(struct move_list *list, struct move_list *elm)
+void move_push_front(struct moves *list, struct moves *elm)
 {
 	elm->next = list->next;
 	list->next = elm;

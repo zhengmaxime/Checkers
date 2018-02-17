@@ -4,6 +4,7 @@
 # include "board.h"
 # include "piece.h"
 # include "list.h"
+# include "find_move.h"
 
 void fflush_stdin()
 {
@@ -85,7 +86,7 @@ int main(int argc, char **argv)
   //main loop
   for (;;)
   {
-    build_move_list(board);
+    build_moves(board);
     res = parse_input(curLine, curCol, destLine, destCol, filename);
 /*
     if (*curLine == 42)
