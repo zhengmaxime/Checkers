@@ -71,7 +71,7 @@ void printBoard(struct board *b)
   else
     printf("\nBlack (o) play\n\n");
 
-  char rep[] = {'X','x',' ','o','O'};
+  char rep[] = {'X','x','.','o','O'};
   int i, j, piece;
 
   for (i = 0; i < 10; i++)

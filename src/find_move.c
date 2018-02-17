@@ -36,7 +36,19 @@ int prise_simple_move(struct board *b,
   }
 
   int jumped_piece = b->cells[x + dx][y + dy].data;
-  int dest_piece = b->cells[x + 2*dx][y + 2*dy].data;
+  int dest_piece = b->cells[x + 2 * dx][y + 2 * dy].data;
+
+  int i = 1;
+  if (is_king(cur_piece) && jumped_piece == 0)
+  {
+    while (!is_out_of_board(x + (i + 2) * dx, y + (i + 2) * dy)
+          && b->cells[x + i * dx][y + i * dy].data == 0)
+    {
+      i++;
+    }
+    jumped_piece = b->cells[x + i * dx][y + i * dy].data;
+    dest_piece = b->cells[x + (i+1) * dx][y + (i+1) * dy].data;
+  }
 
   if ((jumped_piece * cur_piece >= 0)
    || (dest_piece != 0)
@@ -45,23 +57,23 @@ int prise_simple_move(struct board *b,
     return 0;
   }
 
-  // printf("Capture at %d %d from %d %d possible\n", x + dx, y + dy, x, y);
+  //printf("Capture at %d %d from %d %d possible\n", x + i*dx, y + i*dy, x, y);
 
   struct move_seq *elm = malloc(sizeof (struct move_seq));
   elm->orig.x = x;
   elm->orig.y = y;
-  elm->capt.x = x + dx;
-  elm->capt.y = y + dy;
-  elm->dest.x = x + 2*dx;
-  elm->dest.y = y + 2*dy;
+  elm->capt.x = x + i * dx;
+  elm->capt.y = y + i * dy;
+  elm->dest.x = x + (i + 1) * dx;
+  elm->dest.y = y + (i + 1) * dy;
 
   seq_push_front(move_seq, elm);
 
-  move_seq->captures[move_seq->nb_captures].x = x + dx;
-  move_seq->captures[move_seq->nb_captures].y = y + dy;
+  move_seq->captures[move_seq->nb_captures].x = x + i * dx;
+  move_seq->captures[move_seq->nb_captures].y = y + i * dy;
   move_seq->nb_captures++;
 
-  if (0 == build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, moves, move_seq)
+  if (0 == build_move_seq(b, cur_piece, x+(i+1)*dx, y+(i+1)*dy, moves, move_seq)
       && (move_seq->nb_captures > 0)) // end of sequence
   {
     if (moves_insert(moves, move_seq))
