@@ -55,22 +55,9 @@ int prise_simple_move(struct board *b, int cur_piece, int x, int y, int dx, int 
   elm->dest.x = x + 2*dx;
   elm->dest.y = y + 2*dy;
 
-  for (int i = 0; i < 20; ++i)
-  {
-    elm->captures[i] = move_seq->captures[i];
-  }
-
-  elm->nb_captures = move_seq->nb_captures;
-  elm->captures[elm->nb_captures].x = x + dx;
-  elm->captures[elm->nb_captures].y = y + dy;
-  elm->nb_captures++;
-
-  move_seq->nb_captures = elm->nb_captures;
-  for (int i = 0; i < 20; ++i)
-  {
-    move_seq->captures[i] = elm->captures[i];
-  }
-  //printf("move_seq->nb_captures: %d\n", move_seq->nb_captures);
+  move_seq->captures[move_seq->nb_captures].x = x + dx;
+  move_seq->captures[move_seq->nb_captures].y = y + dy;
+  move_seq->nb_captures++;
 
   seq_push_front(move_seq, elm);
 
@@ -87,10 +74,14 @@ int build_move_seq(struct board *b, int cur_piece, int x, int y,
   //printf("build_move_seq %d %d\n", x, y);
   //if (move_seq != NULL)
   //  printf("build_move_seq nb_captures %d\n", move_seq->nb_captures);
+
   struct move_seq *seq_copy = copy(move_seq);
+
   //if (seq_copy != NULL)
   //  printf("build_move_seq nb_captures copy %d\n", seq_copy->nb_captures);
+
   int res;
+
   res = prise_simple_move(b, cur_piece, x, y, -1, -1, moves, seq_copy);
 
   if (res == 0)
