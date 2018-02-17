@@ -77,6 +77,12 @@ struct move_seq *copy(struct move_seq *move_seq);
 void moves_insert(struct moves *moves, struct move_seq *move_seq);
 
 /*
+ * list_rev(list)
+ * reverse the list using the same nodes (just move them) and the same sentinel.
+ */
+void list_rev(struct move_seq *list);
+
+/*
  * list_pop_front(list)
  * Extract the first element (not the sentinel) of list.
  * This operation detaches the element from the list and returns it (caller is
@@ -110,10 +116,6 @@ struct list* list_pop_front(struct list *list);
  * More algorithms
  */
 
-/*
- * list_rev(list)
- * reverse the list using the same nodes (just move them) and the same sentinel.
- */
 //void list_rev(struct list *list);
 
 # endif /* EPITA_IP_LIST_H_ */

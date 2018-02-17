@@ -154,6 +154,25 @@ struct move_seq *copy(struct move_seq *move_seq)
   seq2->next = NULL;
   return res;
 }
+
+void list_rev(struct move_seq *list)
+{
+  struct move_seq *cur = list->next; // sentinel
+  struct move_seq *prev = NULL; // reverse
+
+  while (cur)
+  {
+    struct move_seq *tmp;
+
+    tmp = cur->next;
+    cur->next = prev;
+    prev = cur;
+    cur = tmp;
+  }
+
+  list->next = prev;
+}
+
 /*
  * list_pop_front(list)
  * Extract the first element (not the sentinel) of list.
