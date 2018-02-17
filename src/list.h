@@ -89,40 +89,7 @@ int moves_insert(struct moves *moves, struct move_seq *move_seq);
  */
 void list_rev(struct move_seq *list);
 
-/*
- * list_pop_front(list)
- * Extract the first element (not the sentinel) of list.
- * This operation detaches the element from the list and returns it (caller is
- * responsible for freeing it.)
- * If the list is empty, the function returns NULL.
- */
-// struct list* list_pop_front(struct list *list);
-
-/*
- * list_find(list, value)
- * search for the first node containing value and returns (without detaching it)
- * the corresponding list node. The function returns NULL if the value is not
- * present in the list.
- */
-//struct list* list_find(struct list *list, int value);
-
-/*
- * list_is_sorted(list)
- * check whether the list is sorted in increasing order
- */
-//int list_is_sorted(struct list *list);
-
-/*
- * list_insert(list, elm)
- * insert elm in the sorted list (keeping the list sorted)
- * Like list_push_front, elm is already a list node.
- */
-//void list_insert(struct list *list, struct list *elm);
-
-/*
- * More algorithms
- */
-
-//void list_rev(struct list *list);
+void free_seq(struct move_seq *l);
+void free_moves(struct moves *l);
 
 # endif /* EPITA_IP_LIST_H_ */

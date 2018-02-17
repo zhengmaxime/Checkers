@@ -204,90 +204,9 @@ struct move_seq *copy(struct move_seq *move_seq)
   list->next = prev;
 }
 
-/*
- * list_pop_front(list)
- * Extract the first element (not the sentinel) of list.
- * This operation detaches the element from the list and returns it (caller is
- * responsible for freeing it.)
- * If the list is empty, the function returns NULL.
- */
-/*
-struct list* list_pop_front(struct list *list)
+void free_seq(struct move_seq *l)
 {
-	if (list_is_empty(list) == 1)
-		return NULL;
-
-	struct list *n = list->next;
-	list->next = (list->next)->next;
-	return n;
-}
-*/
-/*
- * list_find(list, value)
- * search for the first node containing value and returns (without detaching it)
- * the corresponding list node. The function returns NULL if the value is not
- * present in the list.
- */
-/*struct list* list_find(struct list *list, int value)
-{
-	if (list_is_empty(list))
-		return NULL;
-
-	list = list->next;
-	for (; list && list->data != value; list = list->next);
-	return list;
-}*/
-
-/*
- * list_is_sorted(list)
- * check whether the list is sorted in increasing order
- */
-/*int list_is_sorted(struct list *list)
-{
-	list = list->next;
-	if (list != NULL)
-	{
-		int x = list->data;
-		list = list->next;
-		for (; list; list = list->next)
-		{
-			if (x > list->data)
-				return 0;
-		}
-	}
-	return 1;
-}*/
-
-/*
- * list_insert(list, elm)
- * insert elm in the sorted list (keeping the list sorted)
- * Like list_push_front, elm is already a list node.
- */
-/*void list_insert(struct list *list, struct list *elm){
-
-	if (elm != NULL)
-	{
-		if (list_is_empty(list))
-		{
-			list_push_front(list, elm);
-			return;
-		}
-		for (; list->next; list = list->next)
-		{
-			if (elm->data < (list->next)->data)
-			{
-				list_push_front(list, elm);
-				return;
-			}
-		}
-		list->next = elm;
-		elm->next = NULL;
-	}
-}*/
-
-static void freeMemoryList(struct list *l)
-{
-	struct list *tmp = NULL;
+	struct move_seq *tmp = NULL;
 	while (l != NULL)
 	{
 		tmp = l->next;
@@ -295,53 +214,15 @@ static void freeMemoryList(struct list *l)
 		l = tmp;
 	}
 }
-/*
- * More algorithms
 
-
- * list_rev(list)
- * reverse the list using the same nodes (just move them) and the same sentinel.
-void list_rev(struct list *list)
+void free_moves(struct moves *l)
 {
-	struct list *rev = malloc(sizeof (struct list));
-	list_init(rev);
-	struct list *l = list;
-	list = list->next;
-	for (; list; list = list->next)
+	struct moves *tmp = NULL;
+	while (l != NULL)
 	{
-			struct list *tmp = malloc(sizeof (struct list));
-			tmp->data = list->data;
-			tmp->next = NULL;
-			list_push_front(rev, tmp);
+    free_seq(l->seq);
+		tmp = l->next;
+		free(l);
+		l = tmp;
 	}
-	struct list *sv_rev = rev;
-	for (; l ; l = l->next, rev = rev->next)
-		l->data = rev->data;
-	freeMemoryList(sv_rev);
 }
-
- * list_half_split(list, second)
- * split the list in half and put the second half in second
- * second is an empty list (just a sentinel)
-
-void list_half_split(struct list *list, struct list *second)
-{
-	size_t n = list_len(list) / 2;
-	for (; list && n > 0; list = list->next, n--);
-	struct list *k = list->next;
-	list->next = NULL;
-	struct list *sentinel = malloc(sizeof (struct list));
-	struct list *sv_sentinel = sentinel;
-	sentinel->next = k;
-	sentinel->data = 0;
-	list_rev(sentinel);
-	sentinel = sentinel->next;
-	for (; sentinel; sentinel = sentinel->next)
-	{
-			struct list *tmp = malloc(sizeof (struct list));
-			tmp->data = sentinel->data;
-			tmp->next = NULL;
-			list_push_front(second, tmp);
-	}
-	freeMemoryList(sv_sentinel);
-}*/
