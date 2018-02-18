@@ -92,15 +92,10 @@ int main(int argc, char **argv)
     list_print(moves_list);
 
     res = parse_input(curLine, curCol, destLine, destCol, filename);
-/*
-    if (*curLine == 42)
-    {
-      prise_simple_move(board, 5, 2, -1, -1);
-    }*/
-    if (res == -1) //error
+    while (res == -1) //error
     {
       print_error("Problem when reading your input");
-      continue;
+      res = parse_input(curLine, curCol, destLine, destCol, filename);
     }
 
     if (res == 0) //normal
