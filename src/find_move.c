@@ -31,9 +31,7 @@ int prise_simple_move(struct board *b,
 {
   if (is_out_of_board(x + dx, y + dy)
       || is_out_of_board(x + dx + dx, y + dy + dy))
-  {
     return 0;
-  }
 
   int jumped_piece = b->cells[x + dx][y + dy].data;
   int dest_piece = b->cells[x + 2 * dx][y + 2 * dy].data;
@@ -43,16 +41,15 @@ int prise_simple_move(struct board *b,
   {
     while (!is_out_of_board(x + (i + 2) * dx, y + (i + 2) * dy)
           && b->cells[x + i * dx][y + i * dy].data == 0)
-    {
-      i++;
-    }
+        i++;
+
     jumped_piece = b->cells[x + i * dx][y + i * dy].data;
     dest_piece = b->cells[x + (i+1) * dx][y + (i+1) * dy].data;
   }
 
-  if ((jumped_piece * cur_piece >= 0)
-   || (dest_piece != 0)
-   || (is_in_array(move_seq->captures, move_seq->nb_captures, x + dx, y + dy)))
+  if ((jumped_piece * cur_piece >= 0) || (dest_piece != 0)
+       || (is_in_array(move_seq->captures, move_seq->nb_captures,
+                       x + i * dx, y + i*dy)))
   {
     return 0;
   }
@@ -73,20 +70,35 @@ int prise_simple_move(struct board *b,
   move_seq->captures[move_seq->nb_captures].y = y + i * dy;
   move_seq->nb_captures++;
 
-  if (0 == build_move_seq(b, cur_piece, x+(i+1)*dx, y+(i+1)*dy, moves, move_seq)
-      && (move_seq->nb_captures > 0)) // end of sequence
+  if (is_pawn(cur_piece))
   {
-    if (moves_insert(moves, move_seq))
-    {
+    if (0 == build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, moves, move_seq)
+        && (move_seq->nb_captures > 0)) // end of sequence
+      moves_insert(moves, move_seq);
 
-    }
-
-    else
-    {
-      // puts("  Fail to insert, not the best move\n");
-    }
   }
 
+  if (is_king(cur_piece))
+  {
+    while (!is_out_of_board(x + (i + 1) * dx, y + (i + 1) * dy)
+          && b->cells[x + (i + 1) * dx][y + (i + 1)* dy].data == 0)
+    // go through all free cells after the jump
+    {
+      if (0 == build_move_seq(b, cur_piece, x+(i+1)*dx, y+(i+1)*dy, moves, move_seq)
+          && (move_seq->nb_captures > 0)) // end of sequence
+      {
+        // reminder: push_front is used so the last move is the first
+        move_seq->next->dest.x = x + (i + 1) * dx; // update final destination
+        move_seq->next->dest.y = y + (i + 1) * dy;
+
+       // move_seq has been modified, so a copy is created
+        struct move_seq *seq_copy = copy(move_seq);
+        moves_insert(moves, move_seq);
+        move_seq = seq_copy;
+      }
+      i++;
+    }
+  }
   return 1;
 }
 
@@ -109,7 +121,7 @@ int build_move_seq(struct board *b,
   struct move_seq *seq_copy = copy(move_seq); // save move_seq
   int res1, res2, res3, res4;
 
-  // if True seq_copy has been modified, a copy is created
+  // if seq_copy has been modified, a copy is created
   if ( (res1 = prise_simple_move(b, cur_piece, x, y, -1, -1, moves, seq_copy)))
     seq_copy = copy(move_seq);
 
@@ -140,12 +152,7 @@ struct moves *build_moves(struct board *b)
     for (int y = 0; y < 10; ++y)
     {
       if (get_color(b->cells[x][y].data) == b->player)
-      {
-        if (1 == build_move_seq(b, b->cells[x][y].data, x, y, moves, NULL))
-        {
-
-        }
-      }
+        build_move_seq(b, b->cells[x][y].data, x, y, moves, NULL)
     }
   }
 
