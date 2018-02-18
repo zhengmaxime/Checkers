@@ -152,7 +152,7 @@ struct moves *build_moves(struct board *b)
     for (int y = 0; y < 10; ++y)
     {
       if (get_color(b->cells[x][y].data) == b->player)
-        build_move_seq(b, b->cells[x][y].data, x, y, moves, NULL)
+        build_move_seq(b, b->cells[x][y].data, x, y, moves, NULL);
     }
   }
 
