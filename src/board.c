@@ -190,6 +190,12 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
     return -2;
   }
 
+  if (destCell)
+  {
+    print_error("Destination cell is occupied");
+    return -4;
+  }
+
   if (is_pawn(curCell))
   {
     if ((abs(curLine - destLine) != 1) || (1 != abs(curCol - destCol)))
@@ -205,12 +211,33 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
       print_error("King move diagonally");
       return -3;
     }
-  }
 
-  if (destCell)
-  {
-    print_error("Destination cell is occupied");
-    return -4;
+    int x = curLine;
+    int y = curCol;
+    int dx;
+    int dy;
+
+    if ((destLine - curLine) > 0)
+      dx = 1;
+    else
+      dx = -1;
+
+    if ((destCol - curCol) > 0)
+      dy = 1;
+    else
+      dy = -1;
+
+    while (x != destLine && y != destCol && b->cells[x][y].data == 0)
+    {
+      x += dx;
+      y += dy;
+    }
+
+    if (b->cells[x + dx][y + dy].data != 0)
+    {
+      print_error("Invalid capture with king");
+      return -3;
+    }
   }
 
   if ( (curCell == WP && curLine <= destLine) ||
