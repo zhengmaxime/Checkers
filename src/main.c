@@ -129,6 +129,10 @@ int main(int argc, char **argv)
   //main loop
   for (;;)
   {
+    if ((board->player == PLAYER_WHITE && board->nb_white == 0)
+     || (board->player == PLAYER_BLACK && board->nb_black == 0))
+      goto LOSE;
+
     struct moves *moves_list = build_moves(board);
     int nb_rafles = list_len(moves_list);
     printf("You have %d mandatory moves\n", nb_rafles);
@@ -162,7 +166,11 @@ int main(int argc, char **argv)
     }
 
     if (res == 1) //quit
+    {
+LOSE:
+      printf("You lost!\n");
       break;
+    }
 
     if (res == 2) //help
     {

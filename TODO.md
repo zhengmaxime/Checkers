@@ -15,10 +15,12 @@
 - [x] Jouer une rafle
 - [x] Vérification saisie joueur
 
-- [ ] Trouver tous les coups possibles (si aucune prise possible)
 - [x] Comptage des pièces
-- [ ] Abandon joueur
-- [ ] Fin de partie (plus aucune pièce en jeu ou plus aucun coup possible)
+- [x] Abandon joueur
+- [x] Fin de partie lorsque plus aucune pièce en jeu
+
+- [ ] Trouver tous les coups possibles (si aucune prise possible)
+- [ ] Fin de partie lorsque plus aucun coup possible
 
 - [x] Sauvegarde du plateau dans un fichier texte
 - [x] Chargement d'un plateau depuis un fichier texte (problèmes)
