@@ -136,11 +136,12 @@ int main(int argc, char **argv)
     struct moves *moves_list = build_moves(board);
     int nb_rafles = list_len(moves_list);
     if (nb_rafles > 0)
+    {
       printf("You have %d mandatory moves\n", nb_rafles);
-    list_print(moves_list);
-
-    if (nb_rafles > 0)
+      list_print(moves_list);
       puts("Which sequence do you want to play?");
+    }
+
     res = parse_input(curLine, curCol, destLine, destCol, nb_rafles, iRafle, filename);
     while (res == -1) //error
     {
