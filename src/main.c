@@ -6,6 +6,38 @@
 # include "list.h"
 # include "find_move.h"
 
+int exec_seq(struct board *b, struct move_seq *list)
+{
+  if (list == NULL)
+    return -1;
+
+  // remove the captured
+  for (int i = 0; i < 20 && list->captures[i].x != -1; i++)
+    b->cells[list->captures[i].x][list->captures[i].y].data = 0;
+
+  list = list->next; // skip sentinel
+
+  // save the orig cell and clear it
+  int cur_piece = b->cells[list->orig.x][list->orig.y].data;
+  b->cells[list->orig.x][list->orig.y].data = 0;
+
+  for (; list->next; list = list->next); // go to last node
+  b->cells[list->dest.x][list->dest.y].data = cur_piece;
+
+  return 0;
+}
+
+int exec_seq_in_list(struct board *b, struct moves *list, int i)
+{
+  for (; list; list = list->next)
+  {
+    if (i == 0)
+      return exec_seq(b, list->seq);
+    i--;
+  }
+  return -1;
+}
+
 void fflush_stdin()
 {
   int c = 0;
@@ -13,7 +45,9 @@ void fflush_stdin()
     c = getchar();
 }
 
-int parse_input(int *curLine, int *curCol, int *destLine, int *destCol, char *filename)
+int parse_input(int *curLine, int *curCol,
+                int *destLine, int *destCol,
+                int rafle, int *iRafle, char *filename)
 {
   char input[20] = {0};
 
@@ -38,8 +72,17 @@ int parse_input(int *curLine, int *curCol, int *destLine, int *destCol, char *fi
       return 3;
     }
 
-    if (input[0] >= 48 && input[0] <= 57)
+    if (input[0] >= 48 && input[0] <= 57) // digit
     {
+      if (rafle) // > 0
+      {
+        sscanf(input, "%d", iRafle);
+        if (*iRafle > rafle || *iRafle <= 0)
+          return -1;
+        else
+          return 0;
+      }
+
       sscanf(input, "%d %d %d %d", curLine, curCol, destLine, destCol);
       return 0;
     }
@@ -74,12 +117,12 @@ int main(int argc, char **argv)
   printf("This is the start of the game\n");
   printBoard(board);
 
-  int *curLine, *curCol, *destLine, *destCol;
+  int *curLine, *curCol, *destLine, *destCol, *iRafle;
   curLine  = malloc(sizeof (int));
   curCol   = malloc(sizeof (int));
   destLine = malloc(sizeof (int));
   destCol  = malloc(sizeof (int));
-
+  iRafle   = calloc(1, sizeof (int));
   char *filename = calloc(1024, 1);
   int res;
 
@@ -87,25 +130,34 @@ int main(int argc, char **argv)
   for (;;)
   {
     struct moves *moves_list = build_moves(board);
-    int ll = list_len(moves_list);
-    printf("You have %d mandatory moves\n", ll);
+    int nb_rafles = list_len(moves_list);
+    printf("You have %d mandatory moves\n", nb_rafles);
     list_print(moves_list);
 
-    res = parse_input(curLine, curCol, destLine, destCol, filename);
+    if (nb_rafles > 0)
+      puts("Which sequence do you want to play?");
+    res = parse_input(curLine, curCol, destLine, destCol, nb_rafles, iRafle, filename);
     while (res == -1) //error
     {
       print_error("Problem when reading your input");
-      res = parse_input(curLine, curCol, destLine, destCol, filename);
+      res = parse_input(curLine, curCol, destLine, destCol, nb_rafles, iRafle, filename);
     }
 
     if (res == 0) //normal
     {
-      if (0 == deplacement(board, *curLine, *curCol, *destLine, *destCol))
+      int res2 = -1;
+      if (*iRafle > 0) // play the sequence moves_list[i]
+        res2 = exec_seq_in_list(board, moves_list, *iRafle);
+      else // no capture possible
+        res2 = deplacement(board, *curLine, *curCol, *destLine, *destCol);
+
+      if (res2 == 0) // success
       {
         if (1 == pawn_to_king(board))
           printf("King!\n");
         board->player *= -1;
       }
+      *iRafle = 0;
       printBoard(board);
     }
 
@@ -142,10 +194,3 @@ int main(int argc, char **argv)
   free(filename);
   return 0;
 }
-
-/*
-scanf("%d %d %d %d", &curLine, &curCol, &destLine, &destCol);
-// consume all the char remaining in stdin buffer
-// prevent overflow and infinite loop
-while (getchar() != '\n');
-*/
