@@ -12,11 +12,12 @@
 - [x] Trouver les coups obligatoires (avec prise)
     - [x] Prise simple
     - [x] Rafle
-- [ ] Jouer une rafle
-- [ ] Vérification saisie joueur (à adapter pour la rafle)
+- [x] Jouer une rafle
+- [x] Vérification saisie joueur
 
 - [ ] Trouver tous les coups possibles (si aucune prise possible)
 - [x] Comptage des pièces
+- [ ] Abandon joueur
 - [ ] Fin de partie (plus aucune pièce en jeu ou plus aucun coup possible)
 
 - [x] Sauvegarde du plateau dans un fichier texte
