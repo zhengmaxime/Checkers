@@ -19,7 +19,7 @@
 
 void seq_init(struct move_seq *list)
 {
-	list->next = NULL;
+  list->next = NULL;
   for (int i = 0; i < 20; ++i)
   {
     struct coords c;
@@ -27,12 +27,12 @@ void seq_init(struct move_seq *list)
     c.y = -1;
     list->captures[i] = c;
   }
-    list->nb_captures = 0;
+  list->nb_captures = 0;
 }
 
 void moves_init(struct moves *list, struct move_seq *seq)
 {
-	list->next = NULL;
+  list->next = NULL;
   list->seq = seq;
 }
 
@@ -44,7 +44,7 @@ void moves_init(struct moves *list, struct move_seq *seq)
  */
 int list_is_empty(struct moves *list)
 {
-	return (list->next == NULL) ? 1 : 0;
+  return (list->next == NULL) ? 1 : 0;
 }
 
 /*
@@ -54,26 +54,27 @@ int list_is_empty(struct moves *list)
 
 size_t list_len(struct moves *list)
 {
-	size_t i = 0;
-	if (list_is_empty(list))
-		return i;
-	list = list->next;
-	for (; list; list = list->next)
-    ++i;
+  size_t i = 0;
+  if (list_is_empty(list))
+  return i;
+  list = list->next;
+  for (; list; list = list->next)
+  ++i;
   return i;
 }
 
 void list_print(struct moves *list)
 {
-    int i;
-	list = list->next;
-	for (i = 1; list; list = list->next, ++i)
+  int i;
+  list = list->next;
+  for (i = 1; list; list = list->next, ++i)
   {
     printf("(%d)", i);
     struct move_seq *seq = list->seq->next;
     for (; seq; seq = seq->next)
-	    printf(" -> (%d, %d) to (%d, %d)", seq->orig.x, seq->orig.y,
-                            seq->dest.x, seq->dest.y);
+      printf(" -> (%d, %d) to (%d, %d)",
+             seq->orig.x, seq->orig.y,
+             seq->dest.x, seq->dest.y);
     puts("");
   }
 }
