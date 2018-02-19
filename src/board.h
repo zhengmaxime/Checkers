@@ -29,6 +29,7 @@ struct board
   int nb_white;
   int nb_black;
   int player;
+  struct moves *moves_list;
 };
 
 struct coords

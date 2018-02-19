@@ -65,9 +65,11 @@ size_t list_len(struct moves *list)
 
 void list_print(struct moves *list)
 {
+    int i;
 	list = list->next;
-	for (; list; list = list->next)
+	for (i = 1; list; list = list->next, ++i)
   {
+    printf("(%d)", i);
     struct move_seq *seq = list->seq->next;
     for (; seq; seq = seq->next)
 	    printf(" -> (%d, %d) to (%d, %d)", seq->orig.x, seq->orig.y,

@@ -36,6 +36,9 @@ void boardInit(struct board *b)
     }
   }
   b->player = PLAYER_WHITE;
+  b->nb_black = 20;
+  b->nb_white = 20;
+  b->moves_list = NULL;
 }
 
 void boardInitColor(struct board *b)
