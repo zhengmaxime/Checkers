@@ -77,6 +77,7 @@ void printBoard(struct board *b)
   char rep[] = {'X','x','.','o','O'};
   int i, j, piece;
 
+  printf("       0   1   2   3   4   5   6   7   8   9\n");
   for (i = 0; i < 10; i++)
   {
     printf("%d    |", i);
@@ -91,7 +92,8 @@ void printBoard(struct board *b)
 
       printf(" %c |",rep[piece + 2]);
     }
-    printf("\n");
+    printf("   %d\n", i);
+
   }
   printf("\n       0   1   2   3   4   5   6   7   8   9\n");
   printf("\nWhite: %d   Black: %d\n", b->nb_white, b->nb_black);

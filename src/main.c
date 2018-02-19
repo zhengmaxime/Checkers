@@ -135,7 +135,8 @@ int main(int argc, char **argv)
 
     struct moves *moves_list = build_moves(board);
     int nb_rafles = list_len(moves_list);
-    printf("You have %d mandatory moves\n", nb_rafles);
+    if (nb_rafles > 0)
+      printf("You have %d mandatory moves\n", nb_rafles);
     list_print(moves_list);
 
     if (nb_rafles > 0)
@@ -168,7 +169,10 @@ int main(int argc, char **argv)
     if (res == 1) //quit
     {
 LOSE:
-      printf("You lost!\n");
+      if (board->player == PLAYER_WHITE)
+        printf("Black won!\n");
+      else
+        printf("White won!\n");
       break;
     }
 
