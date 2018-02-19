@@ -167,7 +167,8 @@ int main(int argc, char **argv)
     if (res == 2) //help
     {
       puts("Type 4 digits separated by space character:"
-        " current line and column, destination line and column");
+        " current line and column, destination line and column\n"
+        "If you have a mandatory move, just type the corresponding number");
       continue;
     }
 
