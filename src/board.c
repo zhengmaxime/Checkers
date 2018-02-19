@@ -13,7 +13,7 @@ void boardInit(struct board *b)
   int line;
   int col;
 
-  for(; line < 10; line++)
+  for(line = 0; line < 10; line++)
   {
     if(line % 2 == 0)
       col = 1;
