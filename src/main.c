@@ -260,6 +260,16 @@ LOSE:
     }
   }
 
+//-------free SDL------------------------------------------------------------//
+  SDL_FreeSurface(ecran);
+  SDL_FreeSurface(W);
+  SDL_FreeSurface(B);
+  SDL_FreeSurface(B_WP);
+  SDL_FreeSurface(B_BP);
+  SDL_FreeSurface(B_WK);
+  SDL_FreeSurface(B_BK);
+//-------free SDL------------------------------------------------------------//
+
   free(board);
   free(curLine);
   free(curCol);
