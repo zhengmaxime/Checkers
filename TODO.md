@@ -4,7 +4,7 @@
 - [ ] Mode 1 joueur contre ordinateur
 
 - [x] Affichage console
-- [ ] Affichage graphique (SDL)
+- [x] Affichage graphique (SDL)
 
 - [x] Gestion d'erreur pour déplacement sans prise
 - [x] Transformation en dame
