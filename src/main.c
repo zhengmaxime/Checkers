@@ -129,71 +129,64 @@ int main(int argc, char **argv)
   char *filename = calloc(1024, 1);
   int res;
 
-//------------------------------SDL init---------------------------------------
+//------------------------------SDL init-------------------------------------//
   SDL_Surface *ecran = SDL_SetVideoMode(LARGEUR_FENETRE, HAUTEUR_FENETRE,
                        32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-  SDL_Surface *W    = NULL;
-  SDL_Surface *B    = NULL;
-  SDL_Surface *B_WP = NULL;
-  SDL_Surface *B_BP = NULL;
-  SDL_Surface *B_WK = NULL;
-  SDL_Surface *B_BK = NULL;
-
-
-  W    = IMG_Load("gifs/caisse.jpg");
-  B    = IMG_Load("f" );
-  B_WP = IMG_Load("gifs/mario_gauche.gif");
-  B_BP = IMG_Load("gifs/mario_droite.gif");
-  B_WK = IMG_Load("gifs/mario_haut.gif");
-  B_BK = IMG_Load("gifs/mario_bas.gif");
+  SDL_Surface *W    = IMG_Load("gifs/caisse.jpg");
+  SDL_Surface *B    = IMG_Load("nothing" );
+  SDL_Surface *B_WP = IMG_Load("gifs/mario_gauche.gif");
+  SDL_Surface *B_BP = IMG_Load("gifs/mario_droite.gif");
+  SDL_Surface *B_WK = IMG_Load("gifs/mario_haut.gif");
+  SDL_Surface *B_BK = IMG_Load("gifs/mario_bas.gif");
 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Rect position;
-//---------------------------SDL fin init--------------------------------------
+//---------------------------SDL fin init------------------------------------//
 
 
   //main loop
   for (;;)
   {
-//--------------------------SDL print board------------------------------------
-          SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 0,0,0));
-          for (int i = 0 ; i < 10; i++)
-          {
-            for (int j = 0 ; j < 10; j++)
-            {
-              position.y = i * TAILLE_BLOC;
-              position.x = j * TAILLE_BLOC;
+//--------------------------SDL print board----------------------------------//
+   SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 0,0,0));
 
-              struct cell c = board->cells[i][j];
+   for (int i = 0 ; i < 10; i++)
+   {
+     for (int j = 0 ; j < 10; j++)
+     {
+       position.y = i * TAILLE_BLOC;
+       position.x = j * TAILLE_BLOC;
 
-              if (c.background == LIGHT)
-                SDL_BlitSurface(W, NULL, ecran, &position);
-              else
-              {
-                int d = c.data;
-                switch (d)
-                {
-                  case 0:
-                      SDL_BlitSurface(B, NULL, ecran, &position);
-                      break;
-                  case BP:
-                      SDL_BlitSurface(B_WP, NULL, ecran, &position);
-                      break;
-                  case BK:
-                      SDL_BlitSurface(B_WK , NULL, ecran, &position);
-                      break;
-                  case WP:
-                      SDL_BlitSurface(B_BP, NULL, ecran, &position);
-                      break;
-                  case WK:
-                      SDL_BlitSurface(B_BK, NULL, ecran, &position);
-                      break;
-                  }
-               }
-             }
+       struct cell c = board->cells[i][j];
+
+       if (c.background == LIGHT)
+         SDL_BlitSurface(W, NULL, ecran, &position);
+       else
+       {
+         switch (c.data)
+         {
+           case 0:
+               SDL_BlitSurface(B, NULL, ecran, &position);
+               break;
+           case BP:
+               SDL_BlitSurface(B_WP, NULL, ecran, &position);
+               break;
+           case BK:
+               SDL_BlitSurface(B_WK , NULL, ecran, &position);
+               break;
+           case WP:
+               SDL_BlitSurface(B_BP, NULL, ecran, &position);
+               break;
+           case WK:
+               SDL_BlitSurface(B_BK, NULL, ecran, &position);
+               break;
            }
-           SDL_Flip(ecran);
-//--------------------------SDL fin print--------------------------------------
+        }
+      }
+    }
+
+    SDL_Flip(ecran);
+//--------------------------SDL fin print------------------------------------//
 
 
     if ((board->player == PLAYER_WHITE && board->nb_white == 0)
