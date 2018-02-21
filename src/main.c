@@ -169,16 +169,16 @@ int main(int argc, char **argv)
                SDL_BlitSurface(B, NULL, screen, &position);
                break;
            case BP:
-               SDL_BlitSurface(B_WP, NULL, screen, &position);
-               break;
-           case BK:
-               SDL_BlitSurface(B_WK , NULL, screen, &position);
-               break;
-           case WP:
                SDL_BlitSurface(B_BP, NULL, screen, &position);
                break;
+           case BK:
+               SDL_BlitSurface(B_BK , NULL, screen, &position);
+               break;
+           case WP:
+               SDL_BlitSurface(B_WP, NULL, screen, &position);
+               break;
            case WK:
-               SDL_BlitSurface(B_BK, NULL, screen, &position);
+               SDL_BlitSurface(B_WK, NULL, screen, &position);
                break;
            }
         }
