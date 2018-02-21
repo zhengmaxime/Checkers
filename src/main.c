@@ -7,7 +7,7 @@
 # include "find_move.h"
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
-# include "constantes.h"
+# include "constants.h"
 
 int exec_seq(struct board *b, struct move_seq *list)
 {
@@ -50,7 +50,7 @@ void fflush_stdin()
 
 int parse_input(int *curLine, int *curCol,
                 int *destLine, int *destCol,
-                int rafle, int *iRafle, char *filename)
+                int seq, int *i_seq, char *filename)
 {
   char input[20] = {0};
 
@@ -77,10 +77,10 @@ int parse_input(int *curLine, int *curCol,
 
     if (input[0] >= 48 && input[0] <= 57) // digit
     {
-      if (rafle) // > 0
+      if (seq) // > 0
       {
-        sscanf(input, "%d", iRafle);
-        if (*iRafle > rafle || *iRafle <= 0)
+        sscanf(input, "%d", i_seq);
+        if (*i_seq > seq || *i_seq <= 0)
           return -1;
         else
           return 0;
@@ -120,17 +120,17 @@ int main(int argc, char **argv)
   printf("This is the start of the game\n");
   printBoard(board);
 
-  int *curLine, *curCol, *destLine, *destCol, *iRafle;
+  int *curLine, *curCol, *destLine, *destCol, *i_seq;
   curLine  = malloc(sizeof (int));
   curCol   = malloc(sizeof (int));
   destLine = malloc(sizeof (int));
   destCol  = malloc(sizeof (int));
-  iRafle   = calloc(1, sizeof (int));
+  i_seq    = calloc(1, sizeof (int));
   char *filename = calloc(1024, 1);
   int res;
 
 //------------------------------SDL init-------------------------------------//
-  SDL_Surface *ecran = SDL_SetVideoMode(LARGEUR_FENETRE, HAUTEUR_FENETRE,
+  SDL_Surface *screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT,
                        32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   SDL_Surface *W    = IMG_Load("gifs/caisse.jpg");
   SDL_Surface *B    = IMG_Load("nothing" );
@@ -148,44 +148,44 @@ int main(int argc, char **argv)
   for (;;)
   {
 //--------------------------SDL print board----------------------------------//
-   SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 0,0,0));
+   SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0,0,0));
 
    for (int i = 0 ; i < 10; i++)
    {
      for (int j = 0 ; j < 10; j++)
      {
-       position.y = i * TAILLE_BLOC;
-       position.x = j * TAILLE_BLOC;
+       position.y = i * BLOCK_SIZE;
+       position.x = j * BLOCK_SIZE;
 
        struct cell c = board->cells[i][j];
 
        if (c.background == LIGHT)
-         SDL_BlitSurface(W, NULL, ecran, &position);
+         SDL_BlitSurface(W, NULL, screen, &position);
        else
        {
          switch (c.data)
          {
            case 0:
-               SDL_BlitSurface(B, NULL, ecran, &position);
+               SDL_BlitSurface(B, NULL, screen, &position);
                break;
            case BP:
-               SDL_BlitSurface(B_WP, NULL, ecran, &position);
+               SDL_BlitSurface(B_WP, NULL, screen, &position);
                break;
            case BK:
-               SDL_BlitSurface(B_WK , NULL, ecran, &position);
+               SDL_BlitSurface(B_WK , NULL, screen, &position);
                break;
            case WP:
-               SDL_BlitSurface(B_BP, NULL, ecran, &position);
+               SDL_BlitSurface(B_BP, NULL, screen, &position);
                break;
            case WK:
-               SDL_BlitSurface(B_BK, NULL, ecran, &position);
+               SDL_BlitSurface(B_BK, NULL, screen, &position);
                break;
            }
         }
       }
     }
 
-    SDL_Flip(ecran);
+    SDL_Flip(screen);
 //--------------------------SDL fin print------------------------------------//
 
 
@@ -194,28 +194,30 @@ int main(int argc, char **argv)
       goto LOSE;
 
     struct moves *moves_list = build_moves(board);
-    int nb_rafles = list_len(moves_list);
-    if (nb_rafles > 0)
+    int nb_seq = list_len(moves_list);
+    if (nb_seq > 0)
     {
-      printf("You have %d mandatory moves\n", nb_rafles);
+      printf("You have %d mandatory moves\n", nb_seq);
       list_print(moves_list);
       puts("Which sequence do you want to play?");
     }
 
-    res = parse_input(curLine, curCol, destLine, destCol, nb_rafles, iRafle, filename);
+    res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
+                      i_seq, filename);
     while (res == -1) //error
     {
       print_error("Problem when reading your input");
-      res = parse_input(curLine, curCol, destLine, destCol, nb_rafles, iRafle, filename);
+      res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
+                        i_seq, filename);
     }
 
     if (res == 0) //normal
     {
       int res2 = -1;
-      if (*iRafle > 0) // play the sequence moves_list[i]
-        res2 = exec_seq_in_list(board, moves_list, *iRafle);
+      if (*i_seq > 0) // play the sequence moves_list[i]
+        res2 = exec_seq_in_list(board, moves_list, *i_seq);
       else // no capture possible
-        res2 = deplacement(board, *curLine, *curCol, *destLine, *destCol);
+        res2 = move(board, *curLine, *curCol, *destLine, *destCol);
 
       if (res2 == 0) // success
       {
@@ -223,7 +225,7 @@ int main(int argc, char **argv)
           printf("King!\n");
         board->player *= -1;
       }
-      *iRafle = 0;
+      *i_seq = 0;
       printBoard(board);
     }
 
@@ -261,7 +263,7 @@ LOSE:
   }
 
 //-------free SDL------------------------------------------------------------//
-  SDL_FreeSurface(ecran);
+  SDL_FreeSurface(screen);
   SDL_FreeSurface(W);
   SDL_FreeSurface(B);
   SDL_FreeSurface(B_WP);

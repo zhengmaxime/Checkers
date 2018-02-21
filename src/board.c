@@ -172,7 +172,8 @@ void print_error(const char *str)
   puts(str);
 }
 
-int errManage(struct board *b, int curLine, int curCol, int destLine, int destCol)
+int errManage(struct board *b, int curLine, int curCol,
+                               int destLine, int destCol)
 {
   if (is_out_of_board(curLine, curCol) || is_out_of_board(destLine, destCol))
   {
@@ -256,7 +257,7 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int destCo
 }
 
 //move the piece once we're sure the deplacement is valid
-void move(struct board *b, int curLine, int curCol, int destLine, int destCol)
+void __move(struct board *b, int curLine, int curCol, int destLine, int destCol)
 {
   int curPos = b->cells[curLine][curCol].data;
   b->cells[destLine][destCol].data = curPos;
@@ -264,12 +265,13 @@ void move(struct board *b, int curLine, int curCol, int destLine, int destCol)
 }
 
 
-int deplacement(struct board *b, int curLine, int curCol, int destLine, int destCol)
+int move(struct board *b, int curLine, int curCol,
+                          int destLine, int destCol)
 {
   int err = errManage(b, curLine, curCol, destLine, destCol);
   if (err == 0)
   {
-    move(b, curLine, curCol, destLine, destCol);
+    __move(b, curLine, curCol, destLine, destCol);
   }
   return err;
 }

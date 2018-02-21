@@ -60,10 +60,10 @@ int errManage(struct board *b, int curLine, int curCol, int destLine, int
 destCol);
 
 
-void move(struct board *b, int curLine, int curCol, int destLine, int destCol);
+void __move(struct board *b, int curLine, int curCol,
+                             int destLine, int destCol);
 
-
-int deplacement(struct board *b, int curLine, int curCol, int destLine, int
+int move(struct board *b, int curLine, int curCol, int destLine, int
 destCol);
 
 int pawn_to_king(struct board *b);

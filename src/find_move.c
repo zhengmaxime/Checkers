@@ -22,7 +22,7 @@ int is_in_array(struct coords captures[], int nb_captures, int x, int y)
  * Return 0 if no jump possible, else return 1
  * dx dy: relative moves (-1 or 1)
  */
-int prise_simple_move(struct board *b,
+int simple_jump(struct board *b,
                       int cur_piece,
                       int x, int y,
                       int dx, int dy,
@@ -84,7 +84,8 @@ int prise_simple_move(struct board *b,
           && b->cells[x + (i + 1) * dx][y + (i + 1)* dy].data == 0)
     // go through all free cells after the jump
     {
-      if (0 == build_move_seq(b, cur_piece, x+(i+1)*dx, y+(i+1)*dy, moves, move_seq)
+      if (0 == build_move_seq(b, cur_piece, x + (i + 1) * dx, y + (i + 1) * dy,
+                              moves, move_seq)
           && (move_seq->nb_captures > 0)) // end of sequence
       {
         // reminder: push_front is used so the last move is the first
@@ -122,16 +123,16 @@ int build_move_seq(struct board *b,
   int res1, res2, res3, res4;
 
   // if seq_copy has been modified, a copy is created
-  if ( (res1 = prise_simple_move(b, cur_piece, x, y, -1, -1, moves, seq_copy)))
+  if ( (res1 = simple_jump(b, cur_piece, x, y, -1, -1, moves, seq_copy)))
     seq_copy = copy(move_seq);
 
-  if ( (res2 = prise_simple_move(b, cur_piece, x, y, -1, 1, moves, seq_copy)))
+  if ( (res2 = simple_jump(b, cur_piece, x, y, -1, 1, moves, seq_copy)))
     seq_copy = copy(move_seq);
 
-  if ( (res3 = prise_simple_move(b, cur_piece, x, y, 1, -1, moves, seq_copy)))
+  if ( (res3 = simple_jump(b, cur_piece, x, y, 1, -1, moves, seq_copy)))
     seq_copy = copy(move_seq);
 
-  res4 = prise_simple_move(b, cur_piece, x, y, 1, 1, moves, seq_copy);
+  res4 = simple_jump(b, cur_piece, x, y, 1, 1, moves, seq_copy);
 
   if (res1 == 0 && res2 == 0 && res3 == 0 && res4 == 0)
     return 0;

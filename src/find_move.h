@@ -8,12 +8,12 @@
  * Return 0 if no jump possible, else return 1
  * dx dy: relative moves (-1 or 1)
  */
-int prise_simple_move(struct board *b,
-                      int cur_piece,
-                      int x, int y,
-                      int dx, int dy,
-                      struct moves *moves,
-                      struct move_seq *move_seq);
+int simple_jump(struct board *b,
+                int cur_piece,
+                int x, int y,
+                int dx, int dy,
+                struct moves *moves,
+                struct move_seq *move_seq);
 
 /*
  * return 1 if a sequence is found, else 0
