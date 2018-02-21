@@ -90,7 +90,10 @@ void printBoard(struct board *b)
       if (is_black(piece))
         b->nb_black++;
 
-      printf(" %c |",rep[piece + 2]);
+      if (b->cells[i][j].background == LIGHT)
+        printf("   |");
+      else
+        printf(" %c |",rep[piece + 2]);
     }
     printf("   %d\n", i);
 
