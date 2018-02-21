@@ -132,12 +132,12 @@ int main(int argc, char **argv)
 //------------------------------SDL init-------------------------------------//
   SDL_Surface *screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT,
                        32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-  SDL_Surface *W    = IMG_Load("gifs/caisse.jpg");
-  SDL_Surface *B    = IMG_Load("nothing" );
-  SDL_Surface *B_WP = IMG_Load("gifs/mario_gauche.gif");
-  SDL_Surface *B_BP = IMG_Load("gifs/mario_droite.gif");
-  SDL_Surface *B_WK = IMG_Load("gifs/mario_haut.gif");
-  SDL_Surface *B_BK = IMG_Load("gifs/mario_bas.gif");
+  SDL_Surface *W    = IMG_Load("image_case/caseblanche.png");
+  SDL_Surface *B    = IMG_Load("image_case/casemaron.png" );
+  SDL_Surface *B_WP = IMG_Load("image_case/casemaronpieceblanche.png");
+  SDL_Surface *B_BP = IMG_Load("image_case/casemaronpiecenoire.png");
+  SDL_Surface *B_WK = IMG_Load("image_case/casemaronpieceblanchedames.png");
+  SDL_Surface *B_BK = IMG_Load("image_case/casemaronpiecenoiredames.png");
 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Rect position;
