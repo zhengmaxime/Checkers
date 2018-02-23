@@ -23,7 +23,6 @@ struct move_seq
   struct coords dest;
   struct coords captures[20]; // only in sentinel
   int nb_captures; // only in sentinel
-
 };
 
 /*
@@ -33,6 +32,7 @@ struct moves
 {
   struct moves *next;
   struct move_seq *seq;
+  struct coords crowned; // for history
 };
 
 /*
