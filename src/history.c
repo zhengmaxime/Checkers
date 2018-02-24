@@ -70,7 +70,7 @@ void undo_move(struct board *b)
 {
   struct moves *m = moves_pop_front(b->undo);
 
-  if (m->crowned.x >= 0 && m->crowned.y >= 0) // undo crowning
+  if (!is_out_of_board(m->crowned.x, m->crowned.y)) // undo crowning
     b->cells[m->crowned.x][m->crowned.y].data /= 2;
 
   exec_seq_reverse(b, m);

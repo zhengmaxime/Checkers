@@ -34,6 +34,8 @@ void moves_init(struct moves *list, struct move_seq *seq)
 {
   list->next = NULL;
   list->seq = seq;
+  list->crowned.x = -1;
+  list->crowned.y = -1;
 }
 
 /*
