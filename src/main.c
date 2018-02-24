@@ -5,6 +5,7 @@
 # include "piece.h"
 # include "list.h"
 # include "find_move.h"
+# include "history.h"
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 # include "constants.h"
@@ -35,7 +36,14 @@ int exec_seq_in_list(struct board *b, struct moves *list, int i)
   for (; list; list = list->next)
   {
     if (i == 0)
-      return exec_seq(b, list->seq);
+    {
+      if (0 == exec_seq(b, list->seq))
+      {
+        undo_push(b, list->seq);
+        pawn_to_king(b);
+        return 0;
+      }
+    }
     i--;
   }
   return -1;
@@ -64,6 +72,9 @@ int parse_input(int *curLine, int *curCol,
 
     if (strncmp(input, "help", 4) == 0)
       return 2;
+
+    if (strncmp(input, "undo", 4) == 0)
+      return 4;
 
     if (strncmp(input, "save", 4) == 0)
     {
@@ -119,6 +130,7 @@ int main(int argc, char **argv)
   //print it
   printf("This is the start of the game\n");
   printBoard(board);
+  undo_init(board);
 
   int *curLine, *curCol, *destLine, *destCol, *i_seq;
   curLine  = malloc(sizeof (int));
@@ -128,6 +140,7 @@ int main(int argc, char **argv)
   i_seq    = calloc(1, sizeof (int));
   char *filename = calloc(1024, 1);
   int res;
+  struct moves *moves_list;
 
 //------------------------------SDL init-------------------------------------//
   SDL_Surface *screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -145,7 +158,8 @@ int main(int argc, char **argv)
 
 
   //main loop
-  for (;;)
+  int can_play = 1;
+  while (can_play)
   {
 //--------------------------SDL print board----------------------------------//
    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0,0,0));
@@ -191,9 +205,13 @@ int main(int argc, char **argv)
 
     if ((board->player == PLAYER_WHITE && board->nb_white == 0)
      || (board->player == PLAYER_BLACK && board->nb_black == 0))
-      goto LOSE;
+    {
+      can_play = 0;
+      puts("No more pieces!");
+      continue;
+    }
 
-    struct moves *moves_list = build_moves(board);
+    moves_list = build_moves(board);
     int nb_seq = list_len(moves_list);
     if (nb_seq > 0)
     {
@@ -220,23 +238,16 @@ int main(int argc, char **argv)
         res2 = move(board, *curLine, *curCol, *destLine, *destCol);
 
       if (res2 == 0) // success
-      {
-        if (1 == pawn_to_king(board))
-          printf("King!\n");
         board->player *= -1;
-      }
+
       *i_seq = 0;
       printBoard(board);
     }
 
     if (res == 1) //quit
     {
-LOSE:
-      if (board->player == PLAYER_WHITE)
-        printf("Black won!\n");
-      else
-        printf("White won!\n");
-      break;
+      can_play = 0;
+      continue;
     }
 
     if (res == 2) //help
@@ -260,8 +271,20 @@ LOSE:
       if (0 != write_board_to_file(board, filename))
         print_error("Can not write board to file");
     }
-  }
 
+    if (res == 4) // undo
+    {
+      if (list_len(board->undo) > 0)
+        undo_move(board);
+      else
+        print_error("No previous move");
+      printBoard(board);
+    }
+  }
+  if (board->player == PLAYER_WHITE)
+    printf("Black won!\n");
+  else
+    printf("White won!\n");
 //-------free SDL------------------------------------------------------------//
   SDL_FreeSurface(screen);
   SDL_FreeSurface(W);
@@ -272,6 +295,8 @@ LOSE:
   SDL_FreeSurface(B_BK);
 //-------free SDL------------------------------------------------------------//
 
+  free_moves(moves_list);
+  free_moves(board->undo);
   free(board);
   free(curLine);
   free(curCol);
