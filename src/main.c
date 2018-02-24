@@ -39,6 +39,9 @@ int parse_input(int *curLine, int *curCol,
     if (strncmp(input, "undo", 4) == 0)
       return 4;
 
+    if (strncmp(input, "redo", 4) == 0)
+      return 5;
+
     if (strncmp(input, "save", 4) == 0)
     {
       char *tmp; // type "save filename"
@@ -94,6 +97,7 @@ int main(int argc, char **argv)
   printf("This is the start of the game\n");
   printBoard(board);
   undo_init(board);
+  redo_init(board);
 
   int *curLine, *curCol, *destLine, *destCol, *i_seq;
   curLine  = malloc(sizeof (int));
@@ -199,6 +203,8 @@ int main(int argc, char **argv)
 
     if (res == 0) //normal
     {
+      free_moves(board->redo);
+      redo_init(board);
       int res2 = -1;
       if (*i_seq > 0) // play the sequence moves_list[i]
         res2 = exec_seq_in_list(board, moves_list, *i_seq);
@@ -248,6 +254,16 @@ int main(int argc, char **argv)
         print_error("No previous move");
       printBoard(board);
     }
+
+    if (res == 5) // redo
+    {
+      if (list_len(board->redo) > 0)
+        redo_move(board);
+      else
+        print_error("No previous move");
+      printBoard(board);
+    }
+
   }
 
   if (board->player == PLAYER_WHITE)
@@ -267,6 +283,7 @@ int main(int argc, char **argv)
 
   free_moves(moves_list);
   free_moves(board->undo);
+  free_moves(board->redo);
   free(board);
   free(curLine);
   free(curCol);

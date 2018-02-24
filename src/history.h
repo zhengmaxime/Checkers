@@ -27,9 +27,11 @@ void save_king_coords(struct board *b, int x, int y);
 void undo_push(struct board *b, struct move_seq *seq);
 
 /* push the sequence in the redo stack */
-void redo_push(struct board *b, struct move_seq *seq);
+void redo_push(struct board *b, struct moves *m);
 
 /* undo the last move */
 void undo_move(struct board *b);
 
+/* redo the last move */
+void redo_move(struct board *b);
 #endif /* HISTORY_H_ */

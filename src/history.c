@@ -59,11 +59,9 @@ void undo_push(struct board *b, struct move_seq *seq)
 }
 
 /* push the sequence in the redo stack */
-void redo_push(struct board *b, struct move_seq *seq)
+void redo_push(struct board *b, struct moves *m)
 {
-  struct moves *elm = malloc(sizeof (struct moves));
-  moves_init(elm, seq);
-  moves_push_front(b->redo, elm);
+  moves_push_front(b->redo, m);
 }
 
 /* undo the last move */
@@ -75,6 +73,20 @@ void undo_move(struct board *b)
     b->cells[m->crowned.x][m->crowned.y].data /= 2;
 
   exec_seq_reverse(b, m);
+
+  b->player *= -1;
+
+  redo_push(b, m);
+}
+
+/* redo the last move */
+void redo_move(struct board *b)
+{
+  struct moves *m = moves_pop_front(b->redo);
+
+  exec_seq(b, m->seq);
+
+  undo_push(b, m->seq);
 
   b->player *= -1;
 }
