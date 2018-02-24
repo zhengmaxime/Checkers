@@ -6,6 +6,7 @@
 # include "list.h"
 # include "find_move.h"
 # include "history.h"
+# include "exec_move.h"
 
 /* init the undo stack */
 void undo_init(struct board *b)
@@ -76,26 +77,4 @@ void undo_move(struct board *b)
   exec_seq_reverse(b, m);
 
   b->player *= -1;
-}
-
-/* exec a sequence in reverse */
-void exec_seq_reverse(struct board *b, struct moves *m)
-{
-  struct move_seq *seq = m->seq->next; // sentinel
-
-  int orig_x = seq->orig.x; // save origin cell coords
-  int orig_y = seq->orig.y;
-
-  for (; seq->next; seq = seq->next); // go to the last node
-
-  // undo
-  b->cells[orig_x][orig_y].data = b->cells[seq->dest.x][seq->dest.y].data;
-  b->cells[seq->dest.x][seq->dest.y].data = 0;
-
-  // undo the captures
-  for (int i = 0; i < m->seq->nb_captures; ++i)
-  {
-    b->cells[m->seq->captures[i].x][m->seq->captures[i].y].data
-   = m->seq->captures[i].data;
-  }
 }

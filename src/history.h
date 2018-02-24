@@ -32,7 +32,4 @@ void redo_push(struct board *b, struct move_seq *seq);
 /* undo the last move */
 void undo_move(struct board *b);
 
-/* exec a sequence in reverse */
-void exec_seq_reverse(struct board *b, struct moves *m);
-
 #endif /* HISTORY_H_ */

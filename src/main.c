@@ -6,48 +6,11 @@
 # include "list.h"
 # include "find_move.h"
 # include "history.h"
+# include "exec_move.h"
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 # include "constants.h"
 
-int exec_seq(struct board *b, struct move_seq *list)
-{
-  if (list == NULL)
-    return -1;
-
-  // remove the captured
-  for (int i = 0; i < 20 && list->captures[i].x != -1; i++)
-    b->cells[list->captures[i].x][list->captures[i].y].data = 0;
-
-  list = list->next; // skip sentinel
-
-  // save the orig cell and clear it
-  int cur_piece = b->cells[list->orig.x][list->orig.y].data;
-  b->cells[list->orig.x][list->orig.y].data = 0;
-
-  for (; list->next; list = list->next); // go to last node
-  b->cells[list->dest.x][list->dest.y].data = cur_piece;
-
-  return 0;
-}
-
-int exec_seq_in_list(struct board *b, struct moves *list, int i)
-{
-  for (; list; list = list->next)
-  {
-    if (i == 0)
-    {
-      if (0 == exec_seq(b, list->seq))
-      {
-        undo_push(b, list->seq);
-        pawn_to_king(b);
-        return 0;
-      }
-    }
-    i--;
-  }
-  return -1;
-}
 
 void fflush_stdin()
 {
@@ -281,10 +244,12 @@ int main(int argc, char **argv)
       printBoard(board);
     }
   }
+
   if (board->player == PLAYER_WHITE)
     printf("Black won!\n");
   else
     printf("White won!\n");
+
 //-------free SDL------------------------------------------------------------//
   SDL_FreeSurface(screen);
   SDL_FreeSurface(W);
