@@ -44,6 +44,7 @@ int exec_seq_in_list(struct board *b, struct moves *list, int i)
       if (0 == exec_seq(b, list->seq))
       {
         undo_push(b, list->seq);
+        list->seq = NULL;
         return 0;
       }
     }
