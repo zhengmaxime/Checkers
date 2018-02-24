@@ -102,6 +102,23 @@ void moves_push_front(struct moves *list, struct moves *elm)
 }
 
 /*
+ * list_pop_front(list)
+ * Extract the first element (not the sentinel) of list.
+ * This operation detaches the element from the list and returns it (caller is
+ * responsible for freeing it.)
+ * If the list is empty, the function returns NULL.
+ */
+struct moves *moves_pop_front(struct moves *list)
+{
+  if (list_is_empty(list))
+    return NULL;
+
+  struct moves *head = list->next;
+  list->next = list->next->next;
+  return head;
+}
+
+/*
  * insert move_seq in moves list
  * moves list is sorted in descending order of captures number
  * return 1 if success, else 0

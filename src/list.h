@@ -4,7 +4,6 @@
 
 # include "board.h"
 # include <unistd.h>
-/* Linked lists */
 
 struct list {
   struct list *next;
@@ -32,7 +31,7 @@ struct moves
 {
   struct moves *next;
   struct move_seq *seq;
-  struct coords crowned; // for history
+  struct coords crowned; // for undo, destination of the new king
 };
 
 /*
@@ -62,6 +61,7 @@ int list_is_empty(struct moves *list);
  */
 size_t list_len(struct moves *list);
 void list_print(struct moves *list);
+
 /*
  * list_push_front(list, elm)
  * attach elm in front of list, that is after the sentinel.
@@ -70,6 +70,15 @@ void list_print(struct moves *list);
 void list_push_front(struct list *list, struct list *elm);
 void seq_push_front(struct move_seq *list, struct move_seq *elm);
 void moves_push_front(struct moves *list, struct moves *elm);
+
+/*
+ * list_pop_front(list)
+ * Extract the first element (not the sentinel) of list.
+ * This operation detaches the element from the list and returns it (caller is
+ * responsible for freeing it.)
+ * If the list is empty, the function returns NULL.
+ */
+struct moves *moves_pop_front(struct moves *list);
 
 /*
  * deep copy a list
