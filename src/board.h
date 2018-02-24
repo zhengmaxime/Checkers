@@ -29,13 +29,15 @@ struct board
   int nb_white;
   int nb_black;
   int player;
-  struct moves *history;
+  struct moves *undo;
+  struct moves *redo;
 };
 
 struct coords
 {
   int x;
   int y;
+  int data;
 };
 
 // Init the board with basic pawns
