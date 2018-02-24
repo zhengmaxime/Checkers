@@ -117,6 +117,11 @@ int main(int argc, char **argv)
 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Rect position;
+  if (argc >= 2)
+    SDL_WM_SetCaption(argv[1], NULL);
+  else
+    SDL_WM_SetCaption("Game", NULL);
+
 //---------------------------SDL fin init------------------------------------//
 
 
