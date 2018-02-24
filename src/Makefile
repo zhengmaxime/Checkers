@@ -6,7 +6,7 @@ CFLAGS= -Wall -Wextra -std=c99 -O0 -g
 LDFLAGS=-lSDL -lSDL_image#Linker
 LDLIBS=`pkg-config --libs sdl SDL_image`
 
-SRC= board.c piece.c main.c list.c find_move.c #interface.c
+SRC= board.c piece.c main.c list.c find_move.c history.c
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
 
