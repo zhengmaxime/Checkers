@@ -77,9 +77,9 @@ int main(int argc, char **argv)
 {
   struct board *board = malloc(sizeof(struct board));
 
-  // Init the board.
-  // 1st argument is the name of the file that contains the board.
-  // If no argument, the default config is used.
+// Init the board.
+// 1st argument is the name of the file that contains the board.
+// If no argument, the default config is used.
   if (argc >= 2)
   {
     if (-1 == open_board_from_file(board, argv[1]))
@@ -93,9 +93,11 @@ int main(int argc, char **argv)
     boardInit(board);
   boardInitColor(board);
 
-  //print it
+// Print it
   printf("This is the start of the game\n");
   printBoard(board);
+
+// Init
   undo_init(board);
   redo_init(board);
 
@@ -129,8 +131,9 @@ int main(int argc, char **argv)
 //---------------------------SDL fin init------------------------------------//
 
 
-  //main loop
+// Main loop
   int can_play = 1;
+
   while (can_play)
   {
 //--------------------------SDL print board----------------------------------//
@@ -174,7 +177,7 @@ int main(int argc, char **argv)
     SDL_Flip(screen);
 //--------------------------SDL fin print------------------------------------//
 
-
+// END OF GAME
     if ((board->player == PLAYER_WHITE && board->nb_white == 0)
      || (board->player == PLAYER_BLACK && board->nb_black == 0))
     {
@@ -183,6 +186,7 @@ int main(int argc, char **argv)
       continue;
     }
 
+// FIND MANDATORY JUMPS
     moves_list = build_moves(board);
     int nb_seq = list_len(moves_list);
     if (nb_seq > 0)
@@ -192,6 +196,7 @@ int main(int argc, char **argv)
       puts("Which sequence do you want to play?");
     }
 
+// PARSE KEYBOARD INPUT
     res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
                       i_seq, filename);
     while (res == -1) //error
@@ -201,7 +206,9 @@ int main(int argc, char **argv)
                         i_seq, filename);
     }
 
-    if (res == 0) //normal
+// ACTIONS
+// MOVE
+    if (res == 0)
     {
       free_moves(board->redo);
       redo_init(board);
@@ -212,19 +219,21 @@ int main(int argc, char **argv)
         res2 = move(board, *curLine, *curCol, *destLine, *destCol);
 
       if (res2 == 0) // success
-        board->player *= -1;
+        board->player *= -1; // change player
 
       *i_seq = 0;
       printBoard(board);
     }
 
-    if (res == 1) //quit
+// QUIT
+    if (res == 1)
     {
       can_play = 0;
       continue;
     }
 
-    if (res == 2) //help
+// HELP
+    if (res == 2)
     {
       puts("Type 4 digits separated by space character:"
         " current line and column, destination line and column\n"
@@ -232,7 +241,8 @@ int main(int argc, char **argv)
       continue;
     }
 
-    if (res == 3) //save
+// SAVE
+    if (res == 3)
     {
       if (strlen(filename) == 0)
       {
@@ -246,7 +256,8 @@ int main(int argc, char **argv)
         print_error("Can not write board to file");
     }
 
-    if (res == 4) // undo
+// UNDO
+    if (res == 4)
     {
       if (list_len(board->undo) > 0)
         undo_move(board);
@@ -255,7 +266,8 @@ int main(int argc, char **argv)
       printBoard(board);
     }
 
-    if (res == 5) // redo
+// REDO
+    if (res == 5)
     {
       if (list_len(board->redo) > 0)
         redo_move(board);
@@ -264,7 +276,7 @@ int main(int argc, char **argv)
       printBoard(board);
     }
 
-  }
+  } // END of main loop
 
   if (board->player == PLAYER_WHITE)
     printf("Black won!\n");
@@ -290,5 +302,6 @@ int main(int argc, char **argv)
   free(destLine);
   free(destCol);
   free(filename);
+
   return 0;
 }
