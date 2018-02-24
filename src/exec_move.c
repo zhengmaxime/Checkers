@@ -31,6 +31,7 @@ int exec_seq(struct board *b, struct move_seq *list)
   for (; list->next; list = list->next); // go to last node
   b->cells[list->dest.x][list->dest.y].data = cur_piece;
 
+  pawn_to_king(b);
   return 0;
 }
 
@@ -43,7 +44,6 @@ int exec_seq_in_list(struct board *b, struct moves *list, int i)
       if (0 == exec_seq(b, list->seq))
       {
         undo_push(b, list->seq);
-        pawn_to_king(b);
         return 0;
       }
     }
