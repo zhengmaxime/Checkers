@@ -68,6 +68,7 @@ int simple_jump(struct board *b,
 
   move_seq->captures[move_seq->nb_captures].x = x + i * dx;
   move_seq->captures[move_seq->nb_captures].y = y + i * dy;
+  move_seq->captures[move_seq->nb_captures].data = jumped_piece;
   move_seq->nb_captures++;
 
   if (is_pawn(cur_piece))
