@@ -134,6 +134,9 @@ int write_board_to_file(struct board *b, char filename[])
 int open_board_from_file(struct board *b, char filename[])
 {
   FILE *f = fopen(filename, "r");
+  if (f == NULL)
+    return -1;
+
   struct stat statbuf;
   stat(filename, &statbuf);
   if ((statbuf.st_size) != 112)
@@ -141,6 +144,7 @@ int open_board_from_file(struct board *b, char filename[])
     fclose(f);
     return -1;
   }
+
   int i, j, k, c;
   char rep[] = {'X','x','.','o','O'};
 
