@@ -4,6 +4,7 @@
 # include "piece.h"
 # include "list.h"
 # include "find_move.h"
+# include "history.h"
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <unistd.h>
@@ -38,7 +39,8 @@ void boardInit(struct board *b)
   b->player = PLAYER_WHITE;
   b->nb_black = 20;
   b->nb_white = 20;
-  b->moves_list = NULL;
+  b->undo = NULL;
+  b->redo = NULL;
 }
 
 void boardInitColor(struct board *b)
@@ -276,6 +278,17 @@ int move(struct board *b, int curLine, int curCol,
   {
     __move(b, curLine, curCol, destLine, destCol);
   }
+
+  struct move_seq *ms = malloc(sizeof (struct move_seq));
+  seq_init(ms); // sentinel
+
+  struct move_seq *elm = malloc(sizeof (struct move_seq));
+  seq_fill(elm, curLine, curCol, destLine, destCol, 0, 0);
+  seq_push_front(ms, elm);
+
+  undo_push(b, ms);
+  pawn_to_king(b);
+
   return err;
 }
 
@@ -307,6 +320,9 @@ int pawn_to_king(struct board *b)
       break;
     }
   }
+
+  if (res == 1) // save the coords of the new king
+    save_king_coords(b, line, col);
 
   return res;
 }
