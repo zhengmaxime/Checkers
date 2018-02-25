@@ -109,7 +109,7 @@ int main(int argc, char **argv)
   i_seq    = calloc(1, sizeof (int));
   char *filename = calloc(1024, 1);
   int res;
-  struct moves *moves_list;
+  struct moves *moves_list = NULL;
 
 //------------------------------SDL init-------------------------------------//
   SDL_Surface *screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -187,6 +187,8 @@ int main(int argc, char **argv)
     }
 
 // FIND MANDATORY JUMPS
+    if (moves_list)
+      free_moves(moves_list);
     moves_list = build_moves(board);
     int nb_seq = list_len(moves_list);
     if (nb_seq > 0)
@@ -291,6 +293,7 @@ int main(int argc, char **argv)
   SDL_FreeSurface(B_BP);
   SDL_FreeSurface(B_WK);
   SDL_FreeSurface(B_BK);
+  SDL_Quit();
 //-------free SDL------------------------------------------------------------//
 
   free_moves(moves_list);
@@ -302,6 +305,7 @@ int main(int argc, char **argv)
   free(destLine);
   free(destCol);
   free(filename);
+  free(i_seq);
 
   return 0;
 }

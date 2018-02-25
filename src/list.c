@@ -71,7 +71,7 @@ void list_print(struct moves *list)
   list = list->next;
   for (i = 1; list; list = list->next, ++i)
   {
-    printf("(%d)", i);
+    printf("(%02d)", i);
     struct move_seq *seq = list->seq->next;
     for (; seq; seq = seq->next)
       printf(" -> (%d, %d) to (%d, %d)",
@@ -153,6 +153,7 @@ int moves_insert(struct moves *moves, struct move_seq *move_seq)
       {
         if (moves->next->seq->nb_captures < elm1->seq->nb_captures)
         {
+          free_moves(moves->next);
           moves->next = NULL;
           break;
         }
@@ -160,7 +161,7 @@ int moves_insert(struct moves *moves, struct move_seq *move_seq)
       return 1;
     }
   }
-
+  free_seq(move_seq);
   return 0;
 }
 
