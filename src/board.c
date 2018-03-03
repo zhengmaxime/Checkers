@@ -226,7 +226,7 @@ int errManage(struct board *b, int curLine, int curCol,
       print_error("King move diagonally");
       return -3;
     }
-
+    //se passe quoi la en dessous??
     int x = curLine;
     int y = curCol;
     int dx;
