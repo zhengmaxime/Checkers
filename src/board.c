@@ -226,32 +226,24 @@ int errManage(struct board *b, int curLine, int curCol,
       print_error("King move diagonally");
       return -3;
     }
-    //se passe quoi la en dessous??
-    int x = curLine;
-    int y = curCol;
-    int dx;
-    int dy;
-
-    if ((destLine - curLine) > 0)
-      dx = 1;
-    else
-      dx = -1;
-
-    if ((destCol - curCol) > 0)
-      dy = 1;
-    else
-      dy = -1;
-
-    while (x != destLine && y != destCol && b->cells[x][y].data == 0)
+    else // Check if the diagonal is empty (king can't jump over another piece)
     {
-      x += dx;
-      y += dy;
-    }
+      int x = curLine;
+      int y = curCol;
+      int dx = ((destLine - curLine) > 0) ? 1 : -1;
+      int dy = ((destCol - curCol) > 0) ? 1 : -1;
 
-    if (b->cells[x + dx][y + dy].data != 0)
-    {
-      print_error("Invalid capture with king");
-      return -3;
+      while (x != destLine && y != destCol && b->cells[x][y].data == 0)
+      {
+        x += dx;
+        y += dy;
+      }
+
+      if (b->cells[x + dx][y + dy].data != 0)
+      {
+        print_error("King is blocked by another piece");
+        return -3;
+      }
     }
   }
 
