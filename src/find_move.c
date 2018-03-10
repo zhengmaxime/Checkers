@@ -75,7 +75,8 @@ int simple_jump(struct board *b,
 
   if (is_pawn(cur_piece))
   {
-    if (0 == build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, moves, move_seq)
+    if (0 == build_move_seq(b, cur_piece, x + 2*dx, y + 2*dy, dx, dy,
+                            moves, move_seq)
        && (move_seq->nb_captures > 0)) // end of sequence
     {
       moves_insert(moves, move_seq);
@@ -95,6 +96,7 @@ int simple_jump(struct board *b,
       if (0 == build_move_seq(b, cur_piece,
                               x + (i + 1) * dx,
                               y + (i + 1) * dy,
+                              dx, dy,
                               moves, seq_copy) // end of sequence
           && (seq_copy->nb_captures > 0))
       {
@@ -122,36 +124,56 @@ int simple_jump(struct board *b,
 int build_move_seq(struct board *b,
                    int cur_piece,
                    int x, int y,
+                   int old_dx, int old_dy,
                    struct moves *moves,
                    struct move_seq *move_seq)
 
 {
-  struct move_seq *seq_copy1 = copy(move_seq); // save move_seq
-  struct move_seq *seq_copy2 = copy(move_seq);
-  struct move_seq *seq_copy3 = copy(move_seq);
-  struct move_seq *seq_copy4 = copy(move_seq);
+  int res1, res2, res3, res4;
+  res1 = 0;
+  res2 = 0;
+  res3 = 0;
+  res4 = 0;
 
-  int res1 = simple_jump(b, cur_piece, x, y, -1, -1, moves, seq_copy1);
-  int res2 = simple_jump(b, cur_piece, x, y, -1, 1, moves, seq_copy2);
-  int res3 = simple_jump(b, cur_piece, x, y, 1, -1, moves, seq_copy3);
-  int res4 = simple_jump(b, cur_piece, x, y, 1, 1, moves, seq_copy4);
+  if (old_dx != 1 || old_dy != 1) // avoid backwards step
+  {
+    struct move_seq *seq_copy1 = copy(move_seq); // save move_seq
+    res1 = simple_jump(b, cur_piece, x, y, -1, -1, moves, seq_copy1);
+    // if res == 0 copy not modified, not used
+    if (res1 == 0)
+    {
+      free_seq(seq_copy1);
+    }
+  }
 
-  // if res == 0 copy not modified, not used
-  if (res1 == 0)
+  if (old_dx != 1 || old_dy != -1)
   {
-    free_seq(seq_copy1);
+    struct move_seq *seq_copy2 = copy(move_seq);
+    res2 = simple_jump(b, cur_piece, x, y, -1, 1, moves, seq_copy2);
+    if (res2 == 0)
+    {
+      free_seq(seq_copy2);
+    }
   }
-  if (res2 == 0)
+
+  if (old_dx != -1 || old_dy != 1)
   {
-    free_seq(seq_copy2);
+    struct move_seq *seq_copy3 = copy(move_seq);
+    res3 = simple_jump(b, cur_piece, x, y, 1, -1, moves, seq_copy3);
+    if (res3 == 0)
+    {
+      free_seq(seq_copy3);
+    }
   }
-  if (res3 == 0)
+
+  if (old_dx != -1 || old_dy != -1)
   {
-    free_seq(seq_copy3);
-  }
-  if (res4 == 0)
-  {
-    free_seq(seq_copy4);
+    struct move_seq *seq_copy4 = copy(move_seq);
+    res4 = simple_jump(b, cur_piece, x, y, 1, 1, moves, seq_copy4);
+    if (res4 == 0)
+    {
+      free_seq(seq_copy4);
+    }
   }
 
   if (res1 == 0 && res2 == 0 && res3 == 0 && res4 == 0)
@@ -178,7 +200,7 @@ struct moves *build_moves(struct board *b)
       {
         move_seq = malloc(sizeof (struct move_seq));
         seq_init(move_seq);
-        build_move_seq(b, b->cells[x][y].data, x, y, moves, move_seq);
+        build_move_seq(b, b->cells[x][y].data, x, y, 0, 0, moves, move_seq);
         free_seq(move_seq);
       }
     }

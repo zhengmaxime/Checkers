@@ -21,6 +21,7 @@ int simple_jump(struct board *b,
 int build_move_seq(struct board *b,
                    int cur_piece,
                    int x, int y,
+                   int old_dx, int old_dy,
                    struct moves *moves,
                    struct move_seq *move_seq);
 
