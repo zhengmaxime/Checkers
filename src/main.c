@@ -21,14 +21,23 @@ void fflush_stdin()
 
 int parse_input(int *curLine, int *curCol,
                 int *destLine, int *destCol,
-                int seq, int *i_seq, char *filename)
+                int seq, int *i_seq, char *filename,
+                int *shell_mode)
 {
+  puts("Shell mode");
   char input[20] = {0};
 
   if (fgets(input, 20, stdin) != NULL) // reads 18 char + \n, store to input
   {
     if (strchr(input, '\n') == NULL) // input too long, didn't find \n
       fflush_stdin(); // prevent overflow
+
+    if (strncmp(input, "sdl", 3) == 0) // switch to mouse
+    {
+      *shell_mode = 0;
+      puts("Use mouse now");
+      return -2;
+    }
 
     if (strncmp(input, "quit", 4) == 0)
       return 1;
@@ -123,6 +132,8 @@ int main(int argc, char **argv)
 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Rect position;
+  SDL_Event event;
+
   if (argc >= 2)
     SDL_WM_SetCaption(argv[1], NULL);
   else
@@ -133,9 +144,59 @@ int main(int argc, char **argv)
 
 // Main loop
   int can_play = 1;
+  int shell_mode = 0;
 
   while (can_play)
   {
+// END OF GAME
+    if ((board->player == PLAYER_WHITE && board->nb_white == 0)
+     || (board->player == PLAYER_BLACK && board->nb_black == 0))
+    {
+      can_play = 0;
+      puts("No more pieces!");
+      continue;
+    }
+
+
+// FIND MANDATORY JUMPS
+    if (moves_list)
+      free_moves(moves_list);
+    moves_list = build_moves(board);
+    set_orig_cases(board, moves_list);
+    int nb_seq = list_len(moves_list);
+    if (nb_seq > 0)
+    {
+      printf("You have %d mandatory moves\n", nb_seq);
+      list_print(moves_list);
+      puts("Which sequence do you want to play?");
+    }
+
+//--------------------------SDL handle mouse---------------------------------//
+   if (!shell_mode)
+   {
+ev:  SDL_WaitEvent(&event);
+     switch(event.type)
+     {
+       case SDL_QUIT:
+         break;
+       case SDL_MOUSEBUTTONDOWN:
+         if (event.button.button == SDL_BUTTON_LEFT)
+         {
+           puts("Click!"); // Do something
+         }
+         else if (event.button.button == SDL_BUTTON_RIGHT) // Switch to shell
+         {
+           puts("Use shell now");
+           shell_mode = 1;
+           fflush_stdin();
+           fputc('\n', stdin);
+         }
+         break;
+       default:
+         goto ev;
+      }
+   }
+
 //--------------------------SDL print board----------------------------------//
    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0,0,0));
 
@@ -150,6 +211,9 @@ int main(int argc, char **argv)
 
        if (c.background == LIGHT)
          SDL_BlitSurface(W, NULL, screen, &position);
+       else if (c.background == ORIG) {
+         SDL_BlitSurface(W, NULL, screen, &position);
+       }
        else
        {
          switch (c.data)
@@ -175,38 +239,22 @@ int main(int argc, char **argv)
     }
 
     SDL_Flip(screen);
-//--------------------------SDL fin print------------------------------------//
-
-// END OF GAME
-    if ((board->player == PLAYER_WHITE && board->nb_white == 0)
-     || (board->player == PLAYER_BLACK && board->nb_black == 0))
-    {
-      can_play = 0;
-      puts("No more pieces!");
-      continue;
-    }
-
-// FIND MANDATORY JUMPS
-    if (moves_list)
-      free_moves(moves_list);
-    moves_list = build_moves(board);
-    int nb_seq = list_len(moves_list);
-    if (nb_seq > 0)
-    {
-      printf("You have %d mandatory moves\n", nb_seq);
-      list_print(moves_list);
-      puts("Which sequence do you want to play?");
-    }
+//--------------------------SDL end print------------------------------------//
 
 // PARSE KEYBOARD INPUT
+  if (shell_mode)
+  {
     res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
-                      i_seq, filename);
+                      i_seq, filename, &shell_mode);
+    if (res == -2)
+      continue;
     while (res == -1) //error
     {
       print_error("Problem when reading your input");
       res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
-                        i_seq, filename);
+                        i_seq, filename, &shell_mode);
     }
+  }
 
 // ACTIONS
 // MOVE
