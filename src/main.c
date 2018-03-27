@@ -36,20 +36,20 @@ int parse_input(int *curLine, int *curCol,
     {
       *shell_mode = 0;
       puts("Use mouse now");
-      return -2;
+      return SWITCH_TO_MOUSE;
     }
 
     if (strncmp(input, "quit", 4) == 0)
-      return 1;
+      return QUIT;
 
     if (strncmp(input, "help", 4) == 0)
-      return 2;
+      return HELP;
 
     if (strncmp(input, "undo", 4) == 0)
-      return 4;
+      return UNDO;
 
     if (strncmp(input, "redo", 4) == 0)
-      return 5;
+      return REDO;
 
     if (strncmp(input, "save", 4) == 0)
     {
@@ -58,7 +58,7 @@ int parse_input(int *curLine, int *curCol,
       tmp = strtok(NULL, " "); // parse filename
       if (tmp) // if user has typed a filename
         strncpy(filename, tmp, strlen(tmp) - 1);
-      return 3;
+      return SAVE;
     }
 
     if (input[0] >= 48 && input[0] <= 57) // digit
@@ -192,9 +192,9 @@ ev:  SDL_WaitEvent(&event);
          if (event.button.button == SDL_BUTTON_LEFT)
          {
            puts("Left Click! Click right to use terminal");
-           pos.x = event.button.x / 75;
-	   pos.y = event.button.y / 75;
-	   printf("%d, %d\n",pos.x,pos.y);
+           pos.x = event.button.x / BLOCK_SIZE;
+           pos.y = event.button.y / BLOCK_SIZE;
+           printf("%d, %d\n",pos.x,pos.y);
          }
          else if (event.button.button == SDL_BUTTON_RIGHT) // Switch to shell
          {
@@ -202,6 +202,34 @@ ev:  SDL_WaitEvent(&event);
            shell_mode = 1;
            fflush_stdin();
            fputc('\n', stdin);
+         }
+         break;
+       case SDL_KEYDOWN:
+         switch (event.key.keysym.sym)
+         {
+           case SDLK_ESCAPE:
+             res = QUIT;
+             break;
+           case SDLK_h:
+             res = HELP;
+             break;
+           case SDLK_s:
+             res = SAVE;
+             break;
+           case SDLK_u:
+             res = UNDO;
+             break;
+           case SDLK_r:
+             res = REDO;
+             break;
+           case SDLK_k:
+             puts("Use shell now, you may press ENTER");
+             shell_mode = 1;
+             fflush_stdin();
+             fputc('\n', stdin);
+             break;
+           default:
+             break;
          }
          break;
        default:
@@ -310,14 +338,14 @@ ev:  SDL_WaitEvent(&event);
     }
 
 // QUIT
-    if (res == 1)
+    if (res == QUIT)
     {
       can_play = 0;
       continue;
     }
 
 // HELP
-    if (res == 2)
+    if (res == HELP)
     {
       puts("Type 4 digits separated by space character:"
         " current line and column, destination line and column\n"
@@ -326,7 +354,7 @@ ev:  SDL_WaitEvent(&event);
     }
 
 // SAVE
-    if (res == 3)
+    if (res == SAVE)
     {
       if (strlen(filename) == 0)
       {
@@ -341,7 +369,7 @@ ev:  SDL_WaitEvent(&event);
     }
 
 // UNDO
-    if (res == 4)
+    if (res == UNDO)
     {
       if (list_len(board->undo) > 0)
         undo_move(board);
@@ -351,7 +379,7 @@ ev:  SDL_WaitEvent(&event);
     }
 
 // REDO
-    if (res == 5)
+    if (res == REDO)
     {
       if (list_len(board->redo) > 0)
         redo_move(board);
