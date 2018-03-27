@@ -189,11 +189,12 @@ ev:  SDL_WaitEvent(&event);
        case SDL_MOUSEBUTTONDOWN:
          if (event.button.button == SDL_BUTTON_LEFT)
          {
-           puts("Click!"); // Do something
+           puts("Left Click! Click right to use terminal");
+           // Do something here...
          }
          else if (event.button.button == SDL_BUTTON_RIGHT) // Switch to shell
          {
-           puts("Use shell now");
+           puts("Use shell now, you may press ENTER");
            shell_mode = 1;
            fflush_stdin();
            fputc('\n', stdin);
