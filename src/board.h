@@ -14,7 +14,12 @@
 typedef enum Color Color;
 enum Color
 {
-  LIGHT, DARK
+  LIGHT,
+  DARK, // DEFAULT
+  SELECTED, // "player has selected one of his pieces"
+  ORIG, // "player can play from this case"
+  DEST, // "red point on a empty case"
+  CROSSPOINT // "not the final dest"
 };
 
 struct cell
