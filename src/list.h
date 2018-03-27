@@ -22,6 +22,8 @@ struct move_seq
   struct coords dest;
   struct coords captures[20]; // only in sentinel
   int nb_captures; // only in sentinel
+  int can_be_played; // only in sentinel,
+                     // used for playing a sequence one jump at the time
 };
 
 /*
