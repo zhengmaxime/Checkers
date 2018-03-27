@@ -61,6 +61,7 @@ int list_is_empty(struct moves *list);
  */
 size_t list_len(struct moves *list);
 void list_print(struct moves *list);
+void set_orig_cases(struct board *b, struct moves *list);
 
 /*
  * list_push_front(list, elm)

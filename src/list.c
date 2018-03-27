@@ -80,6 +80,18 @@ void list_print(struct moves *list)
     puts("");
   }
 }
+
+void set_orig_cases(struct board *b, struct moves *list)
+{
+  int i;
+  list = list->next;
+  for (i = 1; list; list = list->next, ++i)
+  {
+    struct move_seq *seq = list->seq->next;
+    b->cells[seq->orig.x][seq->orig.y].background = ORIG;
+  }
+}
+
 /*
  * list_push_front(list, elm)
  * attach elm in front of list, that is after the sentinel.
