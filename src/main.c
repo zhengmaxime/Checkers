@@ -179,6 +179,8 @@ int main(int argc, char **argv)
     }
 
 //--------------------------SDL handle mouse---------------------------------//
+SDL_Rect pos;
+
    if (!shell_mode)
    {
 ev:  SDL_WaitEvent(&event);
@@ -190,7 +192,9 @@ ev:  SDL_WaitEvent(&event);
          if (event.button.button == SDL_BUTTON_LEFT)
          {
            puts("Left Click! Click right to use terminal");
-           // Do something here...
+           pos.x = event.button.x / 75;
+	   pos.y = event.button.y / 75;
+	   printf("%d, %d\n",pos.x,pos.y);
          }
          else if (event.button.button == SDL_BUTTON_RIGHT) // Switch to shell
          {
