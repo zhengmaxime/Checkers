@@ -81,6 +81,12 @@ void list_print(struct moves *list)
   }
 }
 
+struct move_seq *seq_get_elm(struct move_seq *seq, int i)
+{
+  for (seq = seq->next; i > 0 && seq; seq = seq->next, --i);
+  return seq;
+}
+
 void set_orig_cases(struct board *b, struct moves *list)
 {
   int i;

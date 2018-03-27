@@ -61,6 +61,7 @@ int list_is_empty(struct moves *list);
  */
 size_t list_len(struct moves *list);
 void list_print(struct moves *list);
+struct move_seq *seq_get_elm(struct move_seq *seq, int i);
 void set_orig_cases(struct board *b, struct moves *list);
 
 /*
