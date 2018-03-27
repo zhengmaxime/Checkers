@@ -127,8 +127,14 @@ int main(int argc, char **argv)
   SDL_Surface *B    = IMG_Load("image_case/casemaron.png" );
   SDL_Surface *B_WP = IMG_Load("image_case/casemaronpieceblanche.png");
   SDL_Surface *B_BP = IMG_Load("image_case/casemaronpiecenoire.png");
+  SDL_Surface *B_WPS = IMG_Load("image_case/casemaronpieceblancheselec.png");
+  SDL_Surface *B_BPS = IMG_Load("image_case/casemaronpiecenoireselec.png");
   SDL_Surface *B_WK = IMG_Load("image_case/casemaronpieceblanchedames.png");
   SDL_Surface *B_BK = IMG_Load("image_case/casemaronpiecenoiredames.png");
+  SDL_Surface *B_WKS = IMG_Load("image_case/casemaronpieceblanchedamesselec.png");
+  SDL_Surface *B_BKS = IMG_Load("image_case/casemaronpiecenoiredamesselec.png");
+  SDL_Surface *B_DES = IMG_Load("image_case/casemarondest.png");
+
 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Rect position;
@@ -148,6 +154,7 @@ int main(int argc, char **argv)
 
   while (can_play)
   {
+    boardInitColor(board);
 // END OF GAME
     if ((board->player == PLAYER_WHITE && board->nb_white == 0)
      || (board->player == PLAYER_BLACK && board->nb_black == 0))
@@ -199,6 +206,7 @@ ev:  SDL_WaitEvent(&event);
 
 //--------------------------SDL print board----------------------------------//
    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0,0,0));
+   SDL_Surface *s;
 
    for (int i = 0 ; i < 10; i++)
    {
@@ -211,27 +219,48 @@ ev:  SDL_WaitEvent(&event);
 
        if (c.background == LIGHT)
          SDL_BlitSurface(W, NULL, screen, &position);
-       else if (c.background == ORIG) {
-         SDL_BlitSurface(W, NULL, screen, &position);
-       }
+
        else
        {
          switch (c.data)
          {
            case 0:
-               SDL_BlitSurface(B, NULL, screen, &position);
+               if (c.background == DEST)
+                   s = B_DES;
+               else
+                   s = B;
+               SDL_BlitSurface(s, NULL, screen, &position);
                break;
            case BP:
-               SDL_BlitSurface(B_BP, NULL, screen, &position);
+               if (c.background == SELECTED)
+                 s = B_BPS;
+               else
+                 s = B_BP;
+               SDL_BlitSurface(s, NULL, screen, &position);
+               // SDL_BlitSurface(B_BP, NULL, screen, &position);
                break;
            case BK:
-               SDL_BlitSurface(B_BK , NULL, screen, &position);
+               if (c.background == SELECTED)
+                 s = B_BKS;
+               else
+                 s = B_BK;
+               SDL_BlitSurface(s, NULL, screen, &position);
+               //SDL_BlitSurface(B_BK , NULL, screen, &position);
                break;
            case WP:
-               SDL_BlitSurface(B_WP, NULL, screen, &position);
+               if (c.background == SELECTED)
+                 s = B_WPS;
+               else
+                 s = B_WP;
+               SDL_BlitSurface(s, NULL, screen, &position);
                break;
            case WK:
-               SDL_BlitSurface(B_WK, NULL, screen, &position);
+               if (c.background == SELECTED)
+                 s = B_WKS;
+               else
+                 s = B_WK;
+               SDL_BlitSurface(s, NULL, screen, &position);
+               //SDL_BlitSurface(B_WK, NULL, screen, &position);
                break;
            }
         }
