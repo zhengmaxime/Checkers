@@ -88,7 +88,15 @@ void set_orig_cases(struct board *b, struct moves *list)
   for (i = 1; list; list = list->next, ++i)
   {
     struct move_seq *seq = list->seq->next;
-    b->cells[seq->orig.x][seq->orig.y].background = ORIG;
+    b->cells[seq->orig.x][seq->orig.y].background = SELECTED;
+    b->cells[seq->dest.x][seq->dest.y].background = DEST;
+    if ( (seq = seq->next) )
+    {
+      for (; seq->next; seq = seq->next)
+        b->cells[seq->orig.x][seq->orig.y].background = DEST;
+      b->cells[seq->orig.x][seq->orig.y].background = DEST;
+      b->cells[seq->dest.x][seq->dest.y].background = DEST;
+    }
   }
 }
 
