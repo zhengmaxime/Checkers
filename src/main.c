@@ -226,7 +226,17 @@ ev:  SDL_WaitEvent(&event);
            puts("Left Click! Click right to use terminal");
            pos.x = event.button.x / BLOCK_SIZE;
            pos.y = event.button.y / BLOCK_SIZE;
-           printf("%d, %d\n",pos.x,pos.y);
+           if (nb_seq <= 0)
+           {
+             if (board->cells[pos.y][pos.x].data == board->player)
+               board->cells[pos.y][pos.x].background = SELECTED;
+           }
+           else
+           {
+             if (board->cells[pos.y][pos.x].background == ORIG)
+               board->cells[pos.y][pos.x].background = SELECTED;
+           }
+           printf("%d, %d\n",pos.y,pos.x);
          }
          else if (event.button.button == SDL_BUTTON_RIGHT) // Switch to shell
          {
