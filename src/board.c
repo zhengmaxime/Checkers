@@ -272,19 +272,17 @@ int move(struct board *b, int curLine, int curCol,
   int err = errManage(b, curLine, curCol, destLine, destCol);
   if (err == 0)
   {
-    __move(b, curLine, curCol, destLine, destCol);
+     __move(b, curLine, curCol, destLine, destCol);
+    struct move_seq *ms = malloc(sizeof (struct move_seq));
+    seq_init(ms); // sentinel
+
+    struct move_seq *elm = malloc(sizeof (struct move_seq));
+    seq_fill(elm, curLine, curCol, destLine, destCol, 0, 0);
+    seq_push_front(ms, elm);
+
+    undo_push(b, ms);
+    pawn_to_king(b);
   }
-
-  struct move_seq *ms = malloc(sizeof (struct move_seq));
-  seq_init(ms); // sentinel
-
-  struct move_seq *elm = malloc(sizeof (struct move_seq));
-  seq_fill(elm, curLine, curCol, destLine, destCol, 0, 0);
-  seq_push_front(ms, elm);
-
-  undo_push(b, ms);
-  pawn_to_king(b);
-
   return err;
 }
 
