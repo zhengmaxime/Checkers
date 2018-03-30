@@ -61,26 +61,26 @@ int parse_input(int *curLine, int *curCol,
       return SAVE;
     }
 
-    if (input[0] >= 48 && input[0] <= 57) // digit
-    {
-      if (seq) // > 0
+      if (input[0] >= 48 && input[0] <= 57) // digit
       {
-        sscanf(input, "%d", i_seq);
-        if (*i_seq > seq || *i_seq <= 0)
-          return -1;
-        else
-          return 0;
+        if (seq) // > 0
+        {
+          sscanf(input, "%d", i_seq);
+          if (*i_seq > seq || *i_seq <= 0)
+            return -1;
+          else
+            return 0;
+        }
+
+        sscanf(input, "%d %d %d %d", curLine, curCol, destLine, destCol);
+        return 0;
       }
 
-      sscanf(input, "%d %d %d %d", curLine, curCol, destLine, destCol);
-      return 0;
+      return -1; // error
     }
-
-    return -1; // error
+    else
+      return -1; // error
   }
-  else
-    return -1; // error
-}
 
 int main(int argc, char **argv)
 {
@@ -180,6 +180,10 @@ int main(int argc, char **argv)
 // Main loop
   int can_play = 1;
   int shell_mode = 0;
+  int selected_x = -1;
+  int selected_y = -1;
+  int dest_x = -1;
+  int dest_y = -1;
 
   while (can_play)
   {
@@ -194,8 +198,8 @@ int main(int argc, char **argv)
     }
 
 // HUMAN PLAYER
-if (cpu == 0 || board->player == human)
-{
+    if (cpu == 0 || board->player == human)
+    {
 // FIND MANDATORY JUMPS
       if (moves_list)
         free_moves(moves_list);
@@ -208,36 +212,124 @@ if (cpu == 0 || board->player == human)
         list_print(moves_list);
         puts("Which sequence do you want to play?");
       }
-
-
 //--------------------------SDL handle mouse---------------------------------//
-SDL_Rect pos;
+  SDL_Rect pos;
 
-   if (!shell_mode)
-   {
-ev:  SDL_WaitEvent(&event);
-     switch(event.type)
-     {
-       case SDL_QUIT:
-         break;
-       case SDL_MOUSEBUTTONDOWN:
-         if (event.button.button == SDL_BUTTON_LEFT)
-         {
-           puts("Left Click! Click right to use terminal");
-           pos.x = event.button.x / BLOCK_SIZE;
-           pos.y = event.button.y / BLOCK_SIZE;
-           if (nb_seq <= 0)
+      if (!shell_mode)
+      {
+          if (nb_seq > 0)
+          {
+          //--------------------------SDL print board------------------------//
+             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0,0,0));
+             SDL_Surface *s;
+
+             for (int i = 0 ; i < 10; i++)
+             {
+               for (int j = 0 ; j < 10; j++)
+               {
+                 position.y = i * BLOCK_SIZE;
+                 position.x = j * BLOCK_SIZE;
+
+                 struct cell c = board->cells[i][j];
+
+                 if (c.background == LIGHT)
+                   SDL_BlitSurface(W, NULL, screen, &position);
+
+                 else
+                 {
+                   switch (c.data)
+                   {
+                     case 0:
+                         if (c.background == DEST)
+                             s = B_DES;
+                         else
+                             s = B;
+                         SDL_BlitSurface(s, NULL, screen, &position);
+                         break;
+                     case BP:
+                         if (c.background == SELECTED)
+                           s = B_BPS;
+                         else if (c.background == ORIG)
+                           s = B_BPSE;
+                         else
+                           s = B_BP;
+                         SDL_BlitSurface(s, NULL, screen, &position);
+                         // SDL_BlitSurface(B_BP, NULL, screen, &position);
+                         break;
+                     case BK:
+                         if (c.background == SELECTED)
+                           s = B_BKS;
+                         else if (c.background == ORIG)
+                           s= B_BKSE;
+                         else
+                           s = B_BK;
+                         SDL_BlitSurface(s, NULL, screen, &position);
+                         //SDL_BlitSurface(B_BK , NULL, screen, &position);
+                         break;
+                     case WP:
+                         if (c.background == SELECTED)
+                           s = B_WPS;
+                         else if (c.background == ORIG)
+                           s = B_WPSE;
+                         else
+                           s = B_WP;
+                         SDL_BlitSurface(s, NULL, screen, &position);
+                         break;
+                     case WK:
+                         if (c.background == SELECTED)
+                           s = B_WKS;
+                         else if (c.background == ORIG)
+                           s = B_WKSE;
+                         else
+                           s = B_WK;
+                         SDL_BlitSurface(s, NULL, screen, &position);
+                         //SDL_BlitSurface(B_WK, NULL, screen, &position);
+                         break;
+                     }
+                  }
+                }
+              }
+
+              SDL_Flip(screen);
+          //--------------------------SDL end print--------------------------//
+          }
+  ev:  SDL_WaitEvent(&event);
+       switch(event.type)
+       {
+         case SDL_QUIT:
+           break;
+         case SDL_MOUSEBUTTONDOWN:
+           if (event.button.button == SDL_BUTTON_LEFT)
            {
-             if (board->cells[pos.y][pos.x].data == board->player)
-               board->cells[pos.y][pos.x].background = SELECTED;
+             puts("Left Click! Click right to use terminal");
+             pos.x = event.button.x / BLOCK_SIZE;
+             pos.y = event.button.y / BLOCK_SIZE;
+             if (nb_seq <= 0)
+             {
+               if (board->cells[pos.y][pos.x].data == board->player)
+               {
+                 board->cells[pos.y][pos.x].background = SELECTED;
+                 selected_x = pos.y;
+                 selected_y = pos.x;
+               }
+
+               if (board->cells[pos.y][pos.x].data == 0)
+               {
+                 dest_x = pos.y;
+                 dest_y = pos.x;
+               }
+             }
+             else
+             {
+               if (board->cells[pos.y][pos.x].background == ORIG)
+               {
+                 board->cells[pos.y][pos.x].background = SELECTED;
+                 selected_x = pos.y;
+                 selected_y = pos.x;
+               }
+             }
+             printf("%d, %d\n",pos.y,pos.x);
            }
-           else
-           {
-              if (board->cells[pos.y][pos.x].background == ORIG)
-               board->cells[pos.y][pos.x].background = SELECTED;
-           }
-           printf("%d, %d\n",pos.y,pos.x);
-         }
          else if (event.button.button == SDL_BUTTON_RIGHT) // Switch to shell
          {
            puts("Use shell now, you may press ENTER");
@@ -276,9 +368,9 @@ ev:  SDL_WaitEvent(&event);
          break;
        default:
          goto ev;
-      }
-   }
-} // END of human part
+       }
+     }
+  } // END of human part
 
 //--------------------------SDL print board----------------------------------//
 PRINT:
@@ -356,41 +448,58 @@ PRINT:
 //--------------------------SDL end print------------------------------------//
 
 // IA PLAYER
-if ((board->player) == cpu)
-{
-  puts("IA is thinking...");
-  sleep(3);
-  // puts("IA is supposed to play there");
-  struct move_seq *ia_move = get_IA_move();
-  if (ia_move != NULL)
-    exec_seq_IA(board, ia_move);
-  else
+  if ((board->player) == cpu)
   {
-    undo_push(board, NULL);
-    print_error("No move has been found by the IA");
+    puts("IA is thinking...");
+    sleep(3);
+    // puts("IA is supposed to play there");
+    struct move_seq *ia_move = get_IA_move();
+    if (ia_move != NULL)
+      exec_seq_IA(board, ia_move);
+    else
+    {
+      undo_push(board, NULL);
+      print_error("No move has been found by the IA");
+    }
+    board->player *= -1;
+    printBoard(board);
+    goto PRINT;
   }
-  board->player *= -1;
-  printBoard(board);
-  goto PRINT;
-}
 
 // HUMAN PLAYER
-if (cpu == 0 || board->player == human)
-{
-// PARSE KEYBOARD INPUT
-  if (shell_mode)
+  if (cpu == 0 || board->player == human)
   {
-    res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
-                      i_seq, filename, &shell_mode);
-    if (res == -2)
-      continue;
-    while (res == -1) //error
+ // PARSE KEYBOARD INPUT
+    if (shell_mode)
     {
-      print_error("Problem when reading your input");
       res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
                         i_seq, filename, &shell_mode);
+      if (res == -2)
+        continue;
+      while (res == -1) //error
+      {
+        print_error("Problem when reading your input");
+        res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
+                          i_seq, filename, &shell_mode);
+      }
     }
-  }
+
+    else
+    {
+      if (selected_x != -1 && selected_y != -1 && dest_x != -1 && dest_y != -1)
+        if (0 == move(board, selected_x, selected_y, dest_x, dest_y))
+        {
+          selected_x = -1;
+          selected_y = -1;
+          dest_x = -1;
+          dest_y = -1;
+          board->player *= -1;
+          *i_seq = 0;
+          free_moves(board->redo);
+          redo_init(board);
+          goto PRINT;
+        }
+    }
 
 // ACTIONS
 // MOVE
@@ -450,6 +559,8 @@ if (cpu == 0 || board->player == human)
         undo_move(board);
         if (cpu && (list_len(board->undo) > 0))
           undo_move(board);
+        res = -1;
+        goto PRINT;
       }
       else
         print_error("No previous move");
@@ -464,6 +575,8 @@ if (cpu == 0 || board->player == human)
         redo_move(board);
         if (cpu && (list_len(board->redo) > 0))
           redo_move(board);
+        res = -1;
+        goto PRINT;
       }
       else
         print_error("No previous move");
