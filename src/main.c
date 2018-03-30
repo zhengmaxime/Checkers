@@ -159,8 +159,12 @@ int main(int argc, char **argv)
   SDL_Surface *B_WKS = IMG_Load("image_case/casemaronpieceblanchedamesselec.png");
   SDL_Surface *B_BKS = IMG_Load("image_case/casemaronpiecenoiredamesselec.png");
   SDL_Surface *B_DES = IMG_Load("image_case/casemarondest.png");
+  SDL_Surface *B_WKSE = IMG_Load("image_case/casemaronpieceblanchedamesselected.png");
+  SDL_Surface *B_BKSE = IMG_Load("image_case/casemaronpiecenoiredamesselected.png");
+  SDL_Surface *B_BPSE = IMG_Load("image_case/casemaronpiecenoireselected.png");
+  SDL_Surface *B_WPSE = IMG_Load("image_case/casemaronpieceblancheselected.png");
 
-
+ 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Rect position;
   SDL_Event event;
@@ -297,6 +301,8 @@ PRINT:
            case BP:
                if (c.background == SELECTED)
                  s = B_BPS;
+               else if (c.background == CROSSPOINT)
+                 s= B_BPSE;
                else
                  s = B_BP;
                SDL_BlitSurface(s, NULL, screen, &position);
@@ -305,6 +311,9 @@ PRINT:
            case BK:
                if (c.background == SELECTED)
                  s = B_BKS;
+               else if (c.background == CROSSPOINT)
+                 s= B_BKSE;
+
                else
                  s = B_BK;
                SDL_BlitSurface(s, NULL, screen, &position);
@@ -313,6 +322,8 @@ PRINT:
            case WP:
                if (c.background == SELECTED)
                  s = B_WPS;
+ 	       else if (c.background == CROSSPOINT)
+                 s= B_WPSE;
                else
                  s = B_WP;
                SDL_BlitSurface(s, NULL, screen, &position);
@@ -320,6 +331,9 @@ PRINT:
            case WK:
                if (c.background == SELECTED)
                  s = B_WKS;
+               else if (c.background == CROSSPOINT)
+                 s= B_WKSE;
+
                else
                  s = B_WK;
                SDL_BlitSurface(s, NULL, screen, &position);
