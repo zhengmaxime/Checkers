@@ -88,7 +88,7 @@ struct move_seq *seq_get_elm(struct move_seq *seq, int i)
   return seq;
 }
 
-void set_orig_cases(struct board *b, struct moves *list)
+void set_orig_cases(struct board *b, struct moves *list, int nb_seq)
 {
   int i;
   list = list->next;
@@ -96,6 +96,8 @@ void set_orig_cases(struct board *b, struct moves *list)
   {
     struct move_seq *seq = list->seq->next;
     b->cells[seq->orig.x][seq->orig.y].background = ORIG;
+    if (nb_seq == 1)
+      b->cells[seq->orig.x][seq->orig.y].background = SELECTED;
     b->cells[seq->dest.x][seq->dest.y].background = DEST;
     if ( (seq = seq->next) )
     {
