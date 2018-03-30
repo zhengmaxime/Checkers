@@ -102,6 +102,31 @@ int main(int argc, char **argv)
     boardInit(board);
   boardInitColor(board);
 
+  int a;
+  int cpu = PLAYER_BLACK;
+  int human = PLAYER_WHITE;
+  puts("Type a digit:\n"
+       "0: 2 players\n"
+       "1: human plays white, cpu plays black\n"
+       "2: human plays black, cpu plays white\n");
+  scanf("%d", &a);
+  if (a == 0)
+  {
+    puts("Mode 2 joueurs");
+    cpu = 0;
+    human = 0;
+  }
+  else if (a == 1)
+  {
+    puts("human plays white, cpu plays black");
+  }
+  else
+  {
+    puts("human plays black, cpu plays white");
+    cpu = PLAYER_WHITE;
+    human = PLAYER_BLACK;
+  }
+
 // Print it
   printf("This is the start of the game\n");
   printBoard(board);
@@ -117,7 +142,7 @@ int main(int argc, char **argv)
   destCol  = malloc(sizeof (int));
   i_seq    = calloc(1, sizeof (int));
   char *filename = calloc(1024, 1);
-  int res;
+  int res, nb_seq;
   struct moves *moves_list = NULL;
 
 //------------------------------SDL init-------------------------------------//
@@ -164,19 +189,22 @@ int main(int argc, char **argv)
       continue;
     }
 
-
+// HUMAN PLAYER
+if (cpu == 0 || board->player == human)
+{
 // FIND MANDATORY JUMPS
-    if (moves_list)
-      free_moves(moves_list);
-    moves_list = build_moves(board);
-    set_orig_cases(board, moves_list);
-    int nb_seq = list_len(moves_list);
-    if (nb_seq > 0)
-    {
-      printf("You have %d mandatory moves\n", nb_seq);
-      list_print(moves_list);
-      puts("Which sequence do you want to play?");
-    }
+      if (moves_list)
+        free_moves(moves_list);
+      moves_list = build_moves(board);
+      set_orig_cases(board, moves_list);
+      nb_seq = list_len(moves_list);
+      if (nb_seq > 0)
+      {
+        printf("You have %d mandatory moves\n", nb_seq);
+        list_print(moves_list);
+        puts("Which sequence do you want to play?");
+      }
+
 
 //--------------------------SDL handle mouse---------------------------------//
 SDL_Rect pos;
@@ -236,8 +264,10 @@ ev:  SDL_WaitEvent(&event);
          goto ev;
       }
    }
+} // END of human part
 
 //--------------------------SDL print board----------------------------------//
+PRINT:
    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0,0,0));
    SDL_Surface *s;
 
@@ -303,6 +333,20 @@ ev:  SDL_WaitEvent(&event);
     SDL_Flip(screen);
 //--------------------------SDL end print------------------------------------//
 
+// IA PLAYER
+if ((board->player) == cpu)
+{
+  puts("IA is thinking...");
+  sleep(3);
+  puts("IA is supposed to play there");
+  board->player *= -1;
+  printBoard(board);
+  goto PRINT;
+}
+
+// HUMAN PLAYER
+if (cpu == 0 || board->player == human)
+{
 // PARSE KEYBOARD INPUT
   if (shell_mode)
   {
@@ -387,7 +431,7 @@ ev:  SDL_WaitEvent(&event);
         print_error("No previous move");
       printBoard(board);
     }
-
+} // END of human part
   } // END of main loop
 
   if (board->player == PLAYER_WHITE)
