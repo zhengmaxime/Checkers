@@ -7,10 +7,10 @@
 # include "find_move.h"
 # include "history.h"
 # include "exec_move.h"
+# include "IA.h"
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 # include "constants.h"
-
 
 void fflush_stdin()
 {
@@ -338,7 +338,15 @@ if ((board->player) == cpu)
 {
   puts("IA is thinking...");
   sleep(3);
-  puts("IA is supposed to play there");
+  // puts("IA is supposed to play there");
+  struct move_seq *ia_move = get_IA_move();
+  if (ia_move != NULL)
+    exec_seq_IA(board, ia_move);
+  else
+  {
+    undo_push(board, NULL);
+    print_error("No move has been found by the IA");
+  }
   board->player *= -1;
   printBoard(board);
   goto PRINT;

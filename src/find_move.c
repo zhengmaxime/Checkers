@@ -4,9 +4,6 @@
 # include "piece.h"
 # include "list.h"
 # include "find_move.h"
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <unistd.h>
 
 int is_in_array(struct coords captures[], int nb_captures, int x, int y)
 {

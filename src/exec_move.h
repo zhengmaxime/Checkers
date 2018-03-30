@@ -11,6 +11,8 @@ int exec_seq(struct board *b, struct move_seq *list);
 
 int exec_seq_in_list(struct board *b, struct moves *list, int i);
 
+int exec_seq_IA(struct board *b, struct move_seq *seq);
+
 /* exec a sequence in reverse */
 void exec_seq_reverse(struct board *b, struct moves *m);
 
