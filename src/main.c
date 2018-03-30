@@ -416,7 +416,11 @@ if (cpu == 0 || board->player == human)
     if (res == UNDO)
     {
       if (list_len(board->undo) > 0)
+      {
         undo_move(board);
+        if (cpu && (list_len(board->undo) > 0))
+          undo_move(board);
+      }
       else
         print_error("No previous move");
       printBoard(board);
@@ -426,7 +430,11 @@ if (cpu == 0 || board->player == human)
     if (res == REDO)
     {
       if (list_len(board->redo) > 0)
+      {
         redo_move(board);
+        if (cpu && (list_len(board->redo) > 0))
+          redo_move(board);
+      }
       else
         print_error("No previous move");
       printBoard(board);

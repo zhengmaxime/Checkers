@@ -69,14 +69,16 @@ void undo_move(struct board *b)
 {
   struct moves *m = moves_pop_front(b->undo);
 
+  b->player *= -1;
+  redo_push(b, m);
+
+  if (m->seq == NULL) // empty move
+    return;
+
   if (!is_out_of_board(m->crowned.x, m->crowned.y)) // undo crowning
     b->cells[m->crowned.x][m->crowned.y].data /= 2;
 
   exec_seq_reverse(b, m);
-
-  b->player *= -1;
-
-  redo_push(b, m);
 }
 
 /* redo the last move */
@@ -84,9 +86,11 @@ void redo_move(struct board *b)
 {
   struct moves *m = moves_pop_front(b->redo);
 
-  exec_seq(b, m->seq);
-
+  b->player *= -1;
   undo_push(b, m->seq);
 
-  b->player *= -1;
+  if (m->seq == NULL) // empty move
+    return;
+
+  exec_seq(b, m->seq);
 }
