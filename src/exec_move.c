@@ -44,6 +44,7 @@ int exec_seq_in_list(struct board *b, struct moves *list, int i)
       if (0 == exec_seq(b, list->seq))
       {
         undo_push(b, list->seq);
+        set_last_move_trace(b, list->seq);
         list->seq = NULL; // seq has been pushed to undo
         return 0;
       }
@@ -62,6 +63,7 @@ int exec_seq_if_playable(struct board *b, struct moves *list)
       if (0 == exec_seq(b, list->seq))
       {
         undo_push(b, list->seq);
+        set_last_move_trace(b, list->seq);
         list->seq = NULL; // seq has been pushed to undo
         return 0;
       }
@@ -75,6 +77,7 @@ int exec_seq_IA(struct board *b, struct move_seq *seq)
   if (0 == exec_seq(b, seq))
   {
     undo_push(b, seq);
+    set_last_move_trace(b, seq);
     seq = NULL; // seq has been pushed to undo
     return 0;
   }

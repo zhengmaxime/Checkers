@@ -79,6 +79,7 @@ void undo_move(struct board *b)
     b->cells[m->crowned.x][m->crowned.y].data /= 2;
 
   exec_seq_reverse(b, m);
+  set_last_move_trace(b, m->seq);
 }
 
 /* redo the last move */
@@ -93,4 +94,5 @@ void redo_move(struct board *b)
     return;
 
   exec_seq(b, m->seq);
+  set_last_move_trace(b, m->seq);
 }

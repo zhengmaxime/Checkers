@@ -185,6 +185,42 @@ void decolorize(struct board *b, Color c)
   }
 }
 
+void set_last_move_trace(struct board *b, struct move_seq *seq)
+{
+  reset_last_move_trace(b);
+
+  if (seq == NULL)
+    return;
+
+  for (seq = seq->next; seq->next; seq = seq->next)
+    b->cells[seq->orig.x][seq->orig.y].last_move = 1;
+  b->cells[seq->orig.x][seq->orig.y].last_move = 1;
+  b->cells[seq->dest.x][seq->dest.y].last_move = 1;
+}
+
+void reset_last_move_trace(struct board *b)
+{
+  int line, col;
+
+  for (line = 0; line < 10; line += 2)
+  {
+    for (col = 1; col < 10; col += 2)
+    {
+      if (b->cells[line][col].last_move)
+        b->cells[line][col].last_move = 0;
+    }
+  }
+
+  for (line = 1; line < 10; line += 2)
+  {
+    for (col = 0; col < 10; col += 2)
+    {
+      if (b->cells[line][col].last_move)
+        b->cells[line][col].last_move = 0;
+    }
+  }
+}
+
 struct coords get_selected(struct board *b)
 {
   int line, col;

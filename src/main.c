@@ -90,6 +90,7 @@ int main(int argc, char **argv)
   SDL_Surface *B_BPSE = IMG_Load("image_case/casemaronpiecenoireselected.png");
   SDL_Surface *B_WPSE = IMG_Load("image_case/casemaronpieceblancheselected.png");
 
+  SDL_Surface *T = IMG_Load("image_case/last_move_trace.bmp");
 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_EnableKeyRepeat(100, 100);
@@ -199,7 +200,7 @@ int main(int argc, char **argv)
                if (c.background == SELECTED)
                  s = B_BKS;
                else if (c.background == ORIG)
-                 s= B_BKSE;
+                 s = B_BKSE;
                else
                  s = B_BK;
                SDL_BlitSurface(s, NULL, screen, &position);
@@ -224,7 +225,17 @@ int main(int argc, char **argv)
                break;
            }
         }
-      }
+
+        if (board->cells[i][j].last_move == 1)
+          // mark last move
+        {
+          // use transparency
+          // 255,0,0 = red
+          SDL_SetColorKey(T, SDL_SRCCOLORKEY, SDL_MapRGB(T->format, 255, 0, 0));
+
+          SDL_BlitSurface(T, NULL, screen, &position);
+        }
+     }
     }
 
     SDL_Flip(screen);
@@ -268,6 +279,7 @@ int main(int argc, char **argv)
          selected_x = pos.y;
          selected_y = pos.x;
          res = MOUSE;
+         reset_last_move_trace(board);
        }
        break;
 

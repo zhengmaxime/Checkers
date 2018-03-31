@@ -109,6 +109,7 @@ int move(struct board *b, int curLine, int curCol,
 
     undo_push(b, ms);
     pawn_to_king(b);
+    set_last_move_trace(b, ms);
   }
 
   return err;
