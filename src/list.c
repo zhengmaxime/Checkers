@@ -28,7 +28,7 @@ void seq_init(struct move_seq *list)
     list->captures[i] = c;
   }
   list->nb_captures = 0;
-  list->can_be_played = 1;
+  list->can_be_played = 0;
 }
 
 void moves_init(struct moves *list, struct move_seq *seq)
@@ -66,13 +66,16 @@ size_t list_len(struct moves *list)
   return i;
 }
 
+/*
+ * print all the mandatory moves
+ */
 void list_print(struct moves *list)
 {
   int i;
   list = list->next;
   for (i = 1; list; list = list->next, ++i)
   {
-    printf("(%02d)", i);
+    printf("(%d)", i);
     struct move_seq *seq = list->seq->next;
     for (; seq; seq = seq->next)
       printf(" -> (%d, %d) to (%d, %d)",
@@ -82,32 +85,13 @@ void list_print(struct moves *list)
   }
 }
 
+// get seq[i]
 struct move_seq *seq_get_elm(struct move_seq *seq, int i)
 {
   for (seq = seq->next; i > 0 && seq; seq = seq->next, --i);
   return seq;
 }
 
-void set_orig_cases(struct board *b, struct moves *list, int nb_seq)
-{
-  int i;
-  list = list->next;
-  for (i = 1; list; list = list->next, ++i)
-  {
-    struct move_seq *seq = list->seq->next;
-    b->cells[seq->orig.x][seq->orig.y].background = ORIG;
-    if (nb_seq == 1)
-      b->cells[seq->orig.x][seq->orig.y].background = SELECTED;
-    b->cells[seq->dest.x][seq->dest.y].background = DEST;
-    if ( (seq = seq->next) )
-    {
-      for (; seq->next; seq = seq->next)
-        b->cells[seq->orig.x][seq->orig.y].background = DEST;
-      b->cells[seq->orig.x][seq->orig.y].background = DEST;
-      b->cells[seq->dest.x][seq->dest.y].background = DEST;
-    }
-  }
-}
 
 /*
  * list_push_front(list, elm)

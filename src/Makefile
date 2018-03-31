@@ -3,10 +3,21 @@
 CC=gcc #-fsanitize=address
 CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 `pkg-config --cflags sdl`
 CFLAGS= -Wall -Wextra -std=c99 -O0 -g
-LDFLAGS=-lSDL -lSDL_image#Linker
+LDFLAGS=-lSDL -lSDL_image #Linker
 LDLIBS=`pkg-config --libs sdl SDL_image`
 
-SRC= board.c piece.c main.c list.c find_move.c history.c exec_move.c IA.c
+SRC= main.c \
+     board.c \
+     piece.c \
+     list.c \
+     simple_move.c \
+     find_move.c \
+     exec_move.c \
+     history.c \
+     IA.c \
+     file.c \
+     shell.c \
+
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
 

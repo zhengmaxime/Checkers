@@ -66,6 +66,23 @@ void boardInitColor(struct board *b)
   }
 }
 
+void count_pieces(struct board *b)
+{
+  b->nb_black = 0;
+  b->nb_white = 0;
+
+  for (int i = 0; i < 10; i++)
+  {
+    for (int j = 0; j < 10; j++)
+    {
+      if (is_white(b->cells[i][j].data))
+        b->nb_white++;
+      if (is_black(b->cells[i][j].data))
+        b->nb_black++;
+    }
+  }
+}
+
 void printBoard(struct board *b)
 {
   b->nb_black = 0;
@@ -104,186 +121,10 @@ void printBoard(struct board *b)
   printf("\nWhite: %d   Black: %d\n", b->nb_white, b->nb_black);
 }
 
-int write_board_to_file(struct board *b, char filename[])
-{
-  FILE *f = fopen(filename, "w");
-  int i, j, piece;
-  char rep[] = {'X','x','.','o','O'};
-
-  for (i = 0; i < 10; i++)
-  {
-    for (j = 0; j < 10; j++)
-    {
-      piece = b->cells[i][j].data;
-      fputc(rep[piece + 2], f);
-    }
-    fputc('\n', f);
-  }
-
-  if (b->player == PLAYER_WHITE)
-    fputc('w', f);
-  if (b->player == PLAYER_BLACK)
-    fputc('b', f);
-
-  fputc('\n', f);
-
-  fclose(f);
-  return 0;
-}
-
-int open_board_from_file(struct board *b, char filename[])
-{
-  FILE *f = fopen(filename, "r");
-  if (f == NULL)
-    return -1;
-
-  struct stat statbuf;
-  stat(filename, &statbuf);
-  if ((statbuf.st_size) != 112)
-  {
-    fclose(f);
-    return -1;
-  }
-
-  int i, j, k, c;
-  char rep[] = {'X','x','.','o','O'};
-
-  for (i = 0; i < 10; i++)
-  {
-    for (j = 0; j < 10; j++)
-    {
-      c = fgetc(f);
-      for (k = 0; k < 5; ++k)
-      {
-        if (rep[k] == c)
-          break;
-      }
-      b->cells[i][j].data = k - 2;
-    }
-    fgetc(f); // \n
-  }
-
-  c = fgetc(f);
-
-  if (c == 'w')
-    b->player = PLAYER_WHITE;
-  if (c == 'b')
-    b->player = PLAYER_BLACK;
-
-  fgetc(f); // \n
-
-  fclose(f);
-  return 0;
-}
 void print_error(const char *str)
 {
   printf("Error: ");
   puts(str);
-}
-
-int errManage(struct board *b, int curLine, int curCol,
-                               int destLine, int destCol)
-{
-  if (is_out_of_board(curLine, curCol) || is_out_of_board(destLine, destCol))
-  {
-    print_error("Out of the board");
-    return -1;
-  }
-
-  int curCell = b->cells[curLine][curCol].data;
-  int destCell = b->cells[destLine][destCol].data;
-
-  if (curCell == 0)
-  {
-    print_error("Empty case");
-    return -2;
-  }
-
-  if (curCell * b->player <= 0)
-  {
-    print_error("Not your piece");
-    return -2;
-  }
-
-  if (destCell)
-  {
-    print_error("Destination cell is occupied");
-    return -4;
-  }
-
-  if (is_pawn(curCell))
-  {
-    if ((abs(curLine - destLine) != 1) || (1 != abs(curCol - destCol)))
-    {
-      print_error("Pawn move one square diagonally");
-      return -3;
-    }
-  }
-  else
-  {
-    if (abs(curLine - destLine) != abs(curCol - destCol))
-    {
-      print_error("King move diagonally");
-      return -3;
-    }
-    else // Check if the diagonal is empty (king can't jump over another piece)
-    {
-      int x = curLine;
-      int y = curCol;
-      int dx = ((destLine - curLine) > 0) ? 1 : -1;
-      int dy = ((destCol - curCol) > 0) ? 1 : -1;
-
-      while (x != destLine && y != destCol && b->cells[x][y].data == 0)
-      {
-        x += dx;
-        y += dy;
-      }
-
-      if (b->cells[x + dx][y + dy].data != 0)
-      {
-        print_error("King is blocked by another piece");
-        return -3;
-      }
-    }
-  }
-
-  if ( (curCell == WP && curLine <= destLine) ||
-       (curCell == BP && curLine >= destLine))
-  {
-    print_error("Pawn can not move backward");
-    return -5;
-  }
-
-  return 0;
-}
-
-//move the piece once we're sure the deplacement is valid
-void __move(struct board *b, int curLine, int curCol, int destLine, int destCol)
-{
-  int curPos = b->cells[curLine][curCol].data;
-  b->cells[destLine][destCol].data = curPos;
-  b->cells[curLine][curCol].data = 0;
-}
-
-
-int move(struct board *b, int curLine, int curCol,
-                          int destLine, int destCol)
-{
-  int err = errManage(b, curLine, curCol, destLine, destCol);
-  if (err == 0)
-  {
-     __move(b, curLine, curCol, destLine, destCol);
-    struct move_seq *ms = malloc(sizeof (struct move_seq));
-    seq_init(ms); // sentinel
-
-    struct move_seq *elm = malloc(sizeof (struct move_seq));
-    seq_fill(elm, curLine, curCol, destLine, destCol, 0, 0);
-    seq_push_front(ms, elm);
-
-    undo_push(b, ms);
-    pawn_to_king(b);
-  }
-  return err;
 }
 
 int pawn_to_king(struct board *b)
@@ -319,4 +160,118 @@ int pawn_to_king(struct board *b)
     save_king_coords(b, line, col);
 
   return res;
+}
+
+void decolorize(struct board *b, Color c)
+{
+  int line, col;
+
+  for (line = 0; line < 10; line += 2)
+  {
+    for (col = 1; col < 10; col += 2)
+    {
+      if (b->cells[line][col].background == c)
+        b->cells[line][col].background = DARK;
+    }
+  }
+
+  for (line = 1; line < 10; line += 2)
+  {
+    for (col = 0; col < 10; col += 2)
+    {
+      if (b->cells[line][col].background == c)
+        b->cells[line][col].background = DARK;
+    }
+  }
+}
+
+struct coords get_selected(struct board *b)
+{
+  int line, col;
+  struct coords res;
+  res.x = -1;
+  res.y = -1;
+
+  for (line = 0; line < 10; line += 2)
+  {
+    for (col = 1; col < 10; col += 2)
+    {
+      if (b->cells[line][col].background == SELECTED)
+      {
+        res.x = line;
+        res.y = col;
+        return res;
+      }
+    }
+  }
+
+  for (line = 1; line < 10; line += 2)
+  {
+    for (col = 0; col < 10; col += 2)
+    {
+      if (b->cells[line][col].background == SELECTED)
+      {
+        res.x = line;
+        res.y = col;
+        return res;
+      }
+    }
+  }
+
+  return res;
+}
+int is_same_color(struct board *b, int x, int y)
+{
+  if (is_out_of_board(x, y))
+    return 0;
+  return (b->cells[x][y].data * b->player > 0);
+}
+
+int is_empty(struct board *b, int x, int y)
+{
+  if (is_out_of_board(x, y))
+    return 0;
+  return (b->cells[x][y].data == 0);
+}
+
+void set_background(struct board *b, int x, int y, Color c)
+{
+  b->cells[x][y].background = c;
+}
+
+Color get_background(struct board *b, int x, int y)
+{
+  return b->cells[x][y].background;
+}
+
+int set_orig_cases(struct board *b, struct moves *list)
+{
+  int nb_orig = 0;
+  list = list->next;
+
+  for (; list; list = list->next)
+  {
+    struct move_seq *seq = list->seq->next;
+
+    if (get_background(b, seq->orig.x, seq->orig.y) != ORIG)
+    {
+      set_background(b, seq->orig.x, seq->orig.y, ORIG);
+      nb_orig++;
+    }
+
+    if (list->next == NULL && nb_orig == 1)
+      set_background(b, seq->orig.x, seq->orig.y, SELECTED);
+
+    set_background(b, seq->dest.x, seq->dest.y, DEST);
+
+    if ( (seq = seq->next) )
+    {
+      for (; seq->next; seq = seq->next)
+        set_background(b, seq->orig.x, seq->orig.y, DEST);
+      set_background(b, seq->orig.x, seq->orig.y, DEST);
+      set_background(b, seq->dest.x, seq->dest.y, DEST);
+    }
+  }
+
+  return nb_orig;
 }

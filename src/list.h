@@ -1,6 +1,9 @@
 /* Linked lists */
-# ifndef EPITA_IP_LIST_H_
-# define EPITA_IP_LIST_H_
+
+// Data structures for sequences and list of sequences
+
+# ifndef LIST_H_
+# define LIST_H_
 
 # include "board.h"
 # include <unistd.h>
@@ -62,9 +65,14 @@ int list_is_empty(struct moves *list);
  * returns the length of the list (don't count the sentinel)
  */
 size_t list_len(struct moves *list);
+
+/*
+ * print all the mandatory moves
+ */
 void list_print(struct moves *list);
+
+// get seq[i]
 struct move_seq *seq_get_elm(struct move_seq *seq, int i);
-void set_orig_cases(struct board *b, struct moves *list, int nb_seq);
 
 /*
  * list_push_front(list, elm)
@@ -105,4 +113,4 @@ void list_rev(struct move_seq *list);
 void free_seq(struct move_seq *l);
 void free_moves(struct moves *l);
 
-# endif /* EPITA_IP_LIST_H_ */
+# endif /* LIST_H_ */

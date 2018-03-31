@@ -11,6 +11,7 @@
 # include "list.h"
 # include "find_move.h"
 # include "exec_move.h"
+# include "simple_move.h"
 # include "history.h"
 # include "IA.h"
 

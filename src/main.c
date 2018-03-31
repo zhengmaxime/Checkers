@@ -7,80 +7,15 @@
 # include "find_move.h"
 # include "history.h"
 # include "exec_move.h"
+# include "simple_move.h"
+# include "shell.h"
 # include "IA.h"
+# include "file.h"
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 # include "constants.h"
 
-void fflush_stdin()
-{
-  int c = 0;
-  while (c != '\n' && c != EOF)
-    c = getchar();
-}
-
-int parse_input(int *curLine, int *curCol,
-                int *destLine, int *destCol,
-                int seq, int *i_seq, char *filename,
-                int *shell_mode)
-{
-  puts("Shell mode");
-  char input[20] = {0};
-
-  if (fgets(input, 20, stdin) != NULL) // reads 18 char + \n, store to input
-  {
-    if (strchr(input, '\n') == NULL) // input too long, didn't find \n
-      fflush_stdin(); // prevent overflow
-
-    if (strncmp(input, "sdl", 3) == 0) // switch to mouse
-    {
-      *shell_mode = 0;
-      puts("Use mouse now");
-      return SWITCH_TO_MOUSE;
-    }
-
-    if (strncmp(input, "quit", 4) == 0)
-      return QUIT;
-
-    if (strncmp(input, "help", 4) == 0)
-      return HELP;
-
-    if (strncmp(input, "undo", 4) == 0)
-      return UNDO;
-
-    if (strncmp(input, "redo", 4) == 0)
-      return REDO;
-
-    if (strncmp(input, "save", 4) == 0)
-    {
-      char *tmp; // type "save filename"
-      tmp = strtok(input, " "); // parse save
-      tmp = strtok(NULL, " "); // parse filename
-      if (tmp) // if user has typed a filename
-        strncpy(filename, tmp, strlen(tmp) - 1);
-      return SAVE;
-    }
-
-      if (input[0] >= 48 && input[0] <= 57) // digit
-      {
-        if (seq) // > 0
-        {
-          sscanf(input, "%d", i_seq);
-          if (*i_seq > seq || *i_seq <= 0)
-            return -1;
-          else
-            return 0;
-        }
-
-        sscanf(input, "%d %d %d %d", curLine, curCol, destLine, destCol);
-        return 0;
-      }
-
-      return -1; // error
-    }
-    else
-      return -1; // error
-  }
+# define IS_VALID(x, y) x >= 0 && y >= 0
 
 int main(int argc, char **argv)
 {
@@ -102,6 +37,7 @@ int main(int argc, char **argv)
     boardInit(board);
   boardInitColor(board);
 
+// Mode choice
   int a;
   int cpu = PLAYER_BLACK;
   int human = PLAYER_WHITE;
@@ -112,7 +48,7 @@ int main(int argc, char **argv)
   scanf("%d", &a);
   if (a == 0)
   {
-    puts("Mode 2 joueurs");
+    puts("2 players mode");
     cpu = 0;
     human = 0;
   }
@@ -127,22 +63,11 @@ int main(int argc, char **argv)
     human = PLAYER_BLACK;
   }
 
-// Print it
-  printf("This is the start of the game\n");
-  printBoard(board);
-
 // Init
   undo_init(board);
   redo_init(board);
 
-  int *curLine, *curCol, *destLine, *destCol, *i_seq;
-  curLine  = malloc(sizeof (int));
-  curCol   = malloc(sizeof (int));
-  destLine = malloc(sizeof (int));
-  destCol  = malloc(sizeof (int));
-  i_seq    = calloc(1, sizeof (int));
-  char *filename = calloc(1024, 1);
-  int res, nb_seq;
+  int res, mandatory_jumps;
   struct moves *moves_list = NULL;
 
 //------------------------------SDL init-------------------------------------//
@@ -166,6 +91,7 @@ int main(int argc, char **argv)
 
 
   SDL_Init(SDL_INIT_VIDEO);
+  SDL_EnableKeyRepeat(100, 100);
   SDL_Rect position;
   SDL_Event event;
 
@@ -179,201 +105,56 @@ int main(int argc, char **argv)
 
 // Main loop
   int can_play = 1;
-  int shell_mode = 0;
   int selected_x = -1;
   int selected_y = -1;
+  int orig_x = -1;
+  int orig_y = -1;
   int dest_x = -1;
   int dest_y = -1;
+  int search_jumps = 1;
+  int nb_orig = 0;
 
   while (can_play)
   {
-    boardInitColor(board);
-// END OF GAME
+    res = -1;
+    selected_x = -1;
+    selected_y = -1;
+
+    count_pieces(board);
+
     if ((board->player == PLAYER_WHITE && board->nb_white == 0)
      || (board->player == PLAYER_BLACK && board->nb_black == 0))
     {
       can_play = 0;
       puts("No more pieces!");
-      continue;
+
+      if (board->player == PLAYER_WHITE)
+        printf("Black won!\n");
+      else
+        printf("White won!\n");
     }
 
-// HUMAN PLAYER
-    if (cpu == 0 || board->player == human)
+    if (search_jumps && (cpu == 0 || board->player == human))
     {
-// FIND MANDATORY JUMPS
       if (moves_list)
         free_moves(moves_list);
+
       moves_list = build_moves(board);
-      nb_seq = list_len(moves_list);
-      set_orig_cases(board, moves_list, nb_seq);
-      if (nb_seq > 0)
+
+      mandatory_jumps = list_len(moves_list);
+
+      if (mandatory_jumps > 0)
       {
-        printf("You have %d mandatory moves\n", nb_seq);
+        nb_orig = set_orig_cases(board, moves_list);
+
+        printf("You have %d mandatory moves\n", mandatory_jumps);
         list_print(moves_list);
-        puts("Which sequence do you want to play?");
       }
-//--------------------------SDL handle mouse---------------------------------//
-  SDL_Rect pos;
 
-      if (!shell_mode)
-      {
-          if (nb_seq > 0)
-          {
-          //--------------------------SDL print board------------------------//
-             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0,0,0));
-             SDL_Surface *s;
-
-             for (int i = 0 ; i < 10; i++)
-             {
-               for (int j = 0 ; j < 10; j++)
-               {
-                 position.y = i * BLOCK_SIZE;
-                 position.x = j * BLOCK_SIZE;
-
-                 struct cell c = board->cells[i][j];
-
-                 if (c.background == LIGHT)
-                   SDL_BlitSurface(W, NULL, screen, &position);
-
-                 else
-                 {
-                   switch (c.data)
-                   {
-                     case 0:
-                         if (c.background == DEST)
-                             s = B_DES;
-                         else
-                             s = B;
-                         SDL_BlitSurface(s, NULL, screen, &position);
-                         break;
-                     case BP:
-                         if (c.background == SELECTED)
-                           s = B_BPS;
-                         else if (c.background == ORIG)
-                           s = B_BPSE;
-                         else
-                           s = B_BP;
-                         SDL_BlitSurface(s, NULL, screen, &position);
-                         // SDL_BlitSurface(B_BP, NULL, screen, &position);
-                         break;
-                     case BK:
-                         if (c.background == SELECTED)
-                           s = B_BKS;
-                         else if (c.background == ORIG)
-                           s= B_BKSE;
-                         else
-                           s = B_BK;
-                         SDL_BlitSurface(s, NULL, screen, &position);
-                         //SDL_BlitSurface(B_BK , NULL, screen, &position);
-                         break;
-                     case WP:
-                         if (c.background == SELECTED)
-                           s = B_WPS;
-                         else if (c.background == ORIG)
-                           s = B_WPSE;
-                         else
-                           s = B_WP;
-                         SDL_BlitSurface(s, NULL, screen, &position);
-                         break;
-                     case WK:
-                         if (c.background == SELECTED)
-                           s = B_WKS;
-                         else if (c.background == ORIG)
-                           s = B_WKSE;
-                         else
-                           s = B_WK;
-                         SDL_BlitSurface(s, NULL, screen, &position);
-                         //SDL_BlitSurface(B_WK, NULL, screen, &position);
-                         break;
-                     }
-                  }
-                }
-              }
-
-              SDL_Flip(screen);
-          //--------------------------SDL end print--------------------------//
-          }
-  ev:  SDL_WaitEvent(&event);
-       switch(event.type)
-       {
-         case SDL_QUIT:
-           break;
-         case SDL_MOUSEBUTTONDOWN:
-           if (event.button.button == SDL_BUTTON_LEFT)
-           {
-             puts("Left Click! Click right to use terminal");
-             pos.x = event.button.x / BLOCK_SIZE;
-             pos.y = event.button.y / BLOCK_SIZE;
-             if (nb_seq <= 0)
-             {
-               if (board->cells[pos.y][pos.x].data == board->player)
-               {
-                 board->cells[pos.y][pos.x].background = SELECTED;
-                 selected_x = pos.y;
-                 selected_y = pos.x;
-               }
-
-               if (board->cells[pos.y][pos.x].data == 0)
-               {
-                 dest_x = pos.y;
-                 dest_y = pos.x;
-               }
-             }
-             else
-             {
-               if (board->cells[pos.y][pos.x].background == ORIG)
-               {
-                 board->cells[pos.y][pos.x].background = SELECTED;
-                 selected_x = pos.y;
-                 selected_y = pos.x;
-               }
-             }
-             printf("%d, %d\n",pos.y,pos.x);
-           }
-         else if (event.button.button == SDL_BUTTON_RIGHT) // Switch to shell
-         {
-           puts("Use shell now, you may press ENTER");
-           shell_mode = 1;
-           fflush_stdin();
-           fputc('\n', stdin);
-         }
-         break;
-       case SDL_KEYDOWN:
-         switch (event.key.keysym.sym)
-         {
-           case SDLK_ESCAPE:
-             res = QUIT;
-             break;
-           case SDLK_h:
-             res = HELP;
-             break;
-           case SDLK_s:
-             res = SAVE;
-             break;
-           case SDLK_u:
-             res = UNDO;
-             break;
-           case SDLK_r:
-             res = REDO;
-             break;
-           case SDLK_k:
-             puts("Use shell now, you may press ENTER");
-             shell_mode = 1;
-             fflush_stdin();
-             fputc('\n', stdin);
-             break;
-           default:
-             break;
-         }
-         break;
-       default:
-         goto ev;
-       }
-     }
-  } // END of human part
+      search_jumps = 0;
+    }
 
 //--------------------------SDL print board----------------------------------//
-PRINT:
    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0,0,0));
    SDL_Surface *s;
 
@@ -408,7 +189,6 @@ PRINT:
                else
                  s = B_BP;
                SDL_BlitSurface(s, NULL, screen, &position);
-               // SDL_BlitSurface(B_BP, NULL, screen, &position);
                break;
            case BK:
                if (c.background == SELECTED)
@@ -418,7 +198,6 @@ PRINT:
                else
                  s = B_BK;
                SDL_BlitSurface(s, NULL, screen, &position);
-               //SDL_BlitSurface(B_BK , NULL, screen, &position);
                break;
            case WP:
                if (c.background == SELECTED)
@@ -437,7 +216,6 @@ PRINT:
                else
                  s = B_WK;
                SDL_BlitSurface(s, NULL, screen, &position);
-               //SDL_BlitSurface(B_WK, NULL, screen, &position);
                break;
            }
         }
@@ -447,77 +225,122 @@ PRINT:
     SDL_Flip(screen);
 //--------------------------SDL end print------------------------------------//
 
-// IA PLAYER
+//---------------------------- IA PLAYER-------------------------------------//
   if ((board->player) == cpu)
   {
     puts("IA is thinking...");
     sleep(3);
-    // puts("IA is supposed to play there");
+
     struct move_seq *ia_move = get_IA_move();
+
     if (ia_move != NULL)
       exec_seq_IA(board, ia_move);
+
     else
     {
       undo_push(board, NULL);
       print_error("No move has been found by the IA");
     }
+
     board->player *= -1;
-    printBoard(board);
-    goto PRINT;
+    continue;
   }
 
-// HUMAN PLAYER
-  if (cpu == 0 || board->player == human)
+//--------------------------SDL handle input---------------------------------//
+  SDL_Rect pos;
+  SDL_WaitEvent(&event);
+
+  switch (event.type)
   {
- // PARSE KEYBOARD INPUT
-    if (shell_mode)
+    case SDL_QUIT:
+      break;
+
+    case SDL_MOUSEBUTTONDOWN:
+       if (event.button.button == SDL_BUTTON_LEFT)
+       {
+         pos.x = event.button.x / BLOCK_SIZE;
+         pos.y = event.button.y / BLOCK_SIZE;
+         selected_x = pos.y;
+         selected_y = pos.x;
+         res = MOUSE;
+       }
+       break;
+
+     case SDL_KEYDOWN:
+       switch (event.key.keysym.sym)
+       {
+         case SDLK_ESCAPE:
+           res = QUIT;
+           break;
+         case SDLK_h:
+           res = HELP;
+           break;
+         case SDLK_s:
+           res = SAVE;
+           break;
+         case SDLK_u:
+           res = UNDO;
+           break;
+         case SDLK_r:
+           res = REDO;
+           break;
+         case SDLK_k:
+           res = SHELL;
+           break;
+         default:
+           break;
+       }
+       break;
+     default:
+       break;
+   }
+
+    if (res == -1)
+      continue; // nothing
+
+// SHELL MODE
+    if (res == SHELL) // press K
     {
-      res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
-                        i_seq, filename, &shell_mode);
+      printBoard(board);
+
+      if (mandatory_jumps > 0)
+      {
+        printf("You have %d mandatory moves\n", mandatory_jumps);
+        list_print(moves_list);
+        puts("Which sequence do you want to play?");
+      }
+
+      // parse input
+      int i_seq, curLine, curCol, destLine, destCol;
+      res = parse_input(&curLine, &curCol, &destLine, &destCol,
+                        mandatory_jumps, &i_seq);
       if (res == -2)
         continue;
       while (res == -1) //error
       {
         print_error("Problem when reading your input");
-        res = parse_input(curLine, curCol, destLine, destCol, nb_seq,
-                          i_seq, filename, &shell_mode);
+        res = parse_input(&curLine, &curCol, &destLine, &destCol,
+                        mandatory_jumps, &i_seq);
       }
-    }
 
-    else
-    {
-      if (selected_x != -1 && selected_y != -1 && dest_x != -1 && dest_y != -1)
-        if (0 == move(board, selected_x, selected_y, dest_x, dest_y))
-        {
-          selected_x = -1;
-          selected_y = -1;
-          dest_x = -1;
-          dest_y = -1;
-          board->player *= -1;
-          *i_seq = 0;
-          free_moves(board->redo);
-          redo_init(board);
-          goto PRINT;
-        }
-    }
+      // play
+      if (res == 0)
+      {
+        free_moves(board->redo);
+        redo_init(board);
+        int res2 = -1;
+        if (mandatory_jumps > 0) // play the sequence moves_list[i]
+          res2 = exec_seq_in_list(board, moves_list, i_seq);
+        else // no capture possible
+          res2 = move(board, curLine, curCol, destLine, destCol);
 
-// ACTIONS
-// MOVE
-    if (res == 0)
-    {
-      free_moves(board->redo);
-      redo_init(board);
-      int res2 = -1;
-      if (*i_seq > 0) // play the sequence moves_list[i]
-        res2 = exec_seq_in_list(board, moves_list, *i_seq);
-      else // no capture possible
-        res2 = move(board, *curLine, *curCol, *destLine, *destCol);
+        if (res2 == 0) // success
+          board->player *= -1; // change player
 
-      if (res2 == 0) // success
-        board->player *= -1; // change player
-
-      *i_seq = 0;
-      printBoard(board);
+        i_seq = 0;
+        search_jumps = 1;
+        boardInitColor(board);
+      }
     }
 
 // QUIT
@@ -530,65 +353,155 @@ PRINT:
 // HELP
     if (res == HELP)
     {
-      puts("Type 4 digits separated by space character:"
-        " current line and column, destination line and column\n"
-        "If you have a mandatory move, just type the corresponding number");
-      continue;
+      puts("Left click: play\n"
+           "u: undo\n"
+           "r: redo\n"
+           "s: save\n"
+           "ESC: quit\n"
+           "h: help\n"
+           "k: use shell (once):\n    "
+           "Type 4 digits separated by space character:\n    "
+           "current line and column, destination line and column\n    "
+           "If you have a mandatory move, just type the corresponding number\n"
+           "    You can also type undo, redo, save, quit or help");
     }
 
 // SAVE
     if (res == SAVE)
     {
-      if (strlen(filename) == 0)
-      {
-        // name by default, free crash if static
-        filename[0] = 's';
-        filename[1] = 'a';
-        filename[2] = 'v';
-        filename[3] = 'e';
-      }
-      if (0 != write_board_to_file(board, filename))
-        print_error("Can not write board to file");
+        char *filename = calloc(1024, 1);
+
+        printf("Name of the file to write: ");
+        scanf("%s", filename);
+
+        if (0 != write_board_to_file(board, filename))
+          print_error("Can not write board to file");
+
+        free(filename);
     }
 
-// UNDO
-    if (res == UNDO)
+// UNDO and REDO
+    if (res == UNDO || res == REDO)
     {
-      if (list_len(board->undo) > 0)
+      if (res == UNDO && list_len(board->undo) > 0)
       {
         undo_move(board);
         if (cpu && (list_len(board->undo) > 0))
           undo_move(board);
-        res = -1;
-        goto PRINT;
+        orig_x = -1;
+        orig_y = -1;
+        dest_x = -1;
+        dest_y = -1;
+        boardInitColor(board);
+        search_jumps = 1;
       }
-      else
-        print_error("No previous move");
-      printBoard(board);
-    }
-
-// REDO
-    if (res == REDO)
-    {
-      if (list_len(board->redo) > 0)
+      else if (res == REDO && list_len(board->redo) > 0)
       {
         redo_move(board);
         if (cpu && (list_len(board->redo) > 0))
           redo_move(board);
-        res = -1;
-        goto PRINT;
+        orig_x = -1;
+        orig_y = -1;
+        dest_x = -1;
+        dest_y = -1;
+        boardInitColor(board);
+        search_jumps = 1;
       }
       else
         print_error("No previous move");
-      printBoard(board);
     }
-} // END of human part
-  } // END of main loop
 
-  if (board->player == PLAYER_WHITE)
-    printf("Black won!\n");
-  else
-    printf("White won!\n");
+    if (res != MOUSE)
+      continue;
+
+// UPDATE COLORS
+    if (!mandatory_jumps)
+    {
+      if (is_same_color(board, selected_x, selected_y))
+      {
+        decolorize(board, SELECTED);
+        set_background(board, selected_x, selected_y, SELECTED);
+        orig_x = selected_x;
+        orig_y = selected_y;
+      }
+
+      if (IS_VALID(orig_x, orig_y) && is_empty(board, selected_x, selected_y))
+      {
+        dest_x = selected_x;
+        dest_y = selected_y;
+      }
+
+      if (IS_VALID(orig_x, orig_y) && IS_VALID(dest_x, dest_y))
+      {
+        // simple move
+        if (move(board, orig_x, orig_y, dest_x, dest_y) == 0)
+        {
+          free_moves(board->redo);
+          redo_init(board);
+          orig_x = -1;
+          orig_y = -1;
+          search_jumps = 1;
+          board->player *= -1;
+        }
+          dest_x = -1;
+          dest_y = -1;
+          decolorize(board, SELECTED);
+      }
+    }
+
+    else
+    {
+      if (nb_orig > 1)
+      {
+        if (get_background(board, selected_x, selected_y) == ORIG)
+        {
+          boardInitColor(board);
+          set_orig_cases(board, moves_list);
+          set_background(board, selected_x, selected_y, SELECTED);
+          orig_x = selected_x;
+          orig_y = selected_y;
+        }
+      }
+
+      // TODO
+      if (selected_x >= 0 && selected_y >= 0
+          && board->cells[selected_x][selected_y].background == DEST)
+      {
+        exec_seq_in_list(board, moves_list, 1); // FIX ME
+        free_moves(board->redo);
+        redo_init(board);
+        orig_x = -1;
+        orig_y = -1;
+        dest_x = -1;
+        dest_y = -1;
+        boardInitColor(board);
+        search_jumps = 1;
+        board->player *= -1;
+      }
+
+    }
+}
+
+end:
+  SDL_WaitEvent(&event);
+
+  switch (event.type)
+  {
+    case SDL_QUIT:
+      break;
+
+
+    case SDL_KEYDOWN:
+      switch (event.key.keysym.sym)
+      {
+        default:
+          break;
+      }
+      break;
+    default:
+      goto end;
+   }
+
 
 //-------free SDL------------------------------------------------------------//
   SDL_FreeSurface(screen);
@@ -605,12 +518,6 @@ PRINT:
   free_moves(board->undo);
   free_moves(board->redo);
   free(board);
-  free(curLine);
-  free(curCol);
-  free(destLine);
-  free(destCol);
-  free(filename);
-  free(i_seq);
 
   return 0;
 }

@@ -48,31 +48,39 @@ struct coords
 // Init the board with basic pawns
 void boardInit(struct board *b);
 
-// Init the board with specific pieces
-int open_board_from_file(struct board *b, char filename[]);
-//
 // Init the background color of cells
 void boardInitColor(struct board *b);
+
+// Count the pieces
+void count_pieces(struct board *b);
 
 // Display the board
 void printBoard(struct board *b);
 
-// Save the pieces to a text file
-int write_board_to_file(struct board *b, char filename[]);
-
 // Print error
 void print_error(const char *str);
 
-int errManage(struct board *b, int curLine, int curCol, int destLine, int
-destCol);
-
-
-void __move(struct board *b, int curLine, int curCol,
-                             int destLine, int destCol);
-
-int move(struct board *b, int curLine, int curCol, int destLine, int
-destCol);
-
+// crowning
 int pawn_to_king(struct board *b);
+
+// if the selected piece belongs to the current player
+int is_same_color(struct board *b, int x, int y);
+
+// if the selected cell is empty
+int is_empty(struct board *b, int x, int y);
+
+// get/set color of a cell
+void set_background(struct board *b, int x, int y, Color c);
+Color get_background(struct board *b, int x, int y);
+
+// reset cell if cell.background == c
+void decolorize(struct board *b, Color c);
+
+// get the coords of the selected cell
+struct coords get_selected(struct board *b);
+
+// set cells colors
+// return the number of choices for the player ("ORIG" cells)
+int set_orig_cases(struct board *b, struct moves *list);
 
 # endif /* BOARD_H_ */
