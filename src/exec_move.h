@@ -10,6 +10,7 @@
 int exec_seq(struct board *b, struct move_seq *list);
 
 int exec_seq_in_list(struct board *b, struct moves *list, int i);
+int exec_seq_in_list2(struct board *b, struct moves *list);
 
 int exec_seq_IA(struct board *b, struct move_seq *seq);
 

@@ -53,6 +53,23 @@ int exec_seq_in_list(struct board *b, struct moves *list, int i)
   return -1;
 }
 
+int exec_seq_in_list2(struct board *b, struct moves *list)
+{
+  for (list = list->next; list; list = list->next)
+  {
+    if (list->seq->can_be_played)
+    {
+      if (0 == exec_seq(b, list->seq))
+      {
+        undo_push(b, list->seq);
+        list->seq = NULL; // seq has been pushed to undo
+        return 0;
+      }
+    }
+  }
+  return -1;
+}
+
 int exec_seq_IA(struct board *b, struct move_seq *seq)
 {
   if (0 == exec_seq(b, seq))
