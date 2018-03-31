@@ -85,9 +85,9 @@ int exec_seq_IA(struct board *b, struct move_seq *seq)
 }
 
 /* exec a sequence in reverse (used for undoing) */
-void exec_seq_reverse(struct board *b, struct moves *m)
+void exec_seq_reverse(struct board *b, struct move_seq *ms)
 {
-  struct move_seq *seq = m->seq->next; // sentinel
+  struct move_seq *seq = ms->next; // sentinel
 
   int orig_x = seq->orig.x; // save origin cell coords
   int orig_y = seq->orig.y;
@@ -99,9 +99,9 @@ void exec_seq_reverse(struct board *b, struct moves *m)
   b->cells[seq->dest.x][seq->dest.y].data = 0;
 
   // undo the captures
-  for (int i = 0; i < m->seq->nb_captures; ++i)
+  for (int i = 0; i < ms->nb_captures; ++i)
   {
-    b->cells[m->seq->captures[i].x][m->seq->captures[i].y].data
-   = m->seq->captures[i].data;
+    b->cells[ms->captures[i].x][ms->captures[i].y].data
+   = ms->captures[i].data;
   }
 }

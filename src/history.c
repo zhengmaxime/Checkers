@@ -78,7 +78,7 @@ void undo_move(struct board *b)
   if (!is_out_of_board(m->crowned.x, m->crowned.y)) // undo crowning
     b->cells[m->crowned.x][m->crowned.y].data /= 2;
 
-  exec_seq_reverse(b, m);
+  exec_seq_reverse(b, m->seq);
   set_last_move_trace(b, m->seq);
 }
 
