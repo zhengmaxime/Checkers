@@ -58,6 +58,11 @@ int simple_jump(struct board *b,
   struct move_seq *elm = malloc(sizeof (struct move_seq));
   elm->orig.x = x;
   elm->orig.y = y;
+  if (move_seq->next)
+  {
+    move_seq->next->dest.x = x;
+    move_seq->next->dest.y = y;
+  }
   elm->capt.x = x + i * dx;
   elm->capt.y = y + i * dy;
   elm->dest.x = x + (i + 1) * dx;
