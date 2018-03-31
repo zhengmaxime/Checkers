@@ -113,6 +113,7 @@ int main(int argc, char **argv)
   int dest_y = -1;
   int search_jumps = 1;
   int nb_orig = 0;
+  int nb_captures = 0;
 
   while (can_play)
   {
@@ -145,13 +146,14 @@ int main(int argc, char **argv)
 
       if (mandatory_jumps > 0)
       {
-        nb_orig = set_orig_cases(board, moves_list);
+        nb_orig = set_orig_cases(board, moves_list, &orig_x, &orig_y);
 
         printf("You have %d mandatory moves\n", mandatory_jumps);
         list_print(moves_list);
       }
 
       search_jumps = 0;
+      nb_captures = 0;
     }
 
 //--------------------------SDL print board----------------------------------//
@@ -450,36 +452,89 @@ int main(int argc, char **argv)
     }
 
     else
+      // Playing sequence one jump at the time with the mouse
     {
-      if (nb_orig > 1)
+
+      if (nb_orig > 1) // must choose the start of the sequence
       {
         if (get_background(board, selected_x, selected_y) == ORIG)
         {
           boardInitColor(board);
-          set_orig_cases(board, moves_list);
+          set_orig_cases(board, moves_list, &orig_x, &orig_y);
           set_background(board, selected_x, selected_y, SELECTED);
           orig_x = selected_x;
           orig_y = selected_y;
         }
       }
 
-      // TODO
-      if (selected_x >= 0 && selected_y >= 0
-          && board->cells[selected_x][selected_y].background == DEST)
-      {
-        exec_seq_in_list(board, moves_list, 1); // FIX ME
-        free_moves(board->redo);
-        redo_init(board);
-        orig_x = -1;
-        orig_y = -1;
-        dest_x = -1;
-        dest_y = -1;
-        boardInitColor(board);
-        search_jumps = 1;
-        board->player *= -1;
-      }
+      int sequence_is_finished = 0;
+      int prev = nb_captures;
 
-    }
+      if (selected_x >= 0 && selected_y >= 0
+          && get_background(board, selected_x, selected_y) == DEST)
+      {
+        struct moves *list = moves_list->next; // sentinel
+        for (; list; list = list->next) // browse list of sequences
+        {
+          if (list->seq->can_be_played) // valid sequence
+          {
+            struct move_seq *seq = list->seq->next; // sentinel
+
+            if (nb_captures == 0
+              && (seq->orig.x != orig_x || seq->orig.y != orig_y))
+              // first step: check if the starting coords corresponds
+            {
+              list->seq->can_be_played = 0; // if not, ignore this seq
+              continue; // go to the next sequence
+            }
+
+            for (int i = 0; seq->next && i < nb_captures; seq = seq->next, ++i);
+              // go to seq[i]. i = nb_captures - 1
+
+            if (seq->dest.x == selected_x && seq->dest.y == selected_y)
+              // selected case is in the sequence
+            {
+              nb_captures++;
+              if (seq->next == NULL)
+                sequence_is_finished = 1;
+              break;
+            }
+
+            else // selected case not in the sequence
+              list->seq->can_be_played = 0;
+          }
+        }
+
+        if (sequence_is_finished)
+        {
+          printf("Successful sequence, %d pieces captured\n", nb_captures);
+
+          exec_seq_if_playable(board, moves_list);
+
+          free_moves(board->redo);
+          redo_init(board);
+          orig_x = -1;
+          orig_y = -1;
+          dest_x = -1;
+          dest_y = -1;
+          boardInitColor(board);
+          search_jumps = 1;
+          board->player *= -1;
+        }
+
+        else if (nb_captures == prev) // no capture within the last step
+        {
+          print_error("Invalid move");
+          // reset
+          boardInitColor(board);
+          search_jumps = 1;
+        }
+
+        else
+          printf("Sequence ongoing: captured %d pieces\n", nb_captures);
+
+      }
+   }
 }
 
 end:
