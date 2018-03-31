@@ -84,6 +84,7 @@ int main(int argc, char **argv)
   SDL_Surface *B_WKS = IMG_Load("image_case/casemaronpieceblanchedamesselec.png");
   SDL_Surface *B_BKS = IMG_Load("image_case/casemaronpiecenoiredamesselec.png");
   SDL_Surface *B_DES = IMG_Load("image_case/casemarondest.png");
+  SDL_Surface *B_CRPT = IMG_Load("image_case/casemaroncrosspt.png");
   SDL_Surface *B_WKSE = IMG_Load("image_case/casemaronpieceblanchedamesselected.png");
   SDL_Surface *B_BKSE = IMG_Load("image_case/casemaronpiecenoiredamesselected.png");
   SDL_Surface *B_BPSE = IMG_Load("image_case/casemaronpiecenoireselected.png");
@@ -179,6 +180,8 @@ int main(int argc, char **argv)
            case 0:
                if (c.background == DEST)
                    s = B_DES;
+               else if (c.background == CROSSPOINT)
+                   s = B_CRPT;
                else
                    s = B;
                SDL_BlitSurface(s, NULL, screen, &position);
@@ -471,6 +474,15 @@ int main(int argc, char **argv)
       int prev = nb_captures;
 
       if (selected_x >= 0 && selected_y >= 0
+          && get_background(board, selected_x, selected_y) != DEST)
+      {
+        print_error("Invalid move");
+        // reset
+        boardInitColor(board);
+        search_jumps = 1;
+      }
+
+      if (selected_x >= 0 && selected_y >= 0
           && get_background(board, selected_x, selected_y) == DEST)
       {
         struct moves *list = moves_list->next; // sentinel
@@ -497,6 +509,8 @@ int main(int argc, char **argv)
               nb_captures++;
               if (seq->next == NULL)
                 sequence_is_finished = 1;
+              else
+                set_background(board, selected_x, selected_y, CROSSPOINT);
               break;
             }
 
