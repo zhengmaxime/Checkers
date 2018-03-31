@@ -244,7 +244,7 @@ Color get_background(struct board *b, int x, int y)
   return b->cells[x][y].background;
 }
 
-int set_orig_cases(struct board *b, struct moves *list)
+int set_orig_cases(struct board *b, struct moves *list, int *orig_x, int *orig_y)
 {
   int nb_orig = 0;
   list = list->next;
@@ -260,8 +260,11 @@ int set_orig_cases(struct board *b, struct moves *list)
     }
 
     if (list->next == NULL && nb_orig == 1)
+    {
       set_background(b, seq->orig.x, seq->orig.y, SELECTED);
-
+      *orig_x = seq->orig.x;
+      *orig_y = seq->orig.y;
+    }
     set_background(b, seq->dest.x, seq->dest.y, DEST);
 
     if ( (seq = seq->next) )

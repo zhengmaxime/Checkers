@@ -81,6 +81,6 @@ struct coords get_selected(struct board *b);
 
 // set cells colors
 // return the number of choices for the player ("ORIG" cells)
-int set_orig_cases(struct board *b, struct moves *list);
+int set_orig_cases(struct board *b, struct moves *list, int *orig_x, int *orig_y);
 
 # endif /* BOARD_H_ */
