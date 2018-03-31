@@ -474,7 +474,8 @@ int main(int argc, char **argv)
       int prev = nb_captures;
 
       if (selected_x >= 0 && selected_y >= 0
-          && get_background(board, selected_x, selected_y) != DEST)
+          && get_background(board, selected_x, selected_y) != DEST
+          && get_background(board, selected_x, selected_y) != SELECTED)
       {
         print_error("Invalid move");
         // reset
