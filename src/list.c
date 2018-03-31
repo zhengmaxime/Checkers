@@ -28,7 +28,7 @@ void seq_init(struct move_seq *list)
     list->captures[i] = c;
   }
   list->nb_captures = 0;
-  list->can_be_played = 0;
+  list->can_be_played = 1;
 }
 
 void moves_init(struct moves *list, struct move_seq *seq)
