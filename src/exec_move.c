@@ -10,7 +10,7 @@
 
 /*
  * Functions in this file use structures for moves.
- * Basic move that does not need struct is in board.c.
+ * Basic move that does not need struct is in simple_move.
  */
 
 int exec_seq(struct board *b, struct move_seq *list)
@@ -53,7 +53,7 @@ int exec_seq_in_list(struct board *b, struct moves *list, int i)
   return -1;
 }
 
-int exec_seq_in_list2(struct board *b, struct moves *list)
+int exec_seq_if_playable(struct board *b, struct moves *list)
 {
   for (list = list->next; list; list = list->next)
   {
@@ -81,7 +81,7 @@ int exec_seq_IA(struct board *b, struct move_seq *seq)
   return -1;
 }
 
-/* exec a sequence in reverse */
+/* exec a sequence in reverse (used for undoing) */
 void exec_seq_reverse(struct board *b, struct moves *m)
 {
   struct move_seq *seq = m->seq->next; // sentinel
