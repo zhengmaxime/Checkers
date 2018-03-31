@@ -1,8 +1,7 @@
-#include "list.h"
-
 # ifndef BOARD_H_
 # define BOARD_H_
 
+#include "list.h"
 # define BP  1
 # define BK  2
 # define WP -1
@@ -25,6 +24,7 @@ enum Color
 struct cell
 {
   int data;
+  int last_move; // mark the last move, 1 if true
   Color background;
 };
 
@@ -38,12 +38,7 @@ struct board
   struct moves *redo;
 };
 
-struct coords
-{
-  int x;
-  int y;
-  int data;
-};
+struct move_seq; // forward declaration
 
 // Init the board with basic pawns
 void boardInit(struct board *b);
@@ -75,6 +70,9 @@ Color get_background(struct board *b, int x, int y);
 
 // reset cell if cell.background == c
 void decolorize(struct board *b, Color c);
+
+void reset_last_move_trace(struct board *b);
+void set_last_move_trace(struct board *b, struct move_seq *list);
 
 // get the coords of the selected cell
 struct coords get_selected(struct board *b);

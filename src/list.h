@@ -5,13 +5,19 @@
 # ifndef LIST_H_
 # define LIST_H_
 
-# include "board.h"
 # include <unistd.h>
 
 struct list {
   struct list *next;
   int data;
   int x,y;
+};
+
+struct coords
+{
+  int x;
+  int y;
+  int data;
 };
 
 /*
