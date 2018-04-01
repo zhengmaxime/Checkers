@@ -269,6 +269,7 @@ int main(int argc, char **argv)
   switch (event.type)
   {
     case SDL_QUIT:
+      res = QUIT;
       break;
 
     case SDL_MOUSEBUTTONDOWN:
@@ -362,10 +363,7 @@ int main(int argc, char **argv)
 
 // QUIT
     if (res == QUIT)
-    {
-      can_play = 0;
-      continue;
-    }
+      goto quit;
 
 // HELP
     if (res == HELP)
@@ -564,27 +562,23 @@ int main(int argc, char **argv)
    }
 }
 
-end:
-  SDL_WaitEvent(&event);
+  puts("Press any key to quit...");
 
-  switch (event.type)
+  for (;;)
   {
-    case SDL_QUIT:
-      break;
+    SDL_WaitEvent(&event);
 
+    switch (event.type)
+    {
+      case SDL_QUIT:
+      case SDL_KEYDOWN:
+        goto quit;
+      default:
+        break;
+    }
+  }
 
-    case SDL_KEYDOWN:
-      switch (event.key.keysym.sym)
-      {
-        default:
-          break;
-      }
-      break;
-    default:
-      goto end;
-   }
-
-
+quit:
 //-------free SDL------------------------------------------------------------//
   SDL_FreeSurface(screen);
   SDL_FreeSurface(W);
