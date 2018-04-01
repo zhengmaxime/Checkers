@@ -94,5 +94,6 @@ void redo_move(struct board *b)
     return;
 
   exec_seq(b, m->seq);
+  pawn_to_king(b);
   set_last_move_trace(b, m->seq);
 }
