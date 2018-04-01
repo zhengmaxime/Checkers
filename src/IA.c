@@ -15,8 +15,8 @@
 # include "history.h"
 # include "IA.h"
 
-struct move_seq *get_IA_move()
+struct move_seq *get_IA_move(struct board *b)
 {
-  // FIX ME
+  
   return NULL;
 }

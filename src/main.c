@@ -125,6 +125,7 @@ int main(int argc, char **argv)
 
     count_pieces(board);
 
+    //test if someone has won
     if ((board->player == PLAYER_WHITE && board->nb_white == 0)
      || (board->player == PLAYER_BLACK && board->nb_black == 0))
     {
@@ -137,7 +138,8 @@ int main(int argc, char **argv)
         printf("White won!\n");
     }
 
-    if (search_jumps && (cpu == 0 || board->player == human))
+    
+    if (search_jumps && (cpu == 0 || board->player == human) && can_play)
     {
       if (moves_list)
         free_moves(moves_list);
@@ -247,7 +249,7 @@ int main(int argc, char **argv)
     puts("IA is thinking...");
     sleep(3);
 
-    struct move_seq *ia_move = get_IA_move();
+    struct move_seq *ia_move = get_IA_move(board);
 
     if (ia_move != NULL)
       exec_seq_IA(board, ia_move);

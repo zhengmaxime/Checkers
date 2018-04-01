@@ -198,7 +198,7 @@ struct moves *build_moves(struct board *b)
   {
     for (int y = 0; y < 10; ++y)
     {
-      if (get_color(b->cells[x][y].data) == b->player)
+      if (get_color(b->cells[x][y].data) == b->player) //build only moves needed
       {
         move_seq = malloc(sizeof (struct move_seq));
         seq_init(move_seq);
