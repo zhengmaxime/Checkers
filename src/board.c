@@ -130,36 +130,38 @@ void print_error(const char *str)
 int pawn_to_king(struct board *b)
 // called after a successful move
 {
-  int line, col, res, piece;
-  res = 0;
+  int line, col, new_king, piece;
+  new_king = 0;
 
-  if (b->player == PLAYER_WHITE)
-  {
-    line = 0;
-    col = 1;
-  }
-
-  else
-  {
-    line = 9;
-    col = 0;
-  }
-
-  for (; col < 10; col += 2)
+  for (line = 0, col = 1; col < 10; col += 2)
   {
     piece = b->cells[line][col].data;
-    if (is_pawn(piece) && b->player == get_color(piece))
+    if (is_pawn(piece) && PLAYER_WHITE == get_color(piece))
     {
       b->cells[line][col].data *= 2;
-      res++;
+      new_king++;
       break;
     }
   }
 
-  if (res == 1) // save the coords of the new king
+  if (!new_king)
+  {
+    for (line = 9, col = 0; col < 10; col += 2)
+    {
+      piece = b->cells[line][col].data;
+      if (is_pawn(piece) && PLAYER_BLACK == get_color(piece))
+      {
+        b->cells[line][col].data *= 2;
+        new_king++;
+        break;
+      }
+    }
+  }
+
+  if (new_king == 1) // save the coords of the new king
     save_king_coords(b, line, col);
 
-  return res;
+  return new_king;
 }
 
 void decolorize(struct board *b, Color c)
