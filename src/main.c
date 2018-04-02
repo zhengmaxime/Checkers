@@ -138,7 +138,7 @@ int main(int argc, char **argv)
         printf("White won!\n");
     }
 
-    
+
     if (search_jumps && (cpu == 0 || board->player == human) && can_play)
     {
       if (moves_list)
@@ -265,7 +265,6 @@ int main(int argc, char **argv)
   }
 
 //--------------------------SDL handle input---------------------------------//
-  SDL_Rect pos;
   SDL_WaitEvent(&event);
 
   switch (event.type)
@@ -277,10 +276,9 @@ int main(int argc, char **argv)
     case SDL_MOUSEBUTTONDOWN:
        if (event.button.button == SDL_BUTTON_LEFT)
        {
-         pos.x = event.button.x / BLOCK_SIZE;
-         pos.y = event.button.y / BLOCK_SIZE;
-         selected_x = pos.y;
-         selected_y = pos.x;
+         // No mistake below: x is the ordinate (we write cells[x][y]).
+         selected_x = event.button.y / BLOCK_SIZE;
+         selected_y = event.button.x / BLOCK_SIZE;
          res = MOUSE;
          reset_last_move_trace(board);
        }
