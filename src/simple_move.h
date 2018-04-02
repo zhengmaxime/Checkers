@@ -3,10 +3,11 @@
 
 // In this file, handling of moves with no captures
 
-// check for errors and print them
-int errManage(struct board *b, int curLine, int curCol, int destLine, int
-destCol);
-
+// check for errors and print them if needed
+int errManage(struct board *b,
+              int curLine, int curCol,
+              int destLine, int destCol,
+              int print);
 
 //move the piece once we're sure the deplacement is valid
 void __move(struct board *b, int curLine, int curCol,

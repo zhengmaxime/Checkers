@@ -7,11 +7,13 @@
 # include "history.h"
 
 int errManage(struct board *b, int curLine, int curCol,
-                               int destLine, int destCol)
+                               int destLine, int destCol,
+                               int print)
 {
   if (is_out_of_board(curLine, curCol) || is_out_of_board(destLine, destCol))
   {
-    print_error("Out of the board");
+    if (print)
+      print_error("Out of the board");
     return -1;
   }
 
@@ -20,19 +22,22 @@ int errManage(struct board *b, int curLine, int curCol,
 
   if (curCell == 0)
   {
-    print_error("Empty case");
+    if (print)
+      print_error("Empty case");
     return -2;
   }
 
   if (curCell * b->player <= 0)
   {
-    print_error("Not your piece");
+    if (print)
+      print_error("Not your piece");
     return -2;
   }
 
   if (destCell)
   {
-    print_error("Destination cell is occupied");
+    if (print)
+      print_error("Destination cell is occupied");
     return -4;
   }
 
@@ -40,7 +45,8 @@ int errManage(struct board *b, int curLine, int curCol,
   {
     if ((abs(curLine - destLine) != 1) || (1 != abs(curCol - destCol)))
     {
-      print_error("Pawn move one square diagonally");
+      if (print)
+        print_error("Pawn move one square diagonally");
       return -3;
     }
   }
@@ -48,7 +54,8 @@ int errManage(struct board *b, int curLine, int curCol,
   {
     if (abs(curLine - destLine) != abs(curCol - destCol))
     {
-      print_error("King move diagonally");
+      if (print)
+        print_error("King move diagonally");
       return -3;
     }
     else // Check if the diagonal is empty (king can't jump over another piece)
@@ -66,7 +73,8 @@ int errManage(struct board *b, int curLine, int curCol,
 
       if (b->cells[x + dx][y + dy].data != 0)
       {
-        print_error("King is blocked by another piece");
+        if (print)
+          print_error("King is blocked by another piece");
         return -3;
       }
     }
@@ -75,7 +83,8 @@ int errManage(struct board *b, int curLine, int curCol,
   if ( (curCell == WP && curLine <= destLine) ||
        (curCell == BP && curLine >= destLine))
   {
-    print_error("Pawn can not move backward");
+    if (print)
+      print_error("Pawn can not move backward");
     return -5;
   }
 
@@ -95,7 +104,7 @@ void __move(struct board *b, int curLine, int curCol, int destLine, int destCol)
 int move(struct board *b, int curLine, int curCol,
                           int destLine, int destCol)
 {
-  int err = errManage(b, curLine, curCol, destLine, destCol);
+  int err = errManage(b, curLine, curCol, destLine, destCol, 1);
 
   if (!err)
   {
