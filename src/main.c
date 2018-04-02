@@ -67,9 +67,6 @@ int main(int argc, char **argv)
   undo_init(board);
   redo_init(board);
 
-  int res, mandatory_jumps;
-  struct moves *moves_list = NULL;
-
 //------------------------------SDL init-------------------------------------//
   SDL_Surface *screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT,
                        32, SDL_HWSURFACE | SDL_DOUBLEBUF);
@@ -116,6 +113,9 @@ int main(int argc, char **argv)
   int search_jumps = 1;
   int nb_orig = 0;
   int nb_captures = 0;
+
+  int res, mandatory_jumps, possible_move;
+  struct moves *moves_list = NULL;
 
   while (can_play)
   {
