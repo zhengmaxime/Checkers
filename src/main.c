@@ -210,7 +210,7 @@ int main(int argc, char **argv)
            case WP:
                if (c.background == SELECTED)
                  s = B_WPS;
- 	             else if (c.background == ORIG)
+               else if (c.background == ORIG)
                  s = B_WPSE;
                else
                  s = B_WP;
