@@ -1,20 +1,16 @@
 ### Jeu de dames
 
 ## 2ème soutenance
-
 - [x] Undo/redo
 - [x] Trace du coup effectué
 - [x] Jouer en cliquant
 - [x] Mode 1 joueur contre ordinateur
+- [x] Trouver tous les coups possibles (si aucune prise possible)
+- [x] Fin de partie lorsque plus aucun coup possible
 - [ ] IA
 - [x] Menu simple dans la console
 - [ ] Menu graphique
 - [ ] Rapport de soutenance
-
-## Autres
-
-- [ ] Trouver tous les coups possibles (si aucune prise possible)
-- [ ] Fin de partie lorsque plus aucun coup possible
 
 ## 1ère soutenance
 - [x] Mode 2 joueurs
