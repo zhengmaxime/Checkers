@@ -156,6 +156,25 @@ int main(int argc, char **argv)
         list_print(moves_list);
       }
 
+      else
+      {
+        free_moves(moves_list);
+        moves_list = build_moves_not_mandatory(board);
+        possible_move = list_len(moves_list);
+        if (!possible_move)
+        {
+          can_play = 0;
+          puts("No move is possible!");
+
+          if (board->player == PLAYER_WHITE)
+            printf("Black won!\n");
+          else
+            printf("White won!\n");
+        }
+        else
+          printf("You have %d possible moves\n", possible_move);
+      }
+
       search_jumps = 0;
       nb_captures = 0;
     }
