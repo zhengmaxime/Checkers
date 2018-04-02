@@ -102,7 +102,7 @@ int main(int argc, char **argv)
   else
     SDL_WM_SetCaption("Game", NULL);
 
-//---------------------------SDL fin init------------------------------------//
+//---------------------------SDL end init------------------------------------//
 
 
 // Main loop
