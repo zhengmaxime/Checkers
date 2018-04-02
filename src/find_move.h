@@ -26,8 +26,23 @@ int build_move_seq(struct board *b,
                    struct move_seq *move_seq);
 
 /*
- * return a list of moves
+ * return a list of mandatory moves
  */
 struct moves *build_moves(struct board *b);
+
+/*
+ * find_possible_move
+ * If a possible move is found, it will be pushed into the list moves.
+ * dx dy: relative moves (from -10 to 10, so it works with kings)
+ */
+void find_possible_move(struct board *b,
+                        int x, int y,
+                        int dx, int dy,
+                        struct moves *moves);
+
+/*
+ * build a list of possible moves (if no mandatory jumps)
+ */
+struct moves *build_moves_not_mandatory(struct board *b);
 
 # endif /* FIND_MOVE_H */

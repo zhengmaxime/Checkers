@@ -4,6 +4,8 @@
 # include "piece.h"
 # include "list.h"
 # include "find_move.h"
+# include "simple_move.h"
+# include "history.h"
 
 int is_in_array(struct coords captures[], int nb_captures, int x, int y)
 {
@@ -185,7 +187,7 @@ int build_move_seq(struct board *b,
 }
 
 /*
- * return a list of moves
+ * return a list of mandatory moves
  */
 struct moves *build_moves(struct board *b)
 {
@@ -204,6 +206,72 @@ struct moves *build_moves(struct board *b)
         seq_init(move_seq);
         build_move_seq(b, b->cells[x][y].data, x, y, 0, 0, moves, move_seq);
         free_seq(move_seq);
+      }
+    }
+  }
+
+  return moves;
+}
+
+/*
+ * find_possible_move
+ * If a possible move is found, it will be pushed into the list moves.
+ * dx dy: relative moves (from -10 to 10, so it works with kings)
+ */
+void find_possible_move(struct board *b,
+                        int x, int y,
+                        int dx, int dy,
+                        struct moves *moves)
+{
+  #define NOPRINT 0
+  if (errManage(b, x, y, x + dx, y + dy, NOPRINT) == 0)
+  {
+    struct move_seq *ms = malloc(sizeof (struct move_seq));
+    seq_init(ms); // sentinel
+
+    struct move_seq *seq = malloc(sizeof (struct move_seq));
+    seq_fill(seq, x, y, x + dx, y + dy, 0, 0);
+
+    seq_push_front(ms, seq);
+
+    struct moves *elm = malloc(sizeof (struct moves));
+    moves_init(elm, seq); // sentinel
+
+    moves_push_front(moves, elm);
+  }
+}
+
+/*
+ * build a list of possible moves (if no mandatory jumps)
+ */
+struct moves *build_moves_not_mandatory(struct board *b)
+{
+  struct moves *moves = malloc(sizeof (struct moves));
+  moves_init(moves, NULL);
+
+  for (int x = 0; x < 10; ++x)
+  {
+    for (int y = 0; y < 10; ++y)
+    {
+      if (get_color(b->cells[x][y].data) == b->player)
+      {
+        if (is_pawn(b->cells[x][y].data))
+        {
+          // dx = -1 or dx = 1 depending on the color of the player
+          // so we can use b->player for dx
+          find_possible_move(b, x, y, b->player, -1, moves);
+          find_possible_move(b, x, y, b->player, 1, moves);
+        }
+
+        if (is_king(b->cells[x][y].data))
+        {
+          // kings can go backward and move any distance
+          for (int i = -10; i < 10; ++i) // lazy way...
+          {
+            find_possible_move(b, x, y, i * b->player, -i, moves);
+            find_possible_move(b, x, y, i * b->player, i, moves);
+          }
+        }
       }
     }
   }
