@@ -507,7 +507,7 @@ int main(int argc, char **argv)
       }
 
       int sequence_is_finished = 0;
-      int prev = nb_captures;
+      int k = nb_captures;
 
       if (selected_x >= 0 && selected_y >= 0
           && get_background(board, selected_x, selected_y) != DEST
@@ -537,18 +537,21 @@ int main(int argc, char **argv)
               continue; // go to the next sequence
             }
 
-            for (int i = 0; seq->next && i < nb_captures; seq = seq->next, ++i);
-              // go to seq[i]. i = nb_captures - 1
+            for (int i = 0; seq->next && i < k; seq = seq->next, ++i);
+              // go to seq[k]
 
             if (seq->dest.x == selected_x && seq->dest.y == selected_y)
               // selected case is in the sequence
             {
-              nb_captures++;
+              if (nb_captures == k) // no new capture yet
+                nb_captures++;
               if (seq->next == NULL)
+              {
                 sequence_is_finished = 1;
+                break;
+              }
               else
                 set_background(board, selected_x, selected_y, CROSSPOINT);
-              break;
             }
 
             else // selected case not in the sequence
@@ -573,7 +576,7 @@ int main(int argc, char **argv)
           board->player *= -1;
         }
 
-        else if (nb_captures == prev) // no capture within the last step
+        else if (nb_captures == k) // no capture within the last step
         {
           print_error("Invalid move");
           // reset
