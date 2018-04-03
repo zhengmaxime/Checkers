@@ -235,7 +235,7 @@ void find_possible_move(struct board *b,
     seq_push_front(ms, seq);
 
     struct moves *elm = malloc(sizeof (struct moves));
-    moves_init(elm, seq); // sentinel
+    moves_init(elm, ms); // sentinel
 
     moves_push_front(moves, elm);
   }
