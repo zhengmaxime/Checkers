@@ -263,7 +263,7 @@ int main(int argc, char **argv)
 //--------------------------SDL end print------------------------------------//
 
 //---------------------------- IA PLAYER-------------------------------------//
-  if ((board->player) == cpu)
+  if ((board->player) == cpu && can_play)
   {
     puts("IA is thinking...");
     sleep(1);
