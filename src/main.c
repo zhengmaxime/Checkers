@@ -266,7 +266,7 @@ int main(int argc, char **argv)
   if ((board->player) == cpu)
   {
     puts("IA is thinking...");
-    sleep(3);
+    sleep(1);
 
     struct move_seq *ia_move = get_IA_move(board);
 
@@ -277,6 +277,13 @@ int main(int argc, char **argv)
     {
       undo_push(board, NULL);
       print_error("No move has been found by the IA");
+      can_play = 0;
+      puts("No move is possible!");
+
+      if (board->player == PLAYER_WHITE)
+        printf("Black won!\n");
+      else
+        printf("White won!\n");
     }
 
     board->player *= -1;
