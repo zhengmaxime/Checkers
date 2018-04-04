@@ -1,3 +1,5 @@
+#define IA_WORKS 0
+
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -14,9 +16,49 @@
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 # include "constants.h"
+# include "time.h"
 # include "menu.h"
 
 # define IS_VALID(x, y) x >= 0 && y >= 0
+
+struct move_seq *get_random_move(struct board *b)
+{
+  struct moves *moves_list = NULL;
+  unsigned int mandatory_jumps;
+	int move_choice, moves_list_len;
+
+  moves_list = build_moves(b);
+
+  mandatory_jumps = list_len(moves_list);
+
+  if(mandatory_jumps > 0)
+  {
+  }
+  else
+  {
+    free_moves(moves_list);
+    moves_list = build_moves_not_mandatory(b);
+	}
+  moves_list_len = list_len(moves_list);
+
+	if (moves_list_len == 0)
+    return NULL;
+
+  srand(time(NULL));
+  move_choice = rand() % moves_list_len;
+
+	moves_list = moves_list->next; //sentinel jumped
+
+  for(int i = 0; i < move_choice; i++)
+	{
+		moves_list = moves_list->next;
+	}
+
+  if (moves_list == NULL)
+    return NULL;
+
+  return moves_list->seq;
+}
 
 int main(int argc, char **argv)
 {
@@ -48,7 +90,7 @@ int main(int argc, char **argv)
        "1: human plays white, cpu plays black\n"
        "2: human plays black, cpu plays white\n");
   scanf("%d", &a);
-*/ 
+*/
  if (a == 0)
   {
     puts("2 players mode");
@@ -273,7 +315,11 @@ int main(int argc, char **argv)
     puts("IA is thinking...");
     sleep(1);
 
-    struct move_seq *ia_move = get_IA_move(board);
+    struct move_seq *ia_move;
+    if (IA_WORKS)
+      ia_move = get_IA_move(board);
+    else
+      ia_move = get_random_move(board);
 
     if (ia_move != NULL)
       exec_seq_IA(board, ia_move);
