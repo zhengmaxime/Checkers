@@ -83,6 +83,24 @@ void count_pieces(struct board *b)
   }
 }
 
+void count_pieces_player(struct board *b, int player)
+{
+  b->nb_black = 0;
+  b->nb_white = 0;
+
+  for (int i = 0; i < 10; i++)
+  {
+    for (int j = 0; j < 10; j++)
+    {
+      if (is_white(b->cells[i][j].data))
+        b->nb_white++;
+      if (is_black(b->cells[i][j].data))
+        b->nb_black++;
+    }
+  }
+}
+
+
 void printBoard(struct board *b)
 {
   b->nb_black = 0;

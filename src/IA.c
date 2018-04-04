@@ -37,7 +37,7 @@ int isGameOver(struct board *board)
     
     if(list_len(moves_list) == 0 && list_len(moves_not_mandatory) == 0)
     {
-       return 1;
+       return 1; 
     }
     else
     {
@@ -46,21 +46,36 @@ int isGameOver(struct board *board)
   }
 } 
 
-struct move_seq *get_IA_move(struct board *b)
+struct move_seq *get_IA_move(struct board *board, int cpu, int player)
 {
-  struct moves *moves_list = NULL;
-  unsigned int mandatory_jumps;
-	int move_choice, moves_list_len;
-  int max_val;
-
-  moves_list = build_moves(b);
+  size_t deep = 1; //deepest of the minimax calcul
+  struct moves *moves_list = build_moves(board);
+  struct board *board_copy = NULL;
+  struct moves *best_move = malloc(sizeof(struct moves));
   
-  mandatory_jumps = list_len(moves_list);
+	int  best_move_val;
+  int max_val = -2000000000;
 
-  if(mandatory_jumps > 0)
+  if(list_len(moves_list) == 0)
   {
+    moves_list = build_moves_not_mandatory(board);
   }
-  else
+  board_copy = malloc(sizeof(struct board));
+  for(; moves_list->next != NULL;
+        moves_list = moves_list->next)
+  {
+    board_copy = memcpy(board_copy, board, sizeof(struct board));
+    if(exec_seq(board_copy, moves_list->seq) == -1)
+      printf("error while exec_seq mandatory\n");
+    best_move_val = min(board_copy, deep, cpu, player);
+
+    if(best_move_val > max_val)
+    {
+      max_val = best_move_val;
+      best_move = moves_list;
+    }
+  }
+  /*else
   {
     free_moves(moves_list);
     moves_list = build_moves_not_mandatory(b);
@@ -82,109 +97,90 @@ struct move_seq *get_IA_move(struct board *b)
   
   if (moves_list == NULL)
     return NULL;
-	
-  //max_val = -2000000000
+	*/
 
-  return moves_list->seq;
+  return best_move->seq;
 }
 
-long min(struct board *board, size_t deep)
+long min(struct board *board, size_t deep, int cpu, int player)
 {
   long min_val;
   long min;
   struct moves *moves_list = NULL;
-  struct moves *moves_list_mandatory = NULL;
   struct board *board_copy = NULL;
 
   if(deep == 0 || isGameOver(board))
-    return eval(board);
+    return eval(board, -1);// -1 -> adverse player
   min_val = 2000000000;//-2 millions
 
-  moves_list_mandatory = build_moves(board);
-  if(list_len(moves_list_mandatory) != 0)
-  {
-    moves_list_mandatory = moves_list_mandatory->next; //sentinel
-    for(; moves_list_mandatory->next != NULL;
-          moves_list_mandatory = moves_list_mandatory->next)
-    {
-      board_copy = malloc(sizeof(struct board));
-      board_copy = memcpy(board_copy, board, sizeof(struct board));
-      if(exec_seq(board_copy, moves_list_mandatory->seq) == -1)
-        printf("error while exec_seq mandatory\n");
-      min = max(board_copy, deep -1);
-
-      if(min < min_val)
-        min_val = min;
-    }
-  }
-  else
+  moves_list = build_moves(board);
+  if(list_len(moves_list) == 0)
   {
     moves_list = build_moves_not_mandatory(board);
-    moves_list = moves_list->next; //sentinel
-    for(; moves_list->next != NULL; moves_list = moves_list->next)
-    {
-      board_copy = malloc(sizeof(struct board));
-      board_copy = memcpy(board_copy, board, sizeof(struct board));
-      if(exec_seq(board_copy, moves_list->seq) == -1)
-        printf("error while exec_seq moves_list\n");
-      min = max(board_copy, deep -1);
+  }
+  moves_list = moves_list->next; //sentinel
+  for(; moves_list->next != NULL;
+        moves_list = moves_list->next)
+  {
+    board_copy = malloc(sizeof(struct board));
+    board_copy = memcpy(board_copy, board, sizeof(struct board));
+    if(exec_seq(board_copy, moves_list->seq) == -1)
+      printf("error while exec_seq mandatory\n");
+    min = max(board_copy, deep -1, cpu, player);
 
-      if(min < min_val)
-        min_val = min;
-    }
+    if(min < min_val)
+      min_val = min;
   }
   return min_val;
 }
 
-long max(struct board *board, size_t deep)
+long max(struct board *board, size_t deep, int cpu, int player)
 {
   long max_val;
   long max;
   struct moves *moves_list = NULL;
-  struct moves *moves_list_mandatory = NULL;
   struct board *board_copy = NULL;
 
   if(deep == 0 || isGameOver(board))
-    return eval(board);
+    return eval(board, 1);// 1 -> cpu
   max_val = -2000000000;//-2 millions
   
-  moves_list_mandatory = build_moves(board);
-  if(list_len(moves_list_mandatory) != 0)
-  {
-    moves_list_mandatory = moves_list_mandatory->next; //sentinel
-    for(; moves_list_mandatory->next != NULL;
-          moves_list_mandatory = moves_list_mandatory->next)
-    {     
-      board_copy = malloc(sizeof(struct board));
-      board_copy = memcpy(board_copy, board, sizeof(struct board));
-      if(exec_seq(board_copy, moves_list_mandatory->seq) == -1)
-        printf("error while exec_seq mandatory (max)\n"); 
-      max = min(board_copy, deep -1);
-      
-      if(max > max_val)
-        max_val = max;
-    }   
-  } 
-  else
+  moves_list = build_moves(board);
+  if(list_len(moves_list) != 0)
   {
     moves_list = build_moves_not_mandatory(board);
-    moves_list = moves_list->next; //sentinel
-    for(; moves_list->next != NULL; moves_list = moves_list->next)
-    {
-      board_copy = malloc(sizeof(struct board));
-      board_copy = memcpy(board_copy, board, sizeof(struct board));
-      if(exec_seq(board_copy, moves_list->seq) == -1)
-        printf("error while exec_seq moves_list (max)\n");
-      max = min(board_copy, deep -1);
-     
-      if(max > max_val)
-        max_val = max;
-    }
   }
+  moves_list = moves_list->next; //sentinel
+  for(; moves_list->next != NULL;
+        moves_list = moves_list->next)
+  {     
+    board_copy = malloc(sizeof(struct board));
+    board_copy = memcpy(board_copy, board, sizeof(struct board));
+    if(exec_seq(board_copy, moves_list->seq) == -1)
+      printf("error while exec_seq mandatory (max)\n"); 
+    max = min(board_copy, deep -1, cpu, player);
+
+    if(max > max_val)
+      max_val = max;
+  }   
   return max_val;
 }
 
-long eval(struct board *board)
+long eval(struct board *board, int actual_player, int cpu, int player)
 {
-  return 1;
+  //if actual_player
+  if(gameIsOver
+  if(cpu == PLAYER_WHITE && board->nb_white == 0
+  || cpu == PLAYER_BLACK && board->nb_black == 0)
+  {
+    return -1000;
+  }
+  if(player == PLAYER_WHITE && board->nb_white == 0
+  || player == PLAYER_BLACK && board->nb_black == 0)
+  {
+    return 1000;
+  }
+
+
+  return 1; //FIXME
 }
