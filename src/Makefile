@@ -14,7 +14,6 @@ SRC= main.c \
      find_move.c \
      exec_move.c \
      history.c \
-     IA.c \
      file.c \
      shell.c \
      menu.c
