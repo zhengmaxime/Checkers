@@ -14,6 +14,7 @@
 # include <SDL/SDL.h>
 # include <SDL/SDL_image.h>
 # include "constants.h"
+# include "menu.h"
 
 # define IS_VALID(x, y) x >= 0 && y >= 0
 
@@ -38,15 +39,17 @@ int main(int argc, char **argv)
   boardInitColor(board);
 
 // Mode choice
-  int a;
+  int a = menu();
   int cpu = PLAYER_BLACK;
   int human = PLAYER_WHITE;
+/*
   puts("Type a digit:\n"
        "0: 2 players\n"
        "1: human plays white, cpu plays black\n"
        "2: human plays black, cpu plays white\n");
   scanf("%d", &a);
-  if (a == 0)
+*/ 
+ if (a == 0)
   {
     puts("2 players mode");
     cpu = 0;
@@ -56,12 +59,14 @@ int main(int argc, char **argv)
   {
     puts("human plays white, cpu plays black");
   }
-  else
+  else if (a == 2)
   {
     puts("human plays black, cpu plays white");
     cpu = PLAYER_WHITE;
     human = PLAYER_BLACK;
   }
+  else
+    return 0;
 
 // Init
   undo_init(board);

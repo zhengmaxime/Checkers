@@ -17,6 +17,7 @@ SRC= main.c \
      IA.c \
      file.c \
      shell.c \
+     menu.c
 
 OBJ= ${SRC:.c=.o}
 DEP= ${SRC:.c=.d}
