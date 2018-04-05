@@ -82,7 +82,7 @@ void count_pieces(struct board *b)
     }
   }
 }
-
+/*
 void count_pieces_player(struct board *b, int player)
 {
   b->nb_black = 0;
@@ -99,7 +99,7 @@ void count_pieces_player(struct board *b, int player)
     }
   }
 }
-
+*/
 
 void printBoard(struct board *b)
 {
