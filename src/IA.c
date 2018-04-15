@@ -75,29 +75,8 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
       best_move = moves_list;
     }
   }
-  /*else
-  {
-    free_moves(moves_list);
-    moves_list = build_moves_not_mandatory(b);
-	}
-  moves_list_len = list_len(moves_list);
-
-	if (moves_list_len == 0)
-    return NULL;
-  
-  srand(time(NULL));
-  move_choice = rand() % moves_list_len;
-
-	moves_list = moves_list->next; //sentinel jumped
-	
-  for(int i = 0; i < move_choice; i++)
-	{
-		moves_list = moves_list->next;
-	}
-  
   if (moves_list == NULL)
     return NULL;
-	*/
 
   return best_move->seq;
 }
@@ -172,15 +151,10 @@ long eval(struct board *board, int actual_player, int cpu, int player)
   if(gameIsOver
   if(cpu == PLAYER_WHITE && board->nb_white == 0
   || cpu == PLAYER_BLACK && board->nb_black == 0)
-  {
     return -1000;
-  }
   if(player == PLAYER_WHITE && board->nb_white == 0
   || player == PLAYER_BLACK && board->nb_black == 0)
-  {
     return 1000;
-  }
-
 
   return 1; //FIXME
 }
