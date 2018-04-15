@@ -28,13 +28,9 @@ struct move_seq *get_random_move(struct board *b)
 	int move_choice, moves_list_len;
 
   moves_list = build_moves(b);
-
   mandatory_jumps = list_len(moves_list);
 
-  if(mandatory_jumps > 0)
-  {
-  }
-  else
+  if (mandatory_jumps == 0) 
   {
     free_moves(moves_list);
     moves_list = build_moves_not_mandatory(b);
