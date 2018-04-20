@@ -378,6 +378,9 @@ int main(int argc, char **argv)
          case SDLK_k:
            res = SHELL;
            break;
+         case SDLK_a:
+           res = ABANDON;
+           break;
          default:
            break;
        }
@@ -446,12 +449,24 @@ int main(int argc, char **argv)
            "r: redo\n"
            "s: save\n"
            "ESC: quit\n"
+           "a: abandon\n"
            "h: help\n"
            "k: use shell (once):\n    "
            "Type 4 digits separated by space character:\n    "
            "current line and column, destination line and column\n    "
            "If you have a mandatory move, just type the corresponding number\n"
            "    You can also type undo, redo, save, quit or help");
+    }
+// ABANDON
+    if (res == ABANDON)
+    {
+        can_play = 0;
+        puts("Abandon!");
+
+        if (board->player == PLAYER_WHITE)
+          printf("Black won!\n");
+        else
+          printf("White won!\n");
     }
 
 // SAVE

@@ -17,5 +17,6 @@
 #define SWITCH_TO_MOUSE 6
 #define MOUSE 7
 #define SHELL 8
+#define ABANDON 9
 
 #endif
