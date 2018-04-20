@@ -4,25 +4,25 @@
 
 ### Répartition des tâches
 
-|  | % Avancement prévu S2 | État | Qui ? | 
+|  | % Avancement prévu S2 | État | Qui ? |
 | ------ | ------ | ----- | ---- |
 | Menu | 80 % | OK | Mohamed, Rodrigue |
-| Jouabilité | 80 % |avance sur planning| Maxime | 
+| Jouabilité | 80 % |avance sur planning| Maxime |
 | Graphismes | 60 % |avance sur planning| Mohamed, Rodrigue |
 | IA | 50 % |retard sur planning | Adrien, ... |
-| Site Web | 80 % |OK| Mohamed 
+| Site Web | 80 % |OK| Mohamed
 
 ### Menu / Graphismes (Mohamed & Rodrigue)
 
 ##### Important
 
 - [ ] Ajouter des boutons au menu principal comme le niveau de difficulté, ouvrir fichier (si c'est possible)
-- [ ] Ajouter des boutons à côté du damier : undo, redo, save, quit (revient au menu), abandon
+- [ ] Ajouter des boutons à côté du damier : undo, redo, save, quit, abandon
 - [ ] Message de fin de partie dans la fenêtre de jeu
 
 ##### Moins important
 
-- [ ] Utiliser Gtk pour ouvrir/sauvegarder une partie 
+- [ ] Utiliser Gtk pour ouvrir/sauvegarder une partie
 (voir https://developer.gnome.org/gtk3/stable/GtkFileChooserDialog.html)
 - [ ] Afficher des informations sur la partie dans la fenêtre de jeu (nombre de pièces restantes, le joueur qui doit jouer...)
 (voir SDL_ttf)
@@ -32,7 +32,7 @@
 
 ### Jouabilité (Maxime)
 
-- [ ] Permettre au joueur d'abandonner une partie
+- [x] Permettre au joueur d'abandonner une partie
 
 ##### Bonus
 
