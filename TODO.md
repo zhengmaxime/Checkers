@@ -1,18 +1,73 @@
-### Jeu de dames
+# Jeu de dames, liste de tâches
 
-## 2ème soutenance
+## 3ème soutenance
+
+### Répartition des tâches
+
+|  | % Avancement prévu S2 | État | Qui ? | 
+| ------ | ------ | ----- | ---- |
+| Menu | 80 % | OK | Mohamed, Rodrigue |
+| Jouabilité | 80 % |avance sur planning| Maxime | 
+| Graphismes | 60 % |avance sur planning| Mohamed, Rodrigue |
+| IA | 50 % |retard sur planning | Adrien, ... |
+| Site Web | 80 % |OK| Mohamed 
+
+### Menu / Graphismes (Mohamed & Rodrigue)
+
+##### Important
+
+- [ ] Ajouter des boutons au menu principal comme le niveau de difficulté, ouvrir fichier (si c'est possible)
+- [ ] Ajouter des boutons à côté du damier : undo, redo, save, quit (revient au menu), abandon
+- [ ] Message de fin de partie dans la fenêtre de jeu
+
+##### Moins important
+
+- [ ] Utiliser Gtk pour ouvrir/sauvegarder une partie 
+(voir https://developer.gnome.org/gtk3/stable/GtkFileChooserDialog.html)
+- [ ] Afficher des informations sur la partie dans la fenêtre de jeu (nombre de pièces restantes, le joueur qui doit jouer...)
+(voir SDL_ttf)
+
+##### Bonus
+- [ ] Animations lorsqu'une pièce se déplace
+
+### Jouabilité (Maxime)
+
+- [ ] Permettre au joueur d'abandonner une partie
+
+##### Bonus
+
+- [ ] Suggérer un coup au joueur humain s'il est en difficulté
+- [ ] Gestion des fichiers PDN (voir https://en.wikipedia.org/wiki/Portable_Draughts_Notation)
+
+### IA (Adrien, ...)
+
+- [ ] Fonction d'évaluation
+- [ ] Minimax optimisé
+
+##### Bonus
+
+- [ ] Élagage alpha-bêta pour améliorer Minimax
+- [ ] Tables de finale
+
+### Divers
+
+- [ ] Rapport de projet (50 pages annexes non comprises)
+- [ ] Site Web
+
+
+##### 2ème soutenance
 - [x] Undo/redo
 - [x] Trace du coup effectué
 - [x] Jouer en cliquant
 - [x] Mode 1 joueur contre ordinateur
 - [x] Trouver tous les coups possibles (si aucune prise possible)
 - [x] Fin de partie lorsque plus aucun coup possible
-- [ ] IA
+- [x] IA (random)
 - [x] Menu simple dans la console
-- [ ] Menu graphique
-- [ ] Rapport de soutenance
+- [x] Menu graphique
+- [x] Rapport de soutenance
 
-## 1ère soutenance
+##### 1ère soutenance
 - [x] Mode 2 joueurs
 
 - [x] Affichage console
