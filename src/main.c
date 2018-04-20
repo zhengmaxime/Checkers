@@ -30,7 +30,7 @@ struct move_seq *get_random_move(struct board *b)
   moves_list = build_moves(b);
   mandatory_jumps = list_len(moves_list);
 
-  if (mandatory_jumps == 0) 
+  if (mandatory_jumps == 0)
   {
     free_moves(moves_list);
     moves_list = build_moves_not_mandatory(b);
@@ -58,6 +58,10 @@ struct move_seq *get_random_move(struct board *b)
 
 int main(int argc, char **argv)
 {
+  int menu_ret = menu();
+  if (menu_ret == 42)
+    return 0;
+
   struct board *board = malloc(sizeof(struct board));
 
 // Init the board.
@@ -77,7 +81,6 @@ int main(int argc, char **argv)
   boardInitColor(board);
 
 // Mode choice
-  int a = menu();
   int cpu = PLAYER_BLACK;
   int human = PLAYER_WHITE;
 /*
@@ -87,17 +90,17 @@ int main(int argc, char **argv)
        "2: human plays black, cpu plays white\n");
   scanf("%d", &a);
 */
- if (a == 0)
+ if (menu_ret == 0)
   {
     puts("2 players mode");
     cpu = 0;
     human = 0;
   }
-  else if (a == 1)
+  else if (menu_ret == 1)
   {
     puts("human plays white, cpu plays black");
   }
-  else if (a == 2)
+  else if (menu_ret == 2)
   {
     puts("human plays black, cpu plays white");
     cpu = PLAYER_WHITE;
@@ -686,5 +689,6 @@ quit:
   free_moves(board->redo);
   free(board);
 
+  main(argc, argv);
   return 0;
 }
