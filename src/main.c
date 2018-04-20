@@ -79,6 +79,7 @@ int main(int argc, char **argv)
   else
     boardInit(board);
   boardInitColor(board);
+  reset_last_move_trace(board);
 
 // Mode choice
   int cpu = PLAYER_BLACK;

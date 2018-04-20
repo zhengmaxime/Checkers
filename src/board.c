@@ -52,6 +52,7 @@ void boardInitColor(struct board *b)
     for (col = 0; col < 10; col += 2)
     {
       b->cells[line][col].background = LIGHT;
+      b->cells[line][col].last_move = 0;
       b->cells[line][col + 1].background = DARK;
     }
   }
@@ -62,6 +63,7 @@ void boardInitColor(struct board *b)
     {
       b->cells[line][col].background = DARK;
       b->cells[line][col + 1].background = LIGHT;
+      b->cells[line][col + 1].last_move = 0;
     }
   }
 }
