@@ -53,7 +53,7 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
   struct board *board_copy = NULL;
   struct moves *best_move = malloc(sizeof(struct moves));
   
-	int  best_move_val;
+	int best_move_val;
   int max_val = -2000000000;
 
   if(list_len(moves_list) == 0)
@@ -89,7 +89,7 @@ long min(struct board *board, size_t deep, int cpu, int player)
   struct board *board_copy = NULL;
 
   if(deep == 0 || isGameOver(board))
-    return eval(board, -1);// -1 -> adverse player
+    return eval(board, cpu ,player);// -1 -> adverse player
   min_val = 2000000000;//-2 millions
 
   moves_list = build_moves(board);
@@ -121,7 +121,7 @@ long max(struct board *board, size_t deep, int cpu, int player)
   struct board *board_copy = NULL;
 
   if(deep == 0 || isGameOver(board))
-    return eval(board, 1);// 1 -> cpu
+    return eval(board, cpu, player);// 1 -> cpu
   max_val = -2000000000;//-2 millions
   
   moves_list = build_moves(board);
@@ -145,16 +145,20 @@ long max(struct board *board, size_t deep, int cpu, int player)
   return max_val;
 }
 
-long eval(struct board *board, int actual_player, int cpu, int player)
+long eval(struct board *board/*, int actual_player*/, int cpu, int player)
 {
   //if actual_player
-  if(gameIsOver
-  if(cpu == PLAYER_WHITE && board->nb_white == 0
-  || cpu == PLAYER_BLACK && board->nb_black == 0)
+  //cpu looses
+  if((cpu == PLAYER_WHITE && board->nb_white == 0)
+  || (cpu == PLAYER_BLACK && board->nb_black == 0))
     return -1000;
-  if(player == PLAYER_WHITE && board->nb_white == 0
-  || player == PLAYER_BLACK && board->nb_black == 0)
+  //player looses
+  if((player == PLAYER_WHITE && board->nb_white == 0)
+  || (player == PLAYER_BLACK && board->nb_black == 0))
     return 1000;
-
-  return 1; //FIXME
+  /*if(acual_player == PLAYER_WHITE)
+  {
+    return board->nb_white
+  }*/
+  return 0; 
 }

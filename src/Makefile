@@ -10,6 +10,7 @@ SRC= main.c \
      board.c \
      piece.c \
      list.c \
+     IA.c\
      simple_move.c \
      find_move.c \
      exec_move.c \

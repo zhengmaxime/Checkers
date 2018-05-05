@@ -1,4 +1,4 @@
-#define IA_WORKS 0
+#define IA_WORKS 1 
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -313,11 +313,11 @@ int main(int argc, char **argv)
   if ((board->player) == cpu && can_play)
   {
     puts("IA is thinking...");
-    sleep(1);
+    //sleep(1);
 
     struct move_seq *ia_move;
     if (IA_WORKS)
-      ia_move = get_IA_move(board);
+      ia_move = get_IA_move(board, cpu, human);
     else
       ia_move = get_random_move(board);
 
@@ -346,7 +346,7 @@ int main(int argc, char **argv)
 
   switch (event.type)
   {
-    case SDL_QUIT:
+   case SDL_QUIT:
       res = QUIT;
       break;
 
@@ -662,7 +662,6 @@ int main(int argc, char **argv)
   for (;;)
   {
     SDL_WaitEvent(&event);
-
     switch (event.type)
     {
       case SDL_QUIT:
