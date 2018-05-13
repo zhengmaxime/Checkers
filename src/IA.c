@@ -63,11 +63,11 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
   if (list_len(moves_list) == 1)
     return moves_list->next->seq;
 
-  board_copy = malloc(sizeof(struct board));
   moves_list = moves_list->next; //sentinel
   for(; moves_list->next != NULL;
         moves_list = moves_list->next)
   {
+    board_copy = malloc(sizeof(struct board));
     board_copy = memcpy(board_copy, board, sizeof(struct board));
     if(exec_seq(board_copy, moves_list->seq) == -1)
       printf("error while exec_seq mandatory\n");
@@ -79,6 +79,7 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
       max_val = best_move_val;
       best_move = moves_list;
     }
+    free(board_copy);
   }
   if (moves_list == NULL)
     return NULL;
@@ -115,6 +116,8 @@ long min(struct board *board, size_t deep, int cpu, int player)
 
     if(min < min_val)
       min_val = min;
+
+    free(board_copy);
   }
   return min_val;
 }
@@ -148,6 +151,8 @@ long max(struct board *board, size_t deep, int cpu, int player)
 
     if(max > max_val)
       max_val = max;
+
+    free(board_copy);
   }
   return max_val;
 }
