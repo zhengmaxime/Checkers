@@ -51,7 +51,7 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
   size_t deep = 1; //deepest of the minimax calcul
   struct moves *moves_list = build_moves(board);
   struct board *board_copy = NULL;
-  struct moves *best_move = malloc(sizeof(struct moves));
+  struct move_seq *best_move = malloc(sizeof(struct move_seq));
 
 	int best_move_val;
   int max_val = -2000000000;
@@ -74,17 +74,17 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
     board_copy->player *= -1;
     best_move_val = min(board_copy, deep, cpu, player);
 
-    if(best_move_val > max_val)
+    if(best_move_val >= max_val)
     {
       max_val = best_move_val;
-      best_move = moves_list;
+      best_move = moves_list->seq;
     }
     free(board_copy);
   }
   if (moves_list == NULL)
     return NULL;
 
-  return best_move->seq;
+  return best_move;
 }
 
 long min(struct board *board, size_t deep, int cpu, int player)
