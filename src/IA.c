@@ -71,6 +71,7 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
     board_copy = memcpy(board_copy, board, sizeof(struct board));
     if(exec_seq(board_copy, moves_list->seq) == -1)
       printf("error while exec_seq mandatory\n");
+    pawn_to_king(board_copy);
     board_copy->player *= -1;
     best_move_val = min(board_copy, deep, cpu, player);
 
@@ -111,6 +112,7 @@ long min(struct board *board, size_t deep, int cpu, int player)
     board_copy = memcpy(board_copy, board, sizeof(struct board));
     if(exec_seq(board_copy, moves_list->seq) == -1)
       printf("error while exec_seq mandatory\n");
+    pawn_to_king(board_copy);
     board_copy->player *= -1;
     min = max(board_copy, deep -1, cpu, player);
 
@@ -146,6 +148,7 @@ long max(struct board *board, size_t deep, int cpu, int player)
     board_copy = memcpy(board_copy, board, sizeof(struct board));
     if(exec_seq(board_copy, moves_list->seq) == -1)
       printf("error while exec_seq mandatory (max)\n");
+    pawn_to_king(board_copy);
     board_copy->player *= -1;
     max = min(board_copy, deep -1, cpu, player);
 
