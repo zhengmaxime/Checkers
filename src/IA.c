@@ -60,6 +60,8 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
   {
     moves_list = build_moves_not_mandatory(board);
   }
+  if (list_len(moves_list) == 0)
+    return NULL;
   if (list_len(moves_list) == 1)
     return moves_list->next->seq;
 
