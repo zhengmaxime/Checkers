@@ -62,10 +62,20 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
   }
 
   if (list_len(moves_list) == 0)
+  {
+    free_moves(moves_list);
     return NULL;
-  if (list_len(moves_list) == 1)
-    return moves_list->next->seq;
+  }
 
+  if (list_len(moves_list) == 1)
+  {
+    best_move = moves_list->next->seq;
+    moves_list->next->seq = NULL;
+    free_moves(moves_list);
+    return best_move;
+  }
+
+  struct moves *head = moves_list;
   moves_list = moves_list->next; //sentinel
   for (; moves_list; moves_list = moves_list->next)
   {
@@ -82,10 +92,12 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
       printf("%d\n", best_move_val);
       max_val = best_move_val;
       best_move = moves_list->seq;
+      moves_list->seq = NULL;
     }
     free(board_copy);
   }
 
+  free_moves(head);
   return best_move;
 }
 
