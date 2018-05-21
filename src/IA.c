@@ -54,7 +54,7 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
   struct move_seq *best_move = malloc(sizeof(struct move_seq));
 
 	int best_move_val;
-  int max_val = -2000000000;
+  int max_val = INT_MIN;
 
   if (list_len(moves_list) == 0)
   {
@@ -97,7 +97,7 @@ long min(struct board *board, size_t deep, int cpu, int player)
 
   if(deep == 0 || isGameOver(board))
     return eval(board, cpu ,player);// -1 -> adverse player
-  min_val = 2000000000;//-2 millions
+  min_val = INT_MAX;
 
   moves_list = build_moves(board);
   if (list_len(moves_list) == 0)
@@ -132,7 +132,7 @@ long max(struct board *board, size_t deep, int cpu, int player)
 
   if(deep == 0 || isGameOver(board))
     return eval(board, cpu, player);// 1 -> cpu
-  max_val = -2000000000;//-2 millions
+  max_val = INT_MIN;
 
   moves_list = build_moves(board);
   if(list_len(moves_list) == 0)
