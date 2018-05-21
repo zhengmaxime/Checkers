@@ -105,6 +105,7 @@ long min(struct board *board, size_t deep, int cpu, int player)
   {
     moves_list = build_moves_not_mandatory(board);
   }
+  struct moves *head = moves_list;
   moves_list = moves_list->next; //sentinel
   for (; moves_list; moves_list = moves_list->next)
   {
@@ -121,6 +122,7 @@ long min(struct board *board, size_t deep, int cpu, int player)
 
     free(board_copy);
   }
+  free_moves(head);
   return min_val;
 }
 
@@ -140,6 +142,7 @@ long max(struct board *board, size_t deep, int cpu, int player)
   {
     moves_list = build_moves_not_mandatory(board);
   }
+  struct moves *head = moves_list;
   moves_list = moves_list->next; //sentinel
   for (; moves_list; moves_list = moves_list->next)
   {
@@ -156,6 +159,7 @@ long max(struct board *board, size_t deep, int cpu, int player)
 
     free(board_copy);
   }
+  free_moves(head);
   return max_val;
 }
 #if 0
