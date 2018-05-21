@@ -46,15 +46,18 @@ int isGameOver(struct board *board)
   }
 }
 
-struct move_seq *get_IA_move(struct board *board, int cpu, int player)
+struct move_seq *get_IA_move(struct board *board, int player)
 {
   size_t deep = 3; //deepest of the minimax calcul
   struct moves *moves_list = build_moves(board);
   struct board *board_copy = NULL;
   struct move_seq *best_move = malloc(sizeof(struct move_seq));
 
-	int best_move_val;
+  int best_move_val;
   int max_val = INT_MIN;
+
+  int alpha = INT_MIN;
+  int beta = INT_MAX;
 
   if (list_len(moves_list) == 0)
   {
@@ -85,7 +88,7 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
       printf("error while exec_seq mandatory\n");
     pawn_to_king(board_copy);
     board_copy->player *= -1;
-    best_move_val = min(board_copy, deep, cpu, player);
+    best_move_val = min(board_copy, deep, player, alpha, beta);
 
     if (best_move_val >= max_val)
     {
@@ -101,7 +104,7 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
   return best_move;
 }
 
-long min(struct board *board, size_t deep, int cpu, int player)
+long min(struct board *board, size_t deep, int player, int alpha, int beta)
 {
   long min_val;
   long min;
@@ -127,18 +130,22 @@ long min(struct board *board, size_t deep, int cpu, int player)
       printf("error while exec_seq mandatory\n");
     pawn_to_king(board_copy);
     board_copy->player *= -1;
-    min = max(board_copy, deep -1, cpu, player);
+    min = max(board_copy, deep -1, player, alpha, beta);
 
     if (min < min_val)
       min_val = min;
 
     free(board_copy);
+
+    if (alpha >= min_val)
+      break;
+    beta = beta < min_val ? beta : min_val;
   }
   free_moves(head);
   return min_val;
 }
 
-long max(struct board *board, size_t deep, int cpu, int player)
+long max(struct board *board, size_t deep, int player, int alpha, int beta)
 {
   long max_val;
   long max;
@@ -164,12 +171,16 @@ long max(struct board *board, size_t deep, int cpu, int player)
       printf("error while exec_seq mandatory (max)\n");
     pawn_to_king(board_copy);
     board_copy->player *= -1;
-    max = min(board_copy, deep -1, cpu, player);
+    max = min(board_copy, deep -1, player, alpha, beta);
 
     if (max > max_val)
       max_val = max;
 
     free(board_copy);
+
+    if (max_val >= beta)
+      break;
+    alpha = alpha > max_val ? alpha : max_val;
   }
   free_moves(head);
   return max_val;

@@ -1,4 +1,4 @@
-#define IA_WORKS 1 
+#define IA_WORKS 1
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -317,7 +317,7 @@ int main(int argc, char **argv)
 
     struct move_seq *ia_move;
     if (IA_WORKS)
-      ia_move = get_IA_move(board, cpu, human);
+      ia_move = get_IA_move(board, human);
     else
       ia_move = get_random_move(board);
 
