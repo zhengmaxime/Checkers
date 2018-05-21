@@ -48,7 +48,7 @@ int isGameOver(struct board *board)
 
 struct move_seq *get_IA_move(struct board *board, int cpu, int player)
 {
-  size_t deep = 1; //deepest of the minimax calcul
+  size_t deep = 3; //deepest of the minimax calcul
   struct moves *moves_list = build_moves(board);
   struct board *board_copy = NULL;
   struct move_seq *best_move = malloc(sizeof(struct move_seq));
@@ -79,6 +79,7 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
 
     if (best_move_val >= max_val)
     {
+      printf("%d\n", best_move_val);
       max_val = best_move_val;
       best_move = moves_list->seq;
     }
@@ -96,7 +97,7 @@ long min(struct board *board, size_t deep, int cpu, int player)
   struct board *board_copy = NULL;
 
   if(deep == 0 || isGameOver(board))
-    return eval(board, cpu ,player);// -1 -> adverse player
+    return eval(board, player);
   min_val = INT_MAX;
 
   moves_list = build_moves(board);
@@ -131,7 +132,7 @@ long max(struct board *board, size_t deep, int cpu, int player)
   struct board *board_copy = NULL;
 
   if(deep == 0 || isGameOver(board))
-    return eval(board, cpu, player);// 1 -> cpu
+    return eval(board, player);
   max_val = INT_MIN;
 
   moves_list = build_moves(board);
@@ -157,7 +158,7 @@ long max(struct board *board, size_t deep, int cpu, int player)
   }
   return max_val;
 }
-
+#if 0
 long eval(struct board *board/*, int actual_player*/, int cpu, int player)
 {
   //if actual_player
@@ -174,4 +175,50 @@ long eval(struct board *board/*, int actual_player*/, int cpu, int player)
     return board->nb_white
   }*/
   return 0;
+}
+#endif
+long eval(struct board *b, int player)
+{
+  int white_score = 0;
+  int black_score = 0;
+  int res = 0;
+
+  int ev[10][10] = {
+  {0, 80, 0, 100, 0, 125, 0, 100, 0, 75},
+  {50, 0, 70, 0, 70, 0, 70, 0, 70, 0},
+  {0, 25, 0, 20, 0, 20, 0, 20, 0, 40},
+  {25, 0 ,10, 0, 10, 0, 10, 0, 25, 0},
+  {0, 25, 0, 10, 0, 10, 0, 10, 0, 25},
+  {25, 0 ,10, 0, 10, 0, 10, 0, 25, 0},
+  {0, 25, 0, 10, 0, 10, 0, 10, 0, 25},
+  {40, 0, 20, 0, 20, 0, 20, 0, 25, 0},
+  {0, 70, 0, 70, 0, 70, 0, 70, 0, 50},
+  {75, 0, 100, 0, 125, 0, 100, 0, 80, 0}
+  };
+
+  for (int i = 0; i < 10; i++)
+  {
+    for (int j = 0; j < 10; j++)
+    {
+      if (is_white(b->cells[i][j].data))
+      {
+        white_score += ev[i][j];
+        if (is_king(b->cells[i][j].data))
+          white_score += 300;
+      }
+      if (is_black(b->cells[i][j].data))
+      {
+        black_score += ev[i][j];
+        if (is_king(b->cells[i][j].data))
+          black_score += 300;
+      }
+    }
+  }
+
+  if (is_black(player))
+    res = white_score - black_score;
+  else
+    res = black_score - white_score;
+
+  return res;
 }

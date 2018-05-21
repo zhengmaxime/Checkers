@@ -9,6 +9,6 @@ long min(struct board *board, size_t deep, int cpu, int player);
 
 long max(struct board *board, size_t deep, int cpu, int player);
 
-long eval(struct board *board, int cpu, int player);
+long eval(struct board *board, int player);
 
 #endif
