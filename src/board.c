@@ -178,7 +178,7 @@ int pawn_to_king(struct board *b)
     }
   }
 
-  if (new_king == 1) // save the coords of the new king
+  if (new_king == 1 && b->undo->next) // save the coords of the new king
     save_king_coords(b, line, col);
 
   return new_king;
