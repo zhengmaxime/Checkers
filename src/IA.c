@@ -56,36 +56,34 @@ struct move_seq *get_IA_move(struct board *board, int cpu, int player)
 	int best_move_val;
   int max_val = -2000000000;
 
-  if(list_len(moves_list) == 0)
+  if (list_len(moves_list) == 0)
   {
     moves_list = build_moves_not_mandatory(board);
   }
+
   if (list_len(moves_list) == 0)
     return NULL;
   if (list_len(moves_list) == 1)
     return moves_list->next->seq;
 
   moves_list = moves_list->next; //sentinel
-  for(; moves_list->next != NULL;
-        moves_list = moves_list->next)
+  for (; moves_list; moves_list = moves_list->next)
   {
     board_copy = malloc(sizeof(struct board));
     board_copy = memcpy(board_copy, board, sizeof(struct board));
-    if(exec_seq(board_copy, moves_list->seq) == -1)
+    if (exec_seq(board_copy, moves_list->seq) == -1)
       printf("error while exec_seq mandatory\n");
     pawn_to_king(board_copy);
     board_copy->player *= -1;
     best_move_val = min(board_copy, deep, cpu, player);
 
-    if(best_move_val >= max_val)
+    if (best_move_val >= max_val)
     {
       max_val = best_move_val;
       best_move = moves_list->seq;
     }
     free(board_copy);
   }
-  if (moves_list == NULL)
-    return NULL;
 
   return best_move;
 }
@@ -102,23 +100,22 @@ long min(struct board *board, size_t deep, int cpu, int player)
   min_val = 2000000000;//-2 millions
 
   moves_list = build_moves(board);
-  if(list_len(moves_list) == 0)
+  if (list_len(moves_list) == 0)
   {
     moves_list = build_moves_not_mandatory(board);
   }
   moves_list = moves_list->next; //sentinel
-  for(; moves_list->next != NULL;
-        moves_list = moves_list->next)
+  for (; moves_list; moves_list = moves_list->next)
   {
     board_copy = malloc(sizeof(struct board));
     board_copy = memcpy(board_copy, board, sizeof(struct board));
-    if(exec_seq(board_copy, moves_list->seq) == -1)
+    if (exec_seq(board_copy, moves_list->seq) == -1)
       printf("error while exec_seq mandatory\n");
     pawn_to_king(board_copy);
     board_copy->player *= -1;
     min = max(board_copy, deep -1, cpu, player);
 
-    if(min < min_val)
+    if (min < min_val)
       min_val = min;
 
     free(board_copy);
@@ -143,18 +140,17 @@ long max(struct board *board, size_t deep, int cpu, int player)
     moves_list = build_moves_not_mandatory(board);
   }
   moves_list = moves_list->next; //sentinel
-  for(; moves_list->next != NULL;
-        moves_list = moves_list->next)
+  for (; moves_list; moves_list = moves_list->next)
   {
     board_copy = malloc(sizeof(struct board));
     board_copy = memcpy(board_copy, board, sizeof(struct board));
-    if(exec_seq(board_copy, moves_list->seq) == -1)
+    if (exec_seq(board_copy, moves_list->seq) == -1)
       printf("error while exec_seq mandatory (max)\n");
     pawn_to_king(board_copy);
     board_copy->player *= -1;
     max = min(board_copy, deep -1, cpu, player);
 
-    if(max > max_val)
+    if (max > max_val)
       max_val = max;
 
     free(board_copy);
