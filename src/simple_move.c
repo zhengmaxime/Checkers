@@ -65,18 +65,19 @@ int errManage(struct board *b, int curLine, int curCol,
       int dx = ((destLine - curLine) > 0) ? 1 : -1;
       int dy = ((destCol - curCol) > 0) ? 1 : -1;
 
-      while (x != destLine && y != destCol && b->cells[x][y].data == 0)
+      do
       {
         x += dx;
         y += dy;
-      }
+      } while (x != destLine && y != destCol && b->cells[x][y].data == 0);
 
-      if (b->cells[x + dx][y + dy].data != 0)
+      if (b->cells[x][y].data != 0)
       {
         if (print)
           print_error("King is blocked by another piece");
         return -3;
       }
+
     }
   }
 
