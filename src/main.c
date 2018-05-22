@@ -54,6 +54,7 @@ struct move_seq *get_random_move(struct board *b)
   if (moves_list == NULL)
     return NULL;
 
+  sleep(1);
   return moves_list->seq;
 }
 

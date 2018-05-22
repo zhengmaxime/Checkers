@@ -78,8 +78,12 @@ struct move_seq *get_IA_move(struct board *board, int player, int deep)
     best_move = moves_list->next->seq;
     moves_list->next->seq = NULL;
     free_moves(moves_list);
+    sleep(1);
     return best_move;
   }
+
+  if (deep <= 3)
+    sleep(1);
 
   struct moves *head = moves_list;
   moves_list = moves_list->next; //sentinel
@@ -96,7 +100,6 @@ struct move_seq *get_IA_move(struct board *board, int player, int deep)
 
     if (best_move_val >= max_val)
     {
-      printf("%d\n", best_move_val);
       max_val = best_move_val;
       best_move = moves_list->seq;
       moves_list->seq = NULL;
@@ -104,6 +107,7 @@ struct move_seq *get_IA_move(struct board *board, int player, int deep)
     free(board_copy);
   }
 
+  printf("%d\n", best_move_val);
   free_moves(head);
   return best_move;
 }
