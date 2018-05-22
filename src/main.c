@@ -134,7 +134,7 @@ int main(int argc, char **argv)
   SDL_Surface *B_BPSE = IMG_Load("image_case/casemaronpiecenoireselected.png");
   SDL_Surface *B_WPSE = IMG_Load("image_case/casemaronpieceblancheselected.png");
 
-  SDL_Surface *Back = SDL_LoadBMP("image_menu/Back.bmp");
+  SDL_Surface *Quit = SDL_LoadBMP("image_menu/Quit.bmp");
   SDL_Surface *Undo = NULL;
   Undo = SDL_LoadBMP("image_menu/Undo.bmp");
   SDL_Surface *Redo = SDL_LoadBMP("image_menu/Redo.bmp");
@@ -323,10 +323,15 @@ int main(int argc, char **argv)
     SDL_Rect pos7;
     pos7.x = 496;
     pos7.y = 760;
+ 
+    SDL_Rect pos8;
+    pos8.x = 253;
+    pos8.y = 803;
 
     SDL_BlitSurface(Undo, NULL, screen, &pos5);
     SDL_BlitSurface(Redo, NULL, screen, &pos6);
     SDL_BlitSurface(Save, NULL, screen, &pos7);
+    SDL_BlitSurface(Quit, NULL, screen, &pos8);
     SDL_Flip(screen);
 //--------------------------SDL end print------------------------------------//
 
@@ -373,12 +378,31 @@ int main(int argc, char **argv)
 
     case SDL_MOUSEBUTTONDOWN:
        if (event.button.button == SDL_BUTTON_LEFT)
-       {
-         // No mistake below: x is the ordinate (we write cells[x][y]).
-         selected_x = event.button.y / BLOCK_SIZE;
-         selected_y = event.button.x / BLOCK_SIZE;
-         res = MOUSE;
-         reset_last_move_trace(board);
+       { 
+          if (event.button.x > 10 && event.button.x < 243 && event.button.y > 760 && event.button.y < 793)
+          {
+            res = UNDO;
+          }
+          else if (event.button.x > 253 && event.button.x < 253+233  && event.button.y > 760 && event.button.y < 793)
+          {
+            res = REDO;
+          }
+          else if (event.button.x > 496 && event.button.x < 496+233 && event.button.y > 760 && event.button.y < 793)
+          {
+            res = SAVE;
+          }
+          else if (event.button.x > 253 && event.button.x < 253+233 && event.button.y > 803 && event.button.y < 836)
+          {
+            res = QUIT;
+          }
+          else
+          {
+             // No mistake below: x is the ordinate (we write cells[x][y]).
+             selected_x = event.button.y / BLOCK_SIZE;
+             selected_y = event.button.x / BLOCK_SIZE;
+             res = MOUSE;
+             reset_last_move_trace(board);
+          }
        }
        break;
 
@@ -705,6 +729,7 @@ quit:
   SDL_FreeSurface(Undo);
   SDL_FreeSurface(Redo);
   SDL_FreeSurface(Save);
+  SDL_FreeSurface(Quit);
   SDL_Quit();
 //-------free SDL------------------------------------------------------------//
 
