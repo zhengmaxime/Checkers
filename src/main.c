@@ -566,6 +566,8 @@ start:
 
         if (0 != write_board_to_file(board, filename))
           print_error("Can not write board to file");
+        else
+          puts("File saved successfully");
 
         free(filename);
     }
