@@ -3,7 +3,7 @@
 
 int isGameOver(struct board *board);
 
-struct move_seq *get_IA_move(struct board *board, int player);
+struct move_seq *get_IA_move(struct board *board, int player, int deep);
 
 long min(struct board *board, size_t deep, int player, int alpha, int beta);
 

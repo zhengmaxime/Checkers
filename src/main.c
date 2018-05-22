@@ -116,9 +116,21 @@ start:
   else
     return 0;
 
-  printf("%d\n", level);
   if (level == 42)
+  {
+    free(board);
     goto start;
+  }
+
+// for minimax
+  int deep;
+  if (level == 1)
+    deep = 3;
+  else if (level == 2)
+    deep = 7;
+  else
+    deep = 3;
+
 // Init
   undo_init(board);
   redo_init(board);
@@ -351,8 +363,8 @@ start:
     //sleep(1);
 
     struct move_seq *ia_move;
-    if (IA_WORKS)
-      ia_move = get_IA_move(board, human);
+    if (IA_WORKS && level != 0)
+      ia_move = get_IA_move(board, human, deep);
     else
       ia_move = get_random_move(board);
 
