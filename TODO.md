@@ -16,8 +16,8 @@
 
 ##### Important
 
-- [ ] Ajouter des boutons au menu principal comme le niveau de difficulté, ouvrir fichier (si c'est possible)
-- [ ] Ajouter des boutons à côté du damier : undo, redo, save, quit, abandon
+- [x] Ajouter des boutons au menu principal comme le niveau de difficulté, ouvrir fichier (si c'est possible)
+- [x] Ajouter des boutons à côté du damier : undo, redo, save, quit, abandon
 - [ ] Message de fin de partie dans la fenêtre de jeu
 
 ##### Moins important
@@ -41,12 +41,12 @@
 
 ### IA (Adrien, ...)
 
-- [ ] Fonction d'évaluation
-- [ ] Minimax optimisé
+- [x] Fonction d'évaluation
+- [x] Minimax optimisé
 
 ##### Bonus
 
-- [ ] Élagage alpha-bêta pour améliorer Minimax
+- [x] Élagage alpha-bêta pour améliorer Minimax
 - [ ] Tables de finale
 
 ### Divers
