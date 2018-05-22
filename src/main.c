@@ -758,6 +758,10 @@ start:
     switch (event.type)
     {
       case SDL_QUIT:
+      case SDL_MOUSEBUTTONDOWN:
+        if (event.button.button == SDL_BUTTON_LEFT)
+          if (event.button.x > 253 && event.button.x < 486
+           && event.button.y > 803 && event.button.y < 836)
       case SDL_KEYDOWN:
         goto quit;
       default:
