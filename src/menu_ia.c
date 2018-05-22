@@ -5,11 +5,11 @@
 #include <unistd.h>
 
 
-void pause_1()
+void pause_2()
 {
     int continuer = 1;
     SDL_Event event;
- 
+
     while (continuer)
     {
         SDL_WaitEvent(&event);
@@ -21,19 +21,19 @@ void pause_1()
     }
 }
 
-int menu()
+int menu_ia()
 {
     SDL_Surface *ecran = NULL, *imageDeFond = NULL; // Surface
     // SDL_Surface *rectangle = NULL;
-    SDL_Surface *Beginner = NULL;
-    SDL_Surface *Easy = NULL;
-    SDL_Surface *Middle = NULL;
-    SDL_Surface *Back = NULL;    
+//    SDL_Surface *Beginner = NULL;
+ //   SDL_Surface *Easy = NULL;
+  //  SDL_Surface *Middle = NULL;
+   // SDL_Surface *Back = NULL;
 
-    
+
     SDL_Rect positionFond; // variable pour recuperer position dans la fenetre
     positionFond.x = 0;
-    positionFond.y = 0;   
+    positionFond.y = 0;
 
     SDL_Rect pos1;
     pos1.x = 85;
@@ -59,7 +59,7 @@ int menu()
     }
 
     ecran = SDL_SetVideoMode(402, 554, 32, SDL_HWSURFACE); // creation de la fenetre
-    
+
     SDL_WM_SetCaption("Chargement d'images en SDL", NULL); // chargement img bmp dans une surface
 
     if (ecran == NULL) // test si le format est trop grand
@@ -75,41 +75,41 @@ int menu()
     // 3eme parametre recupere la valeure de la couleur
 
     imageDeFond = SDL_LoadBMP("image_menu/Checkers.bmp");
-    PVP = SDL_LoadBMP("image_menu/Beginner.bmp");
-    White = SDL_LoadBMP("image_menu/Easy.bmp");
-    Black = SDL_LoadBMP("image_menu/Middle.bmp");
-    Quit = SDL_LoadBMP("image_menu/Back.bmp");
-    
-    
+    SDL_Surface *Beginner = SDL_LoadBMP("image_menu/Beginner.bmp");
+    SDL_Surface *Easy = SDL_LoadBMP("image_menu/Easy.bmp");
+    SDL_Surface *Middle = SDL_LoadBMP("image_menu/Middle.bmp");
+    SDL_Surface *Quit = SDL_LoadBMP("image_menu/Quit.bmp");
+
+
 
 
 
     SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 17, 206, 112));
 
     SDL_BlitSurface(imageDeFond, NULL, ecran, &positionFond);
-    SDL_BlitSurface(PVP, NULL, ecran, &pos1);
-    SDL_BlitSurface(White, NULL, ecran, &pos2);
-    SDL_BlitSurface(Black, NULL, ecran, &pos3);
+    SDL_BlitSurface(Beginner, NULL, ecran, &pos1);
+    SDL_BlitSurface(Easy, NULL, ecran, &pos2);
+    SDL_BlitSurface(Middle, NULL, ecran, &pos3);
     SDL_BlitSurface(Quit, NULL, ecran, &pos4);
     /* On blitte (colle) par dessus la fenetre */
-     
+
     int mode = -1;
-    
-    while (mode == -1){   
-    
+
+    while (mode == -1){
+
     SDL_Flip(ecran);
     SDL_Event evt;
     SDL_WaitEvent(&evt);
-        
+
 
     switch (evt.type)
     {
        case SDL_QUIT:
         mode = 42;
         break;
-      
+
       case SDL_MOUSEBUTTONDOWN:
-        
+
         if (evt.button.button == SDL_BUTTON_LEFT)
         {
           if (evt.button.x > 85 && evt.button.x < 329 && evt.button.y > 200 && evt.button.y < 237)
@@ -137,22 +137,22 @@ int menu()
        break;
       default:
         break;
-    
+
     }
 
 
    // SDL_Flip(ecran);
     //pause_1();
-}     
-   
+}
+
 
     SDL_FreeSurface(imageDeFond);
-    SDL_FreeSurface(PVP);
-    SDL_FreeSurface(White);    
-    SDL_FreeSurface(Black);
+    SDL_FreeSurface(Beginner);
+    SDL_FreeSurface(Easy);;
+    SDL_FreeSurface(Middle);
     SDL_FreeSurface(Quit);
 
-    
+
 
 
 

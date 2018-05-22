@@ -4,12 +4,11 @@
 #include <SDL/SDL_image.h>
 #include <unistd.h>
 
-
 void pause_1()
 {
     int continuer = 1;
     SDL_Event event;
- 
+
     while (continuer)
     {
         SDL_WaitEvent(&event);
@@ -28,12 +27,12 @@ int menu()
     SDL_Surface *PVP = NULL;
     SDL_Surface *White = NULL;
     SDL_Surface *Black = NULL;
-    SDL_Surface *Quit = NULL;    
+    SDL_Surface *Quit = NULL;
 
-    
+
     SDL_Rect positionFond; // variable pour recuperer position dans la fenetre
     positionFond.x = 0;
-    positionFond.y = 0;   
+    positionFond.y = 0;
 
     SDL_Rect pos1;
     pos1.x = 85;
@@ -59,7 +58,7 @@ int menu()
     }
 
     ecran = SDL_SetVideoMode(402, 554, 32, SDL_HWSURFACE); // creation de la fenetre
-    
+
     SDL_WM_SetCaption("Chargement d'images en SDL", NULL); // chargement img bmp dans une surface
 
     if (ecran == NULL) // test si le format est trop grand
@@ -79,8 +78,8 @@ int menu()
     White = SDL_LoadBMP("image_menu/White.bmp");
     Black = SDL_LoadBMP("image_menu/Black.bmp");
     Quit = SDL_LoadBMP("image_menu/Quit.bmp");
-    
-    
+
+
 
 
 
@@ -92,24 +91,24 @@ int menu()
     SDL_BlitSurface(Black, NULL, ecran, &pos3);
     SDL_BlitSurface(Quit, NULL, ecran, &pos4);
     /* On blitte (colle) par dessus la fenetre */
-     
+
     int mode = -1;
-    
-    while (mode == -1){   
-    
+
+    while (mode == -1){
+
     SDL_Flip(ecran);
     SDL_Event evt;
     SDL_WaitEvent(&evt);
-        
+
 
     switch (evt.type)
     {
        case SDL_QUIT:
         mode = 42;
         break;
-      
+
       case SDL_MOUSEBUTTONDOWN:
-        
+
         if (evt.button.button == SDL_BUTTON_LEFT)
         {
           if (evt.button.x > 85 && evt.button.x < 329 && evt.button.y > 200 && evt.button.y < 237)
@@ -137,22 +136,22 @@ int menu()
        break;
       default:
         break;
-    
+
     }
 
 
    // SDL_Flip(ecran);
     //pause_1();
-}     
-   
+}
+
 
     SDL_FreeSurface(imageDeFond);
     SDL_FreeSurface(PVP);
-    SDL_FreeSurface(White);    
+    SDL_FreeSurface(White);
     SDL_FreeSurface(Black);
     SDL_FreeSurface(Quit);
 
-    
+
 
 
 

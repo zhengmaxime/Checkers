@@ -1,4 +1,4 @@
-#define IA_WORKS 1 
+#define IA_WORKS 1
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -18,6 +18,7 @@
 # include "constants.h"
 # include "time.h"
 # include "menu.h"
+# include "menu_ia.h"
 
 # define IS_VALID(x, y) x >= 0 && y >= 0
 
@@ -58,7 +59,9 @@ struct move_seq *get_random_move(struct board *b)
 
 int main(int argc, char **argv)
 {
-  int menu_ret = menu();
+  int menu_ret;
+start:
+  menu_ret = menu();
   if (menu_ret == 42)
     return 0;
 
@@ -84,6 +87,7 @@ int main(int argc, char **argv)
 // Mode choice
   int cpu = PLAYER_BLACK;
   int human = PLAYER_WHITE;
+  int level = 0;
 /*
   puts("Type a digit:\n"
        "0: 2 players\n"
@@ -99,10 +103,12 @@ int main(int argc, char **argv)
   }
   else if (menu_ret == 1)
   {
+    level = menu_ia();
     puts("human plays white, cpu plays black");
   }
   else if (menu_ret == 2)
   {
+    level = menu_ia();
     puts("human plays black, cpu plays white");
     cpu = PLAYER_WHITE;
     human = PLAYER_BLACK;
@@ -110,6 +116,9 @@ int main(int argc, char **argv)
   else
     return 0;
 
+  printf("%d\n", level);
+  if (level == 42)
+    goto start;
 // Init
   undo_init(board);
   redo_init(board);
@@ -315,7 +324,7 @@ int main(int argc, char **argv)
     SDL_Rect pos5;
     pos5.x = 10;
     pos5.y = 760;
-  
+
     SDL_Rect pos6;
     pos6.x = 253;
     pos6.y = 760;
@@ -323,7 +332,7 @@ int main(int argc, char **argv)
     SDL_Rect pos7;
     pos7.x = 496;
     pos7.y = 760;
- 
+
     SDL_Rect pos8;
     pos8.x = 253;
     pos8.y = 803;
@@ -378,7 +387,7 @@ int main(int argc, char **argv)
 
     case SDL_MOUSEBUTTONDOWN:
        if (event.button.button == SDL_BUTTON_LEFT)
-       { 
+       {
           if (event.button.x > 10 && event.button.x < 243 && event.button.y > 760 && event.button.y < 793)
           {
             res = UNDO;
