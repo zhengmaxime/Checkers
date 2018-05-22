@@ -224,6 +224,7 @@ int main(int argc, char **argv)
 
       search_jumps = 0;
       nb_captures = 0;
+      printf("White: %d   Black: %d\n", board->nb_white, board->nb_black);
     }
 
 //--------------------------SDL print board----------------------------------//
