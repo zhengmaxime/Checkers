@@ -25,7 +25,7 @@ struct move_seq *get_random_move(struct board *b)
 {
   struct moves *moves_list = NULL;
   unsigned int mandatory_jumps;
-	int move_choice, moves_list_len;
+  int move_choice, moves_list_len;
 
   moves_list = build_moves(b);
   mandatory_jumps = list_len(moves_list);
@@ -133,6 +133,12 @@ int main(int argc, char **argv)
   SDL_Surface *B_BKSE = IMG_Load("image_case/casemaronpiecenoiredamesselected.png");
   SDL_Surface *B_BPSE = IMG_Load("image_case/casemaronpiecenoireselected.png");
   SDL_Surface *B_WPSE = IMG_Load("image_case/casemaronpieceblancheselected.png");
+
+  SDL_Surface *Back = SDL_LoadBMP("image_menu/Back.bmp");
+  SDL_Surface *Undo = NULL;
+  Undo = SDL_LoadBMP("image_menu/Undo.bmp");
+  SDL_Surface *Redo = SDL_LoadBMP("image_menu/Redo.bmp");
+  SDL_Surface *Save = SDL_LoadBMP("image_menu/Save.bmp");
 
   SDL_Surface *T = IMG_Load("image_case/last_move_trace.bmp");
 
@@ -306,6 +312,12 @@ int main(int argc, char **argv)
         }
      }
     }
+
+    SDL_Rect pos5;
+    pos5.x = 10;
+    pos5.y = 760;
+
+    SDL_BlitSurface(Undo, NULL, screen, &pos5);
 
     SDL_Flip(screen);
 //--------------------------SDL end print------------------------------------//
@@ -682,6 +694,7 @@ quit:
   SDL_FreeSurface(B_BP);
   SDL_FreeSurface(B_WK);
   SDL_FreeSurface(B_BK);
+  SDL_FreeSurface(Undo);
   SDL_Quit();
 //-------free SDL------------------------------------------------------------//
 

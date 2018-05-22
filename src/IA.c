@@ -52,7 +52,7 @@ int isGameOver(struct board *board)
 
 struct move_seq *get_IA_move(struct board *board, int player)
 {
-  size_t deep = 3; //deepest of the minimax calcul
+  size_t deep = 4; //deepest of the minimax calcul
   struct moves *moves_list = build_moves(board);
   struct board *board_copy = NULL;
   struct move_seq *best_move = malloc(sizeof(struct move_seq));

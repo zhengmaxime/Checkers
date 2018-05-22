@@ -1,6 +1,6 @@
 # Makefile
 
-CC=gcc #-fsanitize=address
+CC=gcc -fsanitize=address
 CPPFLAGS= -MMD -D_XOPEN_SOURCE=500 `pkg-config --cflags sdl`
 CFLAGS= -Wall -Wextra -std=c99 -O0 -g
 LDFLAGS=-lSDL -lSDL_image #Linker

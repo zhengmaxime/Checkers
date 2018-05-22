@@ -79,7 +79,8 @@ int menu()
     White = SDL_LoadBMP("image_menu/White.bmp");
     Black = SDL_LoadBMP("image_menu/Black.bmp");
     Quit = SDL_LoadBMP("image_menu/Quit.bmp");
-
+    
+    
 
 
 
