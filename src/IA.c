@@ -37,10 +37,14 @@ int isGameOver(struct board *board)
 
     if(list_len(moves_list) == 0 && list_len(moves_not_mandatory) == 0)
     {
+       free_moves(moves_list);
+       free_moves(moves_not_mandatory);
        return 1;
     }
     else
     {
+       free_moves(moves_list);
+       free_moves(moves_not_mandatory);
       return 0;
     }
   }
