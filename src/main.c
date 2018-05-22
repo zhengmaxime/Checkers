@@ -161,6 +161,9 @@ start:
   SDL_Surface *Save = SDL_LoadBMP("image_menu/Save.bmp");
   SDL_Surface *Abandon = IMG_Load("image_menu/flag_white.bmp");
 
+  SDL_Surface *Black_won = IMG_Load("image_menu/black_won.bmp");
+  SDL_Surface *White_won = IMG_Load("image_menu/white_won.bmp");
+
   SDL_Surface *T = IMG_Load("image_case/last_move_trace.bmp");
 
   SDL_Init(SDL_INIT_VIDEO);
@@ -737,6 +740,16 @@ start:
    }
 }
 
+  SDL_Rect pos10;
+  pos10.x = 10;
+  pos10.y = 803;
+
+  if (board->player == PLAYER_BLACK)
+    SDL_BlitSurface(White_won, NULL, screen, &pos10);
+  else
+    SDL_BlitSurface(Black_won, NULL, screen, &pos10);
+
+  SDL_Flip(screen);
   puts("Press any key to quit...");
 
   for (;;)
@@ -766,6 +779,8 @@ quit:
   SDL_FreeSurface(Save);
   SDL_FreeSurface(Quit);
   SDL_FreeSurface(Abandon);
+  SDL_FreeSurface(Black_won);
+  SDL_FreeSurface(White_won);
   SDL_Quit();
 //-------free SDL------------------------------------------------------------//
 
