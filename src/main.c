@@ -156,10 +156,10 @@ start:
   SDL_Surface *B_WPSE = IMG_Load("image_case/casemaronpieceblancheselected.png");
 
   SDL_Surface *Quit = SDL_LoadBMP("image_menu/Quit.bmp");
-  SDL_Surface *Undo = NULL;
-  Undo = SDL_LoadBMP("image_menu/Undo.bmp");
+  SDL_Surface *Undo = SDL_LoadBMP("image_menu/Undo.bmp");
   SDL_Surface *Redo = SDL_LoadBMP("image_menu/Redo.bmp");
   SDL_Surface *Save = SDL_LoadBMP("image_menu/Save.bmp");
+  SDL_Surface *Abandon = IMG_Load("image_menu/flag_white.bmp");
 
   SDL_Surface *T = IMG_Load("image_case/last_move_trace.bmp");
 
@@ -349,10 +349,15 @@ start:
     pos8.x = 253;
     pos8.y = 803;
 
+    SDL_Rect pos9;
+    pos9.x = 596;
+    pos9.y = 803;
+
     SDL_BlitSurface(Undo, NULL, screen, &pos5);
     SDL_BlitSurface(Redo, NULL, screen, &pos6);
     SDL_BlitSurface(Save, NULL, screen, &pos7);
     SDL_BlitSurface(Quit, NULL, screen, &pos8);
+    SDL_BlitSurface(Abandon, NULL, screen, &pos9);
     SDL_Flip(screen);
 //--------------------------SDL end print------------------------------------//
 
@@ -400,21 +405,30 @@ start:
     case SDL_MOUSEBUTTONDOWN:
        if (event.button.button == SDL_BUTTON_LEFT)
        {
-          if (event.button.x > 10 && event.button.x < 243 && event.button.y > 760 && event.button.y < 793)
+          if (event.button.x > 10 && event.button.x < 243
+           && event.button.y > 760 && event.button.y < 793)
           {
             res = UNDO;
           }
-          else if (event.button.x > 253 && event.button.x < 253+233  && event.button.y > 760 && event.button.y < 793)
+          else if (event.button.x > 253 && event.button.x < 486
+                && event.button.y > 760 && event.button.y < 793)
           {
             res = REDO;
           }
-          else if (event.button.x > 496 && event.button.x < 496+233 && event.button.y > 760 && event.button.y < 793)
+          else if (event.button.x > 496 && event.button.x < 729
+                && event.button.y > 760 && event.button.y < 793)
           {
             res = SAVE;
           }
-          else if (event.button.x > 253 && event.button.x < 253+233 && event.button.y > 803 && event.button.y < 836)
+          else if (event.button.x > 253 && event.button.x < 486
+                && event.button.y > 803 && event.button.y < 836)
           {
             res = QUIT;
+          }
+          else if (event.button.x > 593 && event.button.x < 626
+                && event.button.y > 803 && event.button.y < 836)
+          {
+            res = ABANDON;
           }
           else
           {
@@ -751,6 +765,7 @@ quit:
   SDL_FreeSurface(Redo);
   SDL_FreeSurface(Save);
   SDL_FreeSurface(Quit);
+  SDL_FreeSurface(Abandon);
   SDL_Quit();
 //-------free SDL------------------------------------------------------------//
 
