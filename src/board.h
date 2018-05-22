@@ -34,6 +34,7 @@ struct board
   int nb_white;
   int nb_black;
   int player;
+  int is_copy;
   struct moves *undo;
   struct moves *redo;
 };

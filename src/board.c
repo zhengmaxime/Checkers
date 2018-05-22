@@ -39,6 +39,7 @@ void boardInit(struct board *b)
   b->player = PLAYER_WHITE;
   b->nb_black = 20;
   b->nb_white = 20;
+  b->is_copy = 0;
   b->undo = NULL;
   b->redo = NULL;
 }
@@ -178,7 +179,7 @@ int pawn_to_king(struct board *b)
     }
   }
 
-  if (new_king == 1 && b->undo->next) // save the coords of the new king
+  if (b->is_copy == 0 && new_king == 1) // save the coords of the new king
     save_king_coords(b, line, col);
 
   return new_king;
