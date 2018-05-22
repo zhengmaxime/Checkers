@@ -1,4 +1,4 @@
-#define IA_WORKS 1
+#define IA_WORKS 1 
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -230,7 +230,6 @@ int main(int argc, char **argv)
 
       search_jumps = 0;
       nb_captures = 0;
-      printf("White: %d   Black: %d\n", board->nb_white, board->nb_black);
     }
 
 //--------------------------SDL print board----------------------------------//
@@ -316,9 +315,18 @@ int main(int argc, char **argv)
     SDL_Rect pos5;
     pos5.x = 10;
     pos5.y = 760;
+  
+    SDL_Rect pos6;
+    pos6.x = 253;
+    pos6.y = 760;
+
+    SDL_Rect pos7;
+    pos7.x = 496;
+    pos7.y = 760;
 
     SDL_BlitSurface(Undo, NULL, screen, &pos5);
-
+    SDL_BlitSurface(Redo, NULL, screen, &pos6);
+    SDL_BlitSurface(Save, NULL, screen, &pos7);
     SDL_Flip(screen);
 //--------------------------SDL end print------------------------------------//
 
@@ -695,6 +703,8 @@ quit:
   SDL_FreeSurface(B_WK);
   SDL_FreeSurface(B_BK);
   SDL_FreeSurface(Undo);
+  SDL_FreeSurface(Redo);
+  SDL_FreeSurface(Save);
   SDL_Quit();
 //-------free SDL------------------------------------------------------------//
 
