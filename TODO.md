@@ -16,18 +16,16 @@
 
 ##### Important
 
-- [x] Ajouter des boutons au menu principal comme le niveau de difficulté, ouvrir fichier (si c'est possible)
+- [x] Ajouter des boutons au menu principal comme le niveau de difficulté
 - [x] Ajouter des boutons à côté du damier : undo, redo, save, quit, abandon
-- [ ] Message de fin de partie dans la fenêtre de jeu
+- [x] Message de fin de partie dans la fenêtre de jeu
 
-##### Moins important
+##### Bonus
 
-- [ ] Utiliser Gtk pour ouvrir/sauvegarder une partie
+- [ ] Utiliser Gtk pour ouvrir/sauvegarder une partie depuis le menu principal
 (voir https://developer.gnome.org/gtk3/stable/GtkFileChooserDialog.html)
 - [ ] Afficher des informations sur la partie dans la fenêtre de jeu (nombre de pièces restantes, le joueur qui doit jouer...)
 (voir SDL_ttf)
-
-##### Bonus
 - [ ] Animations lorsqu'une pièce se déplace
 
 ### Jouabilité (Maxime)
@@ -39,14 +37,13 @@
 - [ ] Suggérer un coup au joueur humain s'il est en difficulté
 - [ ] Gestion des fichiers PDN (voir https://en.wikipedia.org/wiki/Portable_Draughts_Notation)
 
-### IA (Adrien, ...)
+### IA (Maxime, Adrien)
 
 - [x] Fonction d'évaluation
-- [x] Minimax optimisé
+- [x] Élagage alpha-bêta
 
 ##### Bonus
 
-- [x] Élagage alpha-bêta pour améliorer Minimax
 - [ ] Tables de finale
 
 ### Divers
