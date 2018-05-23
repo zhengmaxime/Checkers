@@ -164,6 +164,9 @@ start:
 
   SDL_Surface *Black_won = IMG_Load("image_menu/black_won.bmp");
   SDL_Surface *White_won = IMG_Load("image_menu/white_won.bmp");
+  SDL_Surface *Black_turn = IMG_Load("image_menu/black_turn.bmp");
+  SDL_Surface *White_turn = IMG_Load("image_menu/white_turn.bmp");
+  SDL_Surface *Ia_turn = IMG_Load("image_menu/ia_turn.bmp");
 
   SDL_Surface *T = IMG_Load("image_case/last_move_trace.bmp");
 
@@ -356,6 +359,22 @@ start:
     SDL_Rect pos9;
     pos9.x = 596;
     pos9.y = 803;
+
+    SDL_Rect posp;
+    posp.x = 10;
+    posp.y = 803;
+
+    SDL_Rect posp2;
+    posp2.x = 110;
+    posp2.y = 803;
+
+    if (board->player == PLAYER_WHITE)
+      SDL_BlitSurface(White_turn, NULL, screen, &posp);
+    else
+      SDL_BlitSurface(Black_turn, NULL, screen, &posp);
+
+    if (board->player == cpu)
+      SDL_BlitSurface(Ia_turn, NULL, screen, &posp2);
 
     SDL_BlitSurface(Undo, NULL, screen, &pos5);
     SDL_BlitSurface(Redo, NULL, screen, &pos6);
@@ -788,6 +807,9 @@ quit:
   SDL_FreeSurface(Abandon);
   SDL_FreeSurface(Black_won);
   SDL_FreeSurface(White_won);
+  SDL_FreeSurface(Black_turn);
+  SDL_FreeSurface(White_turn);
+  SDL_FreeSurface(Ia_turn);
   SDL_Quit();
 //-------free SDL------------------------------------------------------------//
 
