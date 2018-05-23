@@ -14,13 +14,13 @@ void boardInit(struct board *b)
   int line;
   int col;
 
-  for(line = 0; line < 10; line++)
+  for (line = 0; line < 10; line++)
   {
-    if(line % 2 == 0)
+    if (line % 2 == 0)
       col = 1;
     else
       col = 0;
-    for(; col < 10; col+=2)
+    for (; col < 10; col += 2)
     {
       if(line < 4)//black pieces
         b->cells[line][col].data = BP;
@@ -85,24 +85,6 @@ void count_pieces(struct board *b)
     }
   }
 }
-/*
-void count_pieces_player(struct board *b, int player)
-{
-  b->nb_black = 0;
-  b->nb_white = 0;
-
-  for (int i = 0; i < 10; i++)
-  {
-    for (int j = 0; j < 10; j++)
-    {
-      if (is_white(b->cells[i][j].data))
-        b->nb_white++;
-      if (is_black(b->cells[i][j].data))
-        b->nb_black++;
-    }
-  }
-}
-*/
 
 void printBoard(struct board *b)
 {
@@ -303,7 +285,8 @@ Color get_background(struct board *b, int x, int y)
   return b->cells[x][y].background;
 }
 
-int set_orig_cases(struct board *b, struct moves *list, int *orig_x, int *orig_y)
+int set_orig_cases(struct board *b, struct moves *list,
+                   int *orig_x, int *orig_y)
 {
   int nb_orig = 0;
   list = list->next;

@@ -32,19 +32,19 @@ int isGameOver(struct board *board)
   {
     moves_list = build_moves(board);
     moves_not_mandatory = build_moves_not_mandatory(board);
-    if(moves_list == NULL || moves_not_mandatory == NULL)
+    if (moves_list == NULL || moves_not_mandatory == NULL)
       return -1;//ERROR
 
-    if(list_len(moves_list) == 0 && list_len(moves_not_mandatory) == 0)
+    if (list_len(moves_list) == 0 && list_len(moves_not_mandatory) == 0)
     {
-       free_moves(moves_list);
-       free_moves(moves_not_mandatory);
-       return 1;
+      free_moves(moves_list);
+      free_moves(moves_not_mandatory);
+      return 1;
     }
     else
     {
-       free_moves(moves_list);
-       free_moves(moves_not_mandatory);
+      free_moves(moves_list);
+      free_moves(moves_not_mandatory);
       return 0;
     }
   }
@@ -195,25 +195,7 @@ long max(struct board *board, size_t deep, int player, int alpha, int beta)
   free_moves(head);
   return max_val;
 }
-#if 0
-long eval(struct board *board/*, int actual_player*/, int cpu, int player)
-{
-  //if actual_player
-  //cpu looses
-  if((cpu == PLAYER_WHITE && board->nb_white == 0)
-  || (cpu == PLAYER_BLACK && board->nb_black == 0))
-    return -1000;
-  //player looses
-  if((player == PLAYER_WHITE && board->nb_white == 0)
-  || (player == PLAYER_BLACK && board->nb_black == 0))
-    return 1000;
-  /*if(acual_player == PLAYER_WHITE)
-  {
-    return board->nb_white
-  }*/
-  return 0;
-}
-#endif
+
 long eval(struct board *b, int player)
 {
   int white_score = 0;
