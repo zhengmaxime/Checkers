@@ -46,6 +46,8 @@ void seq_fill(struct move_seq *seq,
 /* save the coords of the new king in the undo stack */
 void save_king_coords(struct board *b, int x, int y)
 {
+  if (!b->is_copy)
+    printf("New king at (%d, %d)\n", x, y);
   b->undo->next->crowned.x = x;
   b->undo->next->crowned.y = y;
 }
